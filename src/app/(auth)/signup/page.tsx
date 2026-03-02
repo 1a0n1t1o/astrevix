@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 
 function generateSlug(name: string): string {
@@ -80,13 +81,22 @@ export default function SignupPage() {
   return (
     <div>
       {/* Logo */}
-      <div className="mb-8 text-center">
-        <div className="mb-2 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-xl text-white">
-          ⚡
-        </div>
-        <h1 className="font-serif text-2xl font-bold text-gray-900">
-          Astrevix
-        </h1>
+      <div className="mb-8 flex flex-col items-center">
+        <Image
+          src="/logo-icon.png"
+          alt="Astrevix"
+          width={40}
+          height={40}
+          className="mb-3"
+          style={{ filter: "brightness(0)" }}
+        />
+        <Image
+          src="/logo-text.png"
+          alt="Astrevix"
+          width={140}
+          height={28}
+          style={{ filter: "brightness(0)" }}
+        />
       </div>
 
       {/* Card */}

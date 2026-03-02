@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import type { Business } from "@/types/database";
 
@@ -97,9 +98,13 @@ export default function DashboardShell({
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#2563EB] to-[#7C3AED] text-sm text-white">
-          ⚡
-        </div>
+        <Image
+          src="/logo-icon.png"
+          alt="Astrevix"
+          width={32}
+          height={32}
+          style={{ filter: "brightness(0)" }}
+        />
         <span className="font-serif text-lg font-bold text-gray-900">
           Astrevix
         </span>
@@ -184,6 +189,13 @@ export default function DashboardShell({
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
           </button>
+          <Image
+            src="/logo-icon.png"
+            alt="Astrevix"
+            width={28}
+            height={28}
+            style={{ filter: "brightness(0)" }}
+          />
           <span className="font-serif text-lg font-bold text-gray-900">
             Astrevix
           </span>
