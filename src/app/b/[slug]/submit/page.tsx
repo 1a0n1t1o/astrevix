@@ -34,12 +34,25 @@ export default function SubmitPage() {
 
   const [postLink, setPostLink] = useState("");
   const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
+  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [touched, setTouched] = useState({ postLink: false, email: false });
 
   const detectedPlatform = detectPlatform(postLink);
+
+  const isValidUrl =
+    postLink.trim() === "" ||
+    postLink.startsWith("http://") ||
+    postLink.startsWith("https://");
+  const isValidEmail =
+    email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const isValid =
-    postLink.trim() !== "" && name.trim() !== "" && contact.trim() !== "";
+    postLink.trim() !== "" &&
+    isValidUrl &&
+    name.trim() !== "" &&
+    email.trim() !== "" &&
+    isValidEmail;
 
   if (!business) return null;
 
@@ -100,8 +113,8 @@ export default function SubmitPage() {
             {business.reward}
           </p>
           <p className="mt-2 text-xs" style={{ color: "#8B8B9B" }}>
-            We&apos;ll send it to the contact info you provided once your post
-            is approved.
+            We&apos;ll send it to the email you provided once your post is
+            approved.
           </p>
         </div>
 
@@ -198,7 +211,10 @@ export default function SubmitPage() {
                 paddingRight: postLink.trim() ? "120px" : "16px",
               }}
               onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
-              onBlur={(e) => (e.target.style.borderColor = "#E0DDD8")}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#E0DDD8";
+                setTouched((t) => ({ ...t, postLink: true }));
+              }}
             />
             {postLink.trim() && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -206,9 +222,15 @@ export default function SubmitPage() {
               </span>
             )}
           </div>
-          <p className="mt-1.5 text-xs text-gray-400">
-            We&apos;ll automatically detect which platform you posted on
-          </p>
+          {touched.postLink && !isValidUrl ? (
+            <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
+              Please enter a valid URL
+            </p>
+          ) : (
+            <p className="mt-1.5 text-xs text-gray-400">
+              We&apos;ll automatically detect which platform you posted on
+            </p>
+          )}
         </div>
 
         {/* Name */}
@@ -233,17 +255,17 @@ export default function SubmitPage() {
           />
         </div>
 
-        {/* Email or phone */}
+        {/* Email */}
         <div>
-          <label htmlFor="contact" className="block text-sm font-medium">
-            Email or phone
+          <label htmlFor="email" className="block text-sm font-medium">
+            Email
           </label>
           <input
-            id="contact"
-            type="text"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-            placeholder="Where should we send your reward?"
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
             className="mt-1.5 w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
             style={{
               borderRadius: "14px",
@@ -251,11 +273,20 @@ export default function SubmitPage() {
               padding: "16px",
             }}
             onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
-            onBlur={(e) => (e.target.style.borderColor = "#E0DDD8")}
+            onBlur={(e) => {
+              e.target.style.borderColor = "#E0DDD8";
+              setTouched((t) => ({ ...t, email: true }));
+            }}
           />
-          <p className="mt-1.5 text-xs text-gray-400">
-            Only used to send your reward. We never spam.
-          </p>
+          {touched.email && !isValidEmail ? (
+            <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
+              Please enter a valid email address
+            </p>
+          ) : (
+            <p className="mt-1.5 text-xs text-gray-400">
+              Only used to send your reward. We never spam.
+            </p>
+          )}
         </div>
       </div>
 
