@@ -38,7 +38,6 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
   // Form state
   const [name, setName] = useState(business.name);
   const [tagline, setTagline] = useState(business.tagline || "");
-  const [logoEmoji, setLogoEmoji] = useState(business.logo_emoji || "🏪");
   const [brandColor, setBrandColor] = useState(business.brand_color || "#E8553A");
   const [rewardDescription, setRewardDescription] = useState(business.reward_description);
   const [contentType, setContentType] = useState(business.content_type || "Instagram Reel or TikTok");
@@ -51,6 +50,9 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
   // UI state
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
+  // Suppress unused variable
+  void createClient;
 
   function addRequirement() {
     if (requirements.length >= 6) return;
@@ -76,7 +78,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
         body: JSON.stringify({
           name,
           tagline,
-          logo_emoji: logoEmoji,
+          logo_emoji: business.logo_emoji,
           brand_color: brandColor,
           reward_description: rewardDescription,
           content_type: contentType,
@@ -99,9 +101,6 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
       setSaving(false);
     }
   }
-
-  // Suppress unused variable
-  void createClient;
 
   const inputClasses =
     "w-full rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
@@ -162,20 +161,6 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                   onChange={(e) => setTagline(e.target.value)}
                   placeholder="e.g. The best coffee in town"
                   className={inputClasses}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="emoji" className="mb-1.5 block text-sm font-medium text-gray-700">
-                  Logo emoji
-                </label>
-                <input
-                  id="emoji"
-                  type="text"
-                  value={logoEmoji}
-                  onChange={(e) => setLogoEmoji(e.target.value)}
-                  placeholder="🏪"
-                  className={`${inputClasses} max-w-[100px] text-center text-2xl`}
                 />
               </div>
             </div>
@@ -316,126 +301,121 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
 
             {/* Phone frame */}
             <div
-              className="overflow-hidden rounded-[2.5rem] border-[3px] border-gray-800 bg-gray-800 shadow-2xl"
-              style={{ height: "720px" }}
+              className="overflow-hidden border shadow-xl"
+              style={{
+                width: "375px",
+                height: "680px",
+                borderRadius: "40px",
+                borderColor: "#E5E7EB",
+                borderWidth: "1px",
+              }}
             >
-              {/* Status bar */}
-              <div className="flex items-center justify-between bg-gray-800 px-6 py-2">
-                <span className="text-xs font-medium text-white">9:41</span>
-                <div className="mx-auto h-6 w-24 rounded-full bg-gray-900" />
-                <div className="flex gap-1">
-                  <div className="h-2.5 w-2.5 rounded-full bg-white/60" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-white/60" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-white/60" />
-                </div>
-              </div>
-
-              {/* Preview content */}
+              {/* Preview content — scaled to fit */}
               <div
-                className="h-[calc(100%-40px)] overflow-y-auto"
+                className="origin-top"
                 style={{
+                  width: "375px",
+                  height: "1046px",
+                  transform: "scale(0.65)",
+                  transformOrigin: "top center",
                   background: `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 45%)`,
                 }}
               >
-                <div className="px-5 py-6">
+                <div className="px-5 py-8">
                   {/* Powered by badge */}
                   <div className="flex justify-center">
                     <div
                       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1"
-                      style={{ backgroundColor: "rgba(0,0,0,0.04)", fontSize: "10px", color: "#8B8B9B" }}
+                      style={{ backgroundColor: "rgba(0,0,0,0.04)", fontSize: "11px", color: "#8B8B9B" }}
                     >
                       Powered by <span className="font-semibold" style={{ color: "#6B6B7B" }}>Astrevix</span>
                     </div>
                   </div>
 
-                  {/* Logo emoji */}
-                  <div className="mt-5 flex justify-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white text-2xl shadow-md">
-                      {logoEmoji || "🏪"}
-                    </div>
-                  </div>
-
-                  {/* Name + tagline */}
-                  <div className="mt-3 text-center">
-                    <h3 className="font-serif text-lg font-bold text-gray-900">
+                  {/* Business name (no logo in preview) */}
+                  <div className="mt-8 text-center">
+                    <h3
+                      className="font-bold text-gray-900"
+                      style={{ fontSize: "36px" }}
+                    >
                       {name || "Your Business"}
                     </h3>
                     {tagline && (
-                      <p className="mt-0.5 text-xs text-gray-500">{tagline}</p>
+                      <p className="mt-1 text-sm text-gray-500">{tagline}</p>
                     )}
                   </div>
 
-                  {/* Reward card */}
-                  <div
-                    className="relative mt-4 overflow-hidden rounded-xl px-4 py-5 text-center text-white"
-                    style={{ backgroundColor: brandColor }}
-                  >
+                  {/* Reward card — liquid glass */}
+                  <div className="relative mt-6">
                     <div
-                      className="absolute -right-3 -top-3 h-16 w-16 rounded-full"
-                      style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+                      className="absolute inset-0 rounded-[20px] opacity-20 blur-xl"
+                      style={{ backgroundColor: brandColor }}
                     />
                     <div
-                      className="absolute -bottom-2 -left-2 h-10 w-10 rounded-full"
-                      style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
-                    />
-                    <p className="relative text-[9px] font-semibold uppercase tracking-widest opacity-90">
-                      🎁 Your Reward
-                    </p>
-                    <p className="relative mt-1.5 font-serif text-base font-bold">
-                      {rewardDescription || "Your reward here"}
-                    </p>
-                    <p className="relative mt-1 text-[10px] opacity-80">
-                      Create a {contentType}
-                    </p>
+                      className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
+                      style={{
+                        background: "rgba(255,255,255,0.6)",
+                        backdropFilter: "blur(20px)",
+                        WebkitBackdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255,255,255,0.4)",
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+                      }}
+                    >
+                      <p
+                        className="text-xs font-semibold uppercase tracking-widest"
+                        style={{ color: brandColor }}
+                      >
+                        Your Reward
+                      </p>
+                      <p className="mt-3 text-2xl font-bold text-gray-900">
+                        {rewardDescription || "Your reward here"}
+                      </p>
+                      <p className="mt-2 text-sm text-gray-500">
+                        Create a {contentType}
+                      </p>
+                    </div>
                   </div>
 
                   {/* How it works */}
-                  <div className="mt-5">
-                    <h3 className="font-serif text-sm font-bold text-gray-900">How it works</h3>
-                    <p className="mt-0.5 text-[10px] text-gray-500">
+                  <div className="mt-8">
+                    <h3 className="text-lg font-bold text-gray-900">How it works</h3>
+                    <p className="mt-1 text-sm text-gray-500">
                       Create a {contentType.toLowerCase()} about your experience and earn your reward.
                     </p>
-                    <div className="mt-3 space-y-2">
-                      {PREVIEW_STEPS.map((step) => {
-                        const isLast = step.num === "4";
-                        return (
+                    <div className="mt-5 space-y-3">
+                      {PREVIEW_STEPS.map((step) => (
+                        <div
+                          key={step.num}
+                          className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm"
+                        >
                           <div
-                            key={step.num}
-                            className="flex items-start gap-2.5 rounded-lg bg-white p-2.5 shadow-sm"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-bold"
+                            style={{ backgroundColor: "rgba(0,0,0,0.04)", color: "#1a1a1a", fontSize: "14px" }}
                           >
-                            <div
-                              className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-[10px] font-bold"
-                              style={
-                                isLast
-                                  ? { backgroundColor: brandColor, color: "#fff" }
-                                  : { backgroundColor: "rgba(0,0,0,0.04)", color: "#1a1a1a" }
-                              }
-                            >
-                              {step.num}
-                            </div>
-                            <div>
-                              <p className="text-[11px] font-medium text-gray-900">{step.label}</p>
-                              <p className="mt-0.5 text-[9px] text-gray-400">{step.desc}</p>
-                            </div>
+                            {step.num}
                           </div>
-                        );
-                      })}
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{step.label}</p>
+                            <p className="mt-0.5" style={{ fontSize: "13px", color: "#8B8B9B" }}>{step.desc}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
                   {/* Requirements */}
                   {requirements.filter((r) => r.trim()).length > 0 && (
                     <div
-                      className="mt-5 rounded-xl p-3.5"
+                      className="mt-8 rounded-2xl p-5"
                       style={{ backgroundColor: "#F7F5F2", border: "1px solid #EDEAE6" }}
                     >
-                      <h3 className="font-serif text-sm font-bold text-gray-900">📋 Requirements</h3>
-                      <ul className="mt-2 space-y-2">
+                      <h3 className="text-lg font-bold text-gray-900">📋 Requirements</h3>
+                      <ul className="mt-3 space-y-3">
                         {requirements
                           .filter((r) => r.trim())
                           .map((req, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[11px]">
-                              <div className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border border-gray-300" />
+                            <li key={i} className="flex items-start gap-3 text-sm">
+                              <div className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-[1.5px] border-gray-300" />
                               <span className="text-gray-700">{req}</span>
                             </li>
                           ))}
@@ -445,17 +425,17 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
 
                   {/* CTA button */}
                   <div
-                    className="mt-5 rounded-xl py-3 text-center text-xs font-semibold text-white"
+                    className="mt-8 rounded-2xl py-4 text-center text-base font-semibold text-white"
                     style={{
                       backgroundColor: brandColor,
-                      boxShadow: `0 6px 16px ${brandColor}66`,
+                      boxShadow: `0 8px 24px ${brandColor}66`,
                     }}
                   >
                     Submit Your Post →
                   </div>
 
                   {/* Footer */}
-                  <p className="mt-2 pb-2 text-center text-[9px] text-gray-400">
+                  <p className="mt-3 pb-4 text-center text-xs text-gray-400">
                     Rewards issued after review. Usually within 24 hours.
                   </p>
                 </div>

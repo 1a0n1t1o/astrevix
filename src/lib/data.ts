@@ -6,7 +6,7 @@ export interface BusinessData {
   id: string;
   slug: string;
   name: string;
-  logo: string;
+  logo: string | null;
   tagline: string;
   brandColor: string;
   reward: string;
@@ -35,7 +35,7 @@ export async function getBusinessBySlug(slug: string): Promise<BusinessData | nu
     id: data.id,
     slug: data.slug,
     name: data.name,
-    logo: data.logo_emoji || "🏪",
+    logo: data.logo_emoji || null,
     tagline: data.tagline || "",
     brandColor: data.brand_color || "#E8553A",
     reward: data.reward_description,

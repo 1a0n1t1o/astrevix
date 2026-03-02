@@ -99,8 +99,8 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
         </div>
 
         <h1
-          className="mt-5 font-serif"
-          style={{ fontSize: "26px", fontWeight: 800 }}
+          className="mt-5"
+          style={{ fontSize: "26px", fontWeight: 700 }}
         >
           You&apos;re all set!
         </h1>
@@ -121,7 +121,7 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
             Your Reward
           </p>
           <p
-            className="mt-2 font-serif font-bold text-brand"
+            className="mt-2 font-bold text-brand"
             style={{ fontSize: "22px" }}
           >
             {business.reward}
@@ -178,13 +178,15 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
         &larr; Back
       </a>
 
-      {/* Header with business logo + name */}
+      {/* Header with business name */}
       <div className="mt-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
-          {business.logo}
-        </div>
+        {business.logo && (
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
+            {business.logo}
+          </div>
+        )}
         <div>
-          <h1 className="font-serif text-xl font-bold">Submit your post</h1>
+          <h1 className="text-xl font-bold">Submit your post</h1>
           <p className="text-xs text-gray-500">{business.name}</p>
         </div>
       </div>

@@ -33,6 +33,8 @@ export default async function BusinessPage({
   const business = await getBusinessBySlug(slug);
   if (!business) notFound();
 
+  const hasLogo = business.logo && business.logo.trim() !== "";
+
   return (
     <>
       {/* Powered by badge */}
@@ -45,94 +47,107 @@ export default async function BusinessPage({
         </div>
       </div>
 
-      {/* Business logo */}
-      <div className="mt-6 flex justify-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-4xl shadow-md">
-          {business.logo}
+      {/* Business logo (only if emoji set) */}
+      {hasLogo && (
+        <div className="mt-6 flex justify-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-4xl shadow-md">
+            {business.logo}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Business name + tagline */}
-      <div className="mt-4 text-center">
-        <h1 className="font-serif text-2xl font-bold text-foreground">
+      <div className={`${hasLogo ? "mt-4" : "mt-8"} text-center`}>
+        <h1
+          className="font-bold text-foreground"
+          style={{ fontSize: hasLogo ? "24px" : "36px" }}
+        >
           {business.name}
         </h1>
-        <p className="mt-1 text-sm text-gray-500">{business.tagline}</p>
+        {business.tagline && (
+          <p className="mt-1 text-sm text-gray-500">{business.tagline}</p>
+        )}
       </div>
 
-      {/* Reward card */}
-      <div className="relative mt-6 overflow-hidden rounded-2xl bg-brand px-6 py-8 text-center text-white">
+      {/* Reward card — liquid glass */}
+      <div className="relative mt-6">
+        {/* Brand color glow behind */}
         <div
-          className="absolute -right-5 -top-5 h-[100px] w-[100px] rounded-full"
-          style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+          className="absolute inset-0 rounded-[20px] opacity-20 blur-xl"
+          style={{ backgroundColor: business.brandColor }}
         />
         <div
-          className="absolute -bottom-4 -left-4 h-[70px] w-[70px] rounded-full"
-          style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
-        />
-        <p className="relative text-xs font-semibold uppercase tracking-widest opacity-90">
-          🎁 Your Reward
-        </p>
-        <p className="relative mt-3 font-serif text-2xl font-bold">
-          {business.reward}
-        </p>
-        <p className="relative mt-2 text-sm opacity-80">
-          Create a {business.contentType}
-        </p>
+          className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
+          style={{
+            background: "rgba(255,255,255,0.6)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.4)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+          }}
+        >
+          <p
+            className="text-xs font-semibold uppercase tracking-widest"
+            style={{ color: business.brandColor }}
+          >
+            Your Reward
+          </p>
+          <p className="mt-3 text-2xl font-bold text-gray-900">
+            {business.reward}
+          </p>
+          <p className="mt-2 text-sm text-gray-500">
+            Create a {business.contentType}
+          </p>
+        </div>
       </div>
 
       {/* How it works */}
       <div className="mt-8">
-        <h2 className="font-serif text-lg font-bold">How it works</h2>
+        <h2 className="text-lg font-bold text-gray-900">How it works</h2>
         <p className="mt-1 text-sm text-gray-500">
           Create a {business.contentType.toLowerCase()} about your experience
           and earn your reward.
         </p>
         <div className="mt-5 space-y-3">
-          {STEPS.map((step) => {
-            const isLast = step.num === "4";
-            return (
+          {STEPS.map((step) => (
+            <div
+              key={step.num}
+              className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm"
+            >
               <div
-                key={step.num}
-                className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-bold"
+                style={{ backgroundColor: "rgba(0,0,0,0.04)", color: "#1a1a1a", fontSize: "14px" }}
               >
-                <div
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-bold"
-                  style={
-                    isLast
-                      ? { backgroundColor: business.brandColor, color: "#fff", fontSize: "14px" }
-                      : { backgroundColor: "rgba(0,0,0,0.04)", color: "#1a1a1a", fontSize: "14px" }
-                  }
-                >
-                  {step.num}
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{step.label}</p>
-                  <p style={{ fontSize: "13px", color: "#8B8B9B" }} className="mt-0.5">
-                    {step.desc}
-                  </p>
-                </div>
+                {step.num}
               </div>
-            );
-          })}
+              <div>
+                <p className="text-sm font-medium">{step.label}</p>
+                <p style={{ fontSize: "13px", color: "#8B8B9B" }} className="mt-0.5">
+                  {step.desc}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Requirements */}
-      <div
-        className="mt-8 rounded-2xl p-5"
-        style={{ backgroundColor: "#F7F5F2", border: "1px solid #EDEAE6" }}
-      >
-        <h2 className="font-serif text-lg font-bold">📋 Requirements</h2>
-        <ul className="mt-3 space-y-3">
-          {business.requirements.map((req) => (
-            <li key={req} className="flex items-start gap-3 text-sm">
-              <div className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-[1.5px] border-gray-300" />
-              <span>{req}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {business.requirements.length > 0 && (
+        <div
+          className="mt-8 rounded-2xl p-5"
+          style={{ backgroundColor: "#F7F5F2", border: "1px solid #EDEAE6" }}
+        >
+          <h2 className="text-lg font-bold text-gray-900">📋 Requirements</h2>
+          <ul className="mt-3 space-y-3">
+            {business.requirements.map((req) => (
+              <li key={req} className="flex items-start gap-3 text-sm">
+                <div className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-[1.5px] border-gray-300" />
+                <span>{req}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* CTA button */}
       <a
