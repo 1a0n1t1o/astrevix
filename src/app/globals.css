@@ -4,6 +4,11 @@
   --background: #fefcfa;
   --foreground: #1a1a1a;
   --brand-color: #e8553a;
+
+  /* Dashboard palette */
+  --dash-bg: #fafbfc;
+  --dash-blue: #2563eb;
+  --dash-purple: #7c3aed;
 }
 
 @theme inline {
@@ -12,6 +17,11 @@
   --color-brand: var(--brand-color);
   --font-serif: var(--font-fraunces);
   --font-sans: var(--font-dm-sans);
+
+  /* Dashboard tokens */
+  --color-dash-bg: var(--dash-bg);
+  --color-dash-blue: var(--dash-blue);
+  --color-dash-purple: var(--dash-purple);
 }
 
 body {
