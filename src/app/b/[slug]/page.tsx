@@ -45,48 +45,40 @@ export default async function BusinessPage({
         </div>
       </div>
 
-      {/* Hero section with gradient */}
-      <div
-        className="-mx-5 mt-4 rounded-3xl px-5 pb-8 pt-6"
-        style={{
-          background: "linear-gradient(to bottom, #FFF0ED, #FEFCFA)",
-        }}
-      >
-        {/* Business logo */}
-        <div className="flex justify-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-4xl shadow-md">
-            {business.logo}
-          </div>
+      {/* Business logo */}
+      <div className="mt-6 flex justify-center">
+        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-4xl shadow-md">
+          {business.logo}
         </div>
+      </div>
 
-        {/* Business name + tagline */}
-        <div className="mt-4 text-center">
-          <h1 className="font-serif text-2xl font-bold text-foreground">
-            {business.name}
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">{business.tagline}</p>
-        </div>
+      {/* Business name + tagline */}
+      <div className="mt-4 text-center">
+        <h1 className="font-serif text-2xl font-bold text-foreground">
+          {business.name}
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">{business.tagline}</p>
+      </div>
 
-        {/* Reward card */}
-        <div className="relative mt-6 overflow-hidden rounded-2xl bg-brand px-6 py-8 text-center text-white">
-          <div
-            className="absolute -right-5 -top-5 h-[100px] w-[100px] rounded-full"
-            style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
-          />
-          <div
-            className="absolute -bottom-4 -left-4 h-[70px] w-[70px] rounded-full"
-            style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
-          />
-          <p className="relative text-xs font-semibold uppercase tracking-widest opacity-90">
-            🎁 Your Reward
-          </p>
-          <p className="relative mt-3 font-serif text-2xl font-bold">
-            {business.reward}
-          </p>
-          <p className="relative mt-2 text-sm opacity-80">
-            Create a {business.contentType}
-          </p>
-        </div>
+      {/* Reward card */}
+      <div className="relative mt-6 overflow-hidden rounded-2xl bg-brand px-6 py-8 text-center text-white">
+        <div
+          className="absolute -right-5 -top-5 h-[100px] w-[100px] rounded-full"
+          style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+        />
+        <div
+          className="absolute -bottom-4 -left-4 h-[70px] w-[70px] rounded-full"
+          style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+        />
+        <p className="relative text-xs font-semibold uppercase tracking-widest opacity-90">
+          🎁 Your Reward
+        </p>
+        <p className="relative mt-3 font-serif text-2xl font-bold">
+          {business.reward}
+        </p>
+        <p className="relative mt-2 text-sm opacity-80">
+          Create a {business.contentType}
+        </p>
       </div>
 
       {/* How it works */}
@@ -147,7 +139,7 @@ export default async function BusinessPage({
         href={`/b/${business.slug}/submit`}
         className="mt-8 block w-full rounded-2xl bg-brand py-4 text-center text-base font-semibold text-white transition-transform active:scale-[0.98]"
         style={{
-          boxShadow: "0 8px 24px rgba(232,85,58,0.4)",
+          boxShadow: `0 8px 24px ${business.brandColor}66`,
         }}
       >
         Submit Your Post &rarr;

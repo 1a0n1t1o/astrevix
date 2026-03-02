@@ -333,7 +333,9 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
               {/* Preview content */}
               <div
                 className="h-[calc(100%-40px)] overflow-y-auto"
-                style={{ backgroundColor: "#FEFCFA" }}
+                style={{
+                  background: `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 45%)`,
+                }}
               >
                 <div className="px-5 py-6">
                   {/* Powered by badge */}
@@ -346,51 +348,45 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                     </div>
                   </div>
 
-                  {/* Hero section */}
+                  {/* Logo emoji */}
+                  <div className="mt-5 flex justify-center">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white text-2xl shadow-md">
+                      {logoEmoji || "🏪"}
+                    </div>
+                  </div>
+
+                  {/* Name + tagline */}
+                  <div className="mt-3 text-center">
+                    <h3 className="font-serif text-lg font-bold text-gray-900">
+                      {name || "Your Business"}
+                    </h3>
+                    {tagline && (
+                      <p className="mt-0.5 text-xs text-gray-500">{tagline}</p>
+                    )}
+                  </div>
+
+                  {/* Reward card */}
                   <div
-                    className="mt-3 rounded-2xl px-4 pb-6 pt-5"
-                    style={{ background: "linear-gradient(to bottom, #FFF0ED, #FEFCFA)" }}
+                    className="relative mt-4 overflow-hidden rounded-xl px-4 py-5 text-center text-white"
+                    style={{ backgroundColor: brandColor }}
                   >
-                    {/* Logo emoji */}
-                    <div className="flex justify-center">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white text-2xl shadow-md">
-                        {logoEmoji || "🏪"}
-                      </div>
-                    </div>
-
-                    {/* Name + tagline */}
-                    <div className="mt-3 text-center">
-                      <h3 className="font-serif text-lg font-bold text-gray-900">
-                        {name || "Your Business"}
-                      </h3>
-                      {tagline && (
-                        <p className="mt-0.5 text-xs text-gray-500">{tagline}</p>
-                      )}
-                    </div>
-
-                    {/* Reward card */}
                     <div
-                      className="relative mt-4 overflow-hidden rounded-xl px-4 py-5 text-center text-white"
-                      style={{ backgroundColor: brandColor }}
-                    >
-                      <div
-                        className="absolute -right-3 -top-3 h-16 w-16 rounded-full"
-                        style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
-                      />
-                      <div
-                        className="absolute -bottom-2 -left-2 h-10 w-10 rounded-full"
-                        style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
-                      />
-                      <p className="relative text-[9px] font-semibold uppercase tracking-widest opacity-90">
-                        🎁 Your Reward
-                      </p>
-                      <p className="relative mt-1.5 font-serif text-base font-bold">
-                        {rewardDescription || "Your reward here"}
-                      </p>
-                      <p className="relative mt-1 text-[10px] opacity-80">
-                        Create a {contentType}
-                      </p>
-                    </div>
+                      className="absolute -right-3 -top-3 h-16 w-16 rounded-full"
+                      style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+                    />
+                    <div
+                      className="absolute -bottom-2 -left-2 h-10 w-10 rounded-full"
+                      style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+                    />
+                    <p className="relative text-[9px] font-semibold uppercase tracking-widest opacity-90">
+                      🎁 Your Reward
+                    </p>
+                    <p className="relative mt-1.5 font-serif text-base font-bold">
+                      {rewardDescription || "Your reward here"}
+                    </p>
+                    <p className="relative mt-1 text-[10px] opacity-80">
+                      Create a {contentType}
+                    </p>
                   </div>
 
                   {/* How it works */}
@@ -452,7 +448,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                     className="mt-5 rounded-xl py-3 text-center text-xs font-semibold text-white"
                     style={{
                       backgroundColor: brandColor,
-                      boxShadow: `0 4px 12px ${brandColor}66`,
+                      boxShadow: `0 6px 16px ${brandColor}66`,
                     }}
                   >
                     Submit Your Post →

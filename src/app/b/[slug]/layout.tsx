@@ -14,8 +14,11 @@ export default async function BusinessLayout({
 
   return (
     <div
-      style={{ "--brand-color": business.brandColor } as React.CSSProperties}
-      className="min-h-screen bg-background"
+      style={{
+        "--brand-color": business.brandColor,
+        background: `linear-gradient(to bottom, ${business.brandColor}14 0%, #FEFCFA 45%)`,
+      } as React.CSSProperties}
+      className="min-h-screen"
     >
       <div className="mx-auto max-w-[480px] px-5 py-8">{children}</div>
     </div>
