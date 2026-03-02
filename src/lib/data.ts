@@ -1,6 +1,9 @@
+import { supabase } from "./supabase";
+
 export type Platform = "instagram" | "tiktok" | "youtube" | "x" | "facebook";
 
 export interface BusinessData {
+  id: string;
   slug: string;
   name: string;
   logo: string;
@@ -19,25 +22,26 @@ export const PLATFORM_INFO: Record<Platform, { label: string; emoji: string; col
   facebook: { label: "Facebook", emoji: "📘", color: "#1877F2" },
 };
 
-const MOCK_BUSINESS: BusinessData = {
-  slug: "sunrise-cafe",
-  name: "Sunrise Café",
-  logo: "☀️",
-  tagline: "Where every morning feels golden",
-  brandColor: "#E8553A",
-  reward: "$10 off your next visit",
-  contentType: "Instagram Reel or TikTok",
-  requirements: [
-    "Tag @sunrisecafe in your post",
-    "Show your food or drink",
-    "Use #SunriseCafe",
-    "Post must be public",
-  ],
-};
+export async function getBusinessBySlug(slug: string): Promise<BusinessData | null> {
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("*")
+    .eq("slug", slug)
+    .single();
 
-export function getBusinessBySlug(slug: string): BusinessData | null {
-  if (slug === "sunrise-cafe") return MOCK_BUSINESS;
-  return null;
+  if (error || !data) return null;
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    name: data.name,
+    logo: data.logo_emoji || "🏪",
+    tagline: data.tagline || "",
+    brandColor: data.brand_color || "#E8553A",
+    reward: data.reward_description,
+    contentType: data.content_type || "Instagram Reel or TikTok",
+    requirements: data.requirements || [],
+  };
 }
 
 export function detectPlatform(url: string): Platform | null {
@@ -48,4 +52,22 @@ export function detectPlatform(url: string): Platform | null {
   if (lower.includes("x.com") || lower.includes("twitter.com")) return "x";
   if (lower.includes("facebook.com") || lower.includes("fb.com")) return "facebook";
   return null;
+}
+
+export async function createSubmission(params: {
+  businessId: string;
+  postUrl: string;
+  detectedPlatform: string | null;
+  customerName: string;
+  customerEmail: string;
+}) {
+  const { error } = await supabase.from("submissions").insert({
+    business_id: params.businessId,
+    post_url: params.postUrl,
+    detected_platform: params.detectedPlatform,
+    customer_name: params.customerName,
+    customer_email: params.customerEmail,
+  });
+
+  return { error };
 }
