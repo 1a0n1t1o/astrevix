@@ -37,15 +37,7 @@ export default function LoginPage() {
   return (
     <div>
       {/* Logo */}
-      <div className="mb-8 flex flex-col items-center">
-        <Image
-          src="/logo-icon.png"
-          alt="Astrevix"
-          width={40}
-          height={40}
-          className="mb-3"
-          style={{ filter: "brightness(0)" }}
-        />
+      <div className="mb-8 flex justify-center">
         <Image
           src="/logo-text.png"
           alt="Astrevix"

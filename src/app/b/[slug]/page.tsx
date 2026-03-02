@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { getBusinessBySlug } from "@/lib/data";
 
 const STEPS = [
@@ -42,13 +41,6 @@ export default async function BusinessPage({
           className="inline-flex items-center gap-1.5 rounded-full px-3 py-1"
           style={{ backgroundColor: "rgba(0,0,0,0.04)", fontSize: "11px", color: "#8B8B9B" }}
         >
-          <Image
-            src="/logo-icon.png"
-            alt=""
-            width={16}
-            height={16}
-            style={{ filter: "brightness(0)", opacity: 0.5 }}
-          />
           Powered by <span className="font-semibold" style={{ color: "#6B6B7B" }}>Astrevix</span>
         </div>
       </div>
