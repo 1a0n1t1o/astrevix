@@ -100,7 +100,7 @@ export default function SignupPage() {
           WebkitBackdropFilter: "blur(20px)",
         }}
       >
-        <h2 className="font-serif text-xl font-bold text-gray-900">
+        <h2 className="text-xl font-semibold text-gray-900">
           Create your account
         </h2>
         <p className="mt-1 text-sm text-gray-500">

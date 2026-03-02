@@ -105,7 +105,7 @@ export default function DashboardShell({
           height={32}
           style={{ filter: "brightness(0)" }}
         />
-        <span className="font-serif text-lg font-bold text-gray-900">
+        <span className="text-lg font-semibold text-gray-900">
           Astrevix
         </span>
       </div>
@@ -196,7 +196,7 @@ export default function DashboardShell({
             height={28}
             style={{ filter: "brightness(0)" }}
           />
-          <span className="font-serif text-lg font-bold text-gray-900">
+          <span className="text-lg font-semibold text-gray-900">
             Astrevix
           </span>
         </div>

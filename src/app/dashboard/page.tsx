@@ -111,7 +111,7 @@ export default async function DashboardPage() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-semibold text-gray-900">
           {getGreeting()}, {business.name}
         </h1>
         <p className="mt-1 text-sm text-gray-500">
@@ -136,7 +136,7 @@ export default async function DashboardPage() {
           >
             <div className="mb-3 text-2xl">{stat.icon}</div>
             <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-            <p className="mt-1 text-3xl font-bold text-gray-900">
+            <p className="mt-1 text-3xl font-semibold text-gray-900">
               {stat.value}
             </p>
           </div>
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
       {/* Recent Submissions */}
       <div className="mt-10">
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-lg font-bold text-gray-900">
+          <h2 className="text-lg font-semibold text-gray-900">
             Recent Submissions
           </h2>
           {recentSubmissions.length > 0 && (
