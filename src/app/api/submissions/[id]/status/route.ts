@@ -6,7 +6,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const { status } = await request.json();
+  const { status, reward_given, review_comment } = await request.json();
 
   if (!["approved", "rejected"].includes(status)) {
     return NextResponse.json(
@@ -31,6 +31,8 @@ export async function PATCH(
     .update({
       status,
       reviewed_at: new Date().toISOString(),
+      reward_given: reward_given || null,
+      review_comment: review_comment || null,
     })
     .eq("id", id);
 
@@ -39,6 +41,20 @@ export async function PATCH(
       { error: "Failed to update submission" },
       { status: 500 }
     );
+  }
+
+  // Fire-and-forget email notification
+  try {
+    const origin = request.headers.get("origin") || request.headers.get("referer")?.replace(/\/[^/]*$/, "") || "";
+    fetch(`${origin}/api/submissions/${id}/notify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status, reward_given }),
+    }).catch(() => {
+      // Silently fail — notification is best-effort
+    });
+  } catch {
+    // Silently fail
   }
 
   return NextResponse.json({ success: true });

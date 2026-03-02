@@ -12,7 +12,7 @@ export default async function SubmissionsPage() {
 
   const { data: business } = await supabase
     .from("businesses")
-    .select("id")
+    .select("id, reward_description")
     .eq("owner_id", user.id)
     .single();
 
@@ -38,6 +38,7 @@ export default async function SubmissionsPage() {
       <SubmissionsList
         submissions={(submissions as Submission[]) || []}
         businessId={business.id}
+        rewardDescription={business.reward_description}
       />
     </div>
   );

@@ -23,6 +23,8 @@ export interface Submission {
   customer_email: string;
   status: "pending" | "approved" | "rejected";
   reviewed_at: string | null;
+  reward_given: string | null;
+  review_comment: string | null;
   created_at: string;
 }
 
