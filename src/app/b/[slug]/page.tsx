@@ -2,10 +2,26 @@ import { notFound } from "next/navigation";
 import { getBusinessBySlug } from "@/lib/data";
 
 const STEPS = [
-  { num: "1", label: "Create your content" },
-  { num: "2", label: "Post it publicly" },
-  { num: "3", label: "Submit your link" },
-  { num: "4", label: "Get rewarded" },
+  {
+    num: "1",
+    label: "Create your content",
+    desc: "Film a short video about your experience here",
+  },
+  {
+    num: "2",
+    label: "Post it publicly",
+    desc: "Share it on your TikTok or Instagram",
+  },
+  {
+    num: "3",
+    label: "Submit your link",
+    desc: "Paste your post link — takes 10 seconds",
+  },
+  {
+    num: "4",
+    label: "Get rewarded",
+    desc: "Receive your reward after approval",
+  },
 ];
 
 export default async function BusinessPage({
@@ -21,9 +37,12 @@ export default async function BusinessPage({
     <>
       {/* Powered by badge */}
       <div className="flex justify-center">
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-500">
+        <div
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.04)", fontSize: "11px", color: "#8B8B9B" }}
+        >
           <span>⚡</span>
-          Powered by <span className="font-semibold">Astrevix</span>
+          Powered by <span className="font-semibold" style={{ color: "#6B6B7B" }}>Astrevix</span>
         </div>
       </div>
 
@@ -31,7 +50,7 @@ export default async function BusinessPage({
       <div
         className="-mx-5 mt-4 rounded-3xl px-5 pb-8 pt-6"
         style={{
-          background: `linear-gradient(to bottom, ${business.brandColor}1A, #FEFCFA)`,
+          background: "linear-gradient(to bottom, #FFF0ED, #FEFCFA)",
         }}
       >
         {/* Business logo */}
@@ -51,9 +70,14 @@ export default async function BusinessPage({
 
         {/* Reward card */}
         <div className="relative mt-6 overflow-hidden rounded-2xl bg-brand px-6 py-8 text-center text-white">
-          <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/15" />
-          <div className="absolute -bottom-6 -left-6 h-20 w-20 rounded-full bg-white/15" />
-          <div className="absolute right-12 bottom-3 h-12 w-12 rounded-full bg-white/10" />
+          <div
+            className="absolute -right-5 -top-5 h-[100px] w-[100px] rounded-full"
+            style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+          />
+          <div
+            className="absolute -bottom-4 -left-4 h-[70px] w-[70px] rounded-full"
+            style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+          />
           <p className="relative text-xs font-semibold uppercase tracking-widest opacity-90">
             🎁 Your Reward
           </p>
@@ -79,18 +103,24 @@ export default async function BusinessPage({
             return (
               <div
                 key={step.num}
-                className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-sm"
+                className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm"
               >
                 <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-bold"
+                  style={
                     isLast
-                      ? "bg-brand text-white"
-                      : "bg-brand/10 text-brand"
-                  }`}
+                      ? { backgroundColor: business.brandColor, color: "#fff", fontSize: "14px" }
+                      : { backgroundColor: "rgba(0,0,0,0.04)", color: "#1a1a1a", fontSize: "14px" }
+                  }
                 >
                   {step.num}
                 </div>
-                <p className="text-sm font-medium">{step.label}</p>
+                <div>
+                  <p className="text-sm font-medium">{step.label}</p>
+                  <p style={{ fontSize: "13px", color: "#8B8B9B" }} className="mt-0.5">
+                    {step.desc}
+                  </p>
+                </div>
               </div>
             );
           })}
@@ -98,8 +128,11 @@ export default async function BusinessPage({
       </div>
 
       {/* Requirements */}
-      <div className="mt-8">
-        <h2 className="font-serif text-lg font-bold">Requirements</h2>
+      <div
+        className="mt-8 rounded-2xl p-5"
+        style={{ backgroundColor: "#F7F5F2", border: "1px solid #EDEAE6" }}
+      >
+        <h2 className="font-serif text-lg font-bold">📋 Requirements</h2>
         <ul className="mt-3 space-y-3">
           {business.requirements.map((req) => (
             <li key={req} className="flex items-start gap-3 text-sm">
@@ -115,7 +148,7 @@ export default async function BusinessPage({
         href={`/b/${business.slug}/submit`}
         className="mt-8 block w-full rounded-2xl bg-brand py-4 text-center text-base font-semibold text-white transition-transform active:scale-[0.98]"
         style={{
-          boxShadow: `0 8px 24px ${business.brandColor}66`,
+          boxShadow: "0 8px 24px rgba(232,85,58,0.4)",
         }}
       >
         Submit Your Post &rarr;

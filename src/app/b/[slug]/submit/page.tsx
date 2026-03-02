@@ -9,11 +9,23 @@ import {
   type Platform,
 } from "@/lib/data";
 
-const LINK_EMOJI = "🔗";
-
-function platformEmoji(platform: Platform | null): string {
-  if (!platform) return LINK_EMOJI;
-  return PLATFORM_INFO[platform].emoji;
+function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
+  const emoji = platform ? PLATFORM_INFO[platform].emoji : "🔗";
+  const label = platform ? PLATFORM_INFO[platform].label : "Link";
+  return (
+    <span
+      className="inline-flex items-center gap-1 whitespace-nowrap"
+      style={{
+        backgroundColor: "#F2F0ED",
+        borderRadius: "8px",
+        padding: "5px 10px",
+        fontSize: "12px",
+        fontWeight: 600,
+      }}
+    >
+      {emoji} {label}
+    </span>
+  );
 }
 
 export default function SubmitPage() {
@@ -33,15 +45,23 @@ export default function SubmitPage() {
 
   if (submitted) {
     return (
-      <div className="flex flex-col items-center pt-8 text-center">
-        {/* Checkmark */}
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+      <div className="flex flex-col items-center pt-6 text-center">
+        {/* Checkmark circle */}
+        <div
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: "88px",
+            height: "88px",
+            background: "linear-gradient(135deg, #E8F5E8, #D4EDDA)",
+          }}
+        >
           <svg
-            className="h-8 w-8 text-green-500"
+            className="h-10 w-10"
+            style={{ color: "#2E7D32" }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={2.5}
+            strokeWidth={3}
           >
             <path
               strokeLinecap="round"
@@ -51,37 +71,69 @@ export default function SubmitPage() {
           </svg>
         </div>
 
-        <h1 className="mt-4 font-serif text-2xl font-bold">
+        <h1
+          className="mt-5 font-serif"
+          style={{ fontSize: "26px", fontWeight: 800 }}
+        >
           You&apos;re all set!
         </h1>
-        <p className="mt-2 text-sm text-gray-500">
-          Your submission is being reviewed
+        <p className="mt-2" style={{ fontSize: "15px", color: "#8B8B9B" }}>
+          {business.name} will review your post and send your reward within 24
+          hours.
         </p>
 
-        {/* Reward summary */}
-        <div className="mt-6 w-full rounded-2xl bg-brand/5 p-5">
-          <p className="text-sm text-gray-500">Your reward</p>
-          <p className="mt-1 font-serif text-lg font-semibold">
+        {/* Reward summary card */}
+        <div
+          className="mt-6 w-full rounded-2xl p-5 text-center"
+          style={{ backgroundColor: "#F7F5F2" }}
+        >
+          <p
+            className="font-semibold uppercase tracking-widest"
+            style={{ fontSize: "11px", color: "#8B8B9B" }}
+          >
+            Your Reward
+          </p>
+          <p
+            className="mt-2 font-serif font-bold text-brand"
+            style={{ fontSize: "22px" }}
+          >
             {business.reward}
+          </p>
+          <p className="mt-2 text-xs" style={{ color: "#8B8B9B" }}>
+            We&apos;ll send it to the contact info you provided once your post
+            is approved.
           </p>
         </div>
 
-        {/* Platform + truncated link */}
+        {/* Platform card */}
         {detectedPlatform && (
-          <div className="mt-4 flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm">
-            <span>{PLATFORM_INFO[detectedPlatform].emoji}</span>
-            <span className="font-medium">
-              {PLATFORM_INFO[detectedPlatform].label}
+          <div
+            className="mt-4 flex w-full items-center gap-3 rounded-xl p-4"
+            style={{ backgroundColor: "#F7F5F2" }}
+          >
+            <span className="text-lg">
+              {PLATFORM_INFO[detectedPlatform].emoji}
             </span>
-            <span className="max-w-[150px] truncate text-gray-400">
-              {postLink}
-            </span>
+            <div className="min-w-0 text-left">
+              <p className="text-sm font-semibold">
+                {PLATFORM_INFO[detectedPlatform].label} post submitted
+              </p>
+              <p className="truncate text-xs" style={{ color: "#8B8B9B" }}>
+                {postLink}
+              </p>
+            </div>
           </div>
         )}
 
+        {/* Done button — outline style */}
         <a
           href={`/b/${slug}`}
-          className="mt-8 block w-full rounded-2xl bg-brand py-4 text-center text-base font-semibold text-white"
+          className="mt-8 block w-full rounded-2xl py-4 text-center text-base font-semibold transition-colors"
+          style={{
+            backgroundColor: "#fff",
+            color: "#6B6B7B",
+            border: "1.5px solid #E0DDD8",
+          }}
         >
           Done
         </a>
@@ -117,7 +169,9 @@ export default function SubmitPage() {
       >
         <span className="text-lg">🎁</span>
         <div>
-          <p className="text-sm font-semibold text-brand">{business.reward}</p>
+          <p className="text-sm font-semibold text-brand">
+            {business.reward}
+          </p>
           <p className="text-xs text-gray-500">After your post is approved</p>
         </div>
       </div>
@@ -136,11 +190,19 @@ export default function SubmitPage() {
               value={postLink}
               onChange={(e) => setPostLink(e.target.value)}
               placeholder="https://www.instagram.com/reel/..."
-              className="w-full rounded-[14px] border-[1.5px] border-gray-200 bg-white px-4 py-4 pr-12 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-brand"
+              className="w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
+              style={{
+                borderRadius: "14px",
+                border: "1.5px solid #E0DDD8",
+                padding: "16px",
+                paddingRight: postLink.trim() ? "120px" : "16px",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
+              onBlur={(e) => (e.target.style.borderColor = "#E0DDD8")}
             />
             {postLink.trim() && (
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base">
-                {platformEmoji(detectedPlatform)}
+              <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                <PlatformBadgeInline platform={detectedPlatform} />
               </span>
             )}
           </div>
@@ -160,7 +222,14 @@ export default function SubmitPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your first name"
-            className="mt-1.5 w-full rounded-[14px] border-[1.5px] border-gray-200 bg-white px-4 py-4 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-brand"
+            className="mt-1.5 w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
+            style={{
+              borderRadius: "14px",
+              border: "1.5px solid #E0DDD8",
+              padding: "16px",
+            }}
+            onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
+            onBlur={(e) => (e.target.style.borderColor = "#E0DDD8")}
           />
         </div>
 
@@ -175,7 +244,14 @@ export default function SubmitPage() {
             value={contact}
             onChange={(e) => setContact(e.target.value)}
             placeholder="Where should we send your reward?"
-            className="mt-1.5 w-full rounded-[14px] border-[1.5px] border-gray-200 bg-white px-4 py-4 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-brand"
+            className="mt-1.5 w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
+            style={{
+              borderRadius: "14px",
+              border: "1.5px solid #E0DDD8",
+              padding: "16px",
+            }}
+            onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
+            onBlur={(e) => (e.target.style.borderColor = "#E0DDD8")}
           />
           <p className="mt-1.5 text-xs text-gray-400">
             Only used to send your reward. We never spam.
@@ -197,7 +273,7 @@ export default function SubmitPage() {
               }
             : {
                 backgroundColor: "#E0DDD8",
-                color: "#9c9a97",
+                color: "#A0A0AA",
                 cursor: "not-allowed",
               }
         }
