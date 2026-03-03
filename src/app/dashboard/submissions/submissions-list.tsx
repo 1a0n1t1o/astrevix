@@ -20,11 +20,11 @@ import {
 
 type FilterTab = "all" | "pending" | "approved" | "rejected";
 
-const TABS: { label: string; value: FilterTab }[] = [
-  { label: "All", value: "all" },
-  { label: "Pending", value: "pending" },
-  { label: "Approved", value: "approved" },
-  { label: "Rejected", value: "rejected" },
+const TABS: { label: string; value: FilterTab; color: string }[] = [
+  { label: "All", value: "all", color: "#2563EB" },
+  { label: "Pending", value: "pending", color: "#d97706" },
+  { label: "Approved", value: "approved", color: "#059669" },
+  { label: "Rejected", value: "rejected", color: "#e11d48" },
 ];
 
 const PLATFORM_ICONS: Record<string, React.ReactNode> = {
@@ -153,8 +153,8 @@ export default function SubmissionsList({
               {isActive && (
                 <motion.div
                   layoutId="submissions-tab-indicator"
-                  className="absolute inset-0 rounded-xl bg-[#2563EB]"
-                  style={{ zIndex: -1 }}
+                  className="absolute inset-0 rounded-xl"
+                  style={{ zIndex: -1, backgroundColor: tab.color }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
