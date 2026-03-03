@@ -176,7 +176,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
         </div>
       )}
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
+      <div className="grid gap-8 lg:grid-cols-[1fr_auto]">
         {/* Left side — Edit controls */}
         <div className="space-y-8">
           {/* Business Logo */}

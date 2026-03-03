@@ -19,7 +19,7 @@ export default async function CustomizePage() {
   if (!business) return null;
 
   return (
-    <div>
+    <div className="lg:-mr-4">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">
           Customize
