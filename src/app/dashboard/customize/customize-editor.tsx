@@ -419,14 +419,15 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                 borderColor: "#E5E7EB",
                 borderWidth: "1px",
                 overflow: "hidden",
+                backgroundColor: "#FEFCFA",
               }}
             >
-              {/* Scaled preview content */}
+              {/* Scaled preview content — 480px scaled to fit 375px width (0.78125) */}
               <div
                 style={{
                   width: "480px",
-                  height: "1364px",
-                  transform: "scale(0.55)",
+                  minHeight: "960px",
+                  transform: "scale(0.78125)",
                   transformOrigin: "top left",
                   overflowY: "auto",
                   scrollbarWidth: "none",
