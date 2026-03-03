@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import type { Submission } from "@/types/database";
+import ActivityChart from "./activity-chart";
 
 function PlatformIcon({ platform, className = "h-5 w-5" }: { platform: string; className?: string }) {
   switch (platform) {
@@ -241,10 +242,21 @@ export default async function DashboardPage() {
         ))}
       </div>
 
+      {/* Activity Chart */}
+      <div
+        className="dash-animate-fade-in-up mt-8"
+        style={{ animationDelay: "250ms" }}
+      >
+        <ActivityChart
+          totalSubmissions={totalCount}
+          totalScans={0}
+        />
+      </div>
+
       {/* Recent Submissions */}
       <div
         className="dash-animate-fade-in-up mt-10"
-        style={{ animationDelay: "300ms" }}
+        style={{ animationDelay: "400ms" }}
       >
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900">
