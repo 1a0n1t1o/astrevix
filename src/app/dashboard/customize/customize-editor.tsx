@@ -301,25 +301,27 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
 
             {/* Phone frame */}
             <div
-              className="overflow-hidden border shadow-xl"
+              className="border shadow-xl"
               style={{
                 width: "375px",
-                height: "680px",
+                height: "750px",
                 borderRadius: "40px",
                 borderColor: "#E5E7EB",
                 borderWidth: "1px",
+                overflow: "hidden",
               }}
             >
-              {/* Preview content — scaled to fit */}
+              {/* Preview content — natural size, scrollable, no visible scrollbar */}
               <div
-                className="origin-top"
                 style={{
                   width: "375px",
-                  height: "1046px",
-                  transform: "scale(0.65)",
-                  transformOrigin: "top center",
-                  background: `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 45%)`,
+                  height: "750px",
+                  overflowY: "auto",
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  background: `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 35%)`,
                 }}
+                className="[&::-webkit-scrollbar]:hidden"
               >
                 <div className="px-5 py-8">
                   {/* Powered by badge */}
