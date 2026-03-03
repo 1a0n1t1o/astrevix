@@ -409,32 +409,28 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
           <div className="sticky top-6 flex flex-col items-center justify-center">
             <p className="mb-3 text-sm font-medium text-gray-500">Live Preview</p>
 
-            {/* Phone frame */}
+            {/* Phone frame — scrollable container */}
             <div
-              className="border shadow-xl"
+              className="border shadow-xl [&::-webkit-scrollbar]:hidden"
               style={{
                 width: "375px",
                 height: "750px",
                 borderRadius: "40px",
                 borderColor: "#E5E7EB",
                 borderWidth: "1px",
-                overflow: "hidden",
+                overflowY: "auto",
+                overflowX: "hidden",
+                scrollbarWidth: "none",
                 backgroundColor: "#FEFCFA",
               }}
             >
-              {/* Scaled preview content — 480px scaled to fit 375px width (0.78125) */}
+              {/* Zoomed preview content — zoom shrinks 480px → 375px and allows native scrolling */}
               <div
                 style={{
                   width: "480px",
-                  minHeight: "960px",
-                  transform: "scale(0.78125)",
-                  transformOrigin: "top left",
-                  overflowY: "auto",
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none",
+                  zoom: 0.78125,
                   background: `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 35%)`,
                 }}
-                className="[&::-webkit-scrollbar]:hidden"
               >
                 <div className="mx-auto max-w-[480px] px-5 py-8">
                   {/* Powered by badge */}
