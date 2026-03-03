@@ -146,15 +146,16 @@ export default function SubmissionsList({
               onClick={() => setActiveTab(tab.value)}
               className={`relative rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
                 isActive
-                  ? "text-white"
+                  ? ""
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
+              style={isActive ? { color: tab.color } : undefined}
             >
               {isActive && (
                 <motion.div
                   layoutId="submissions-tab-indicator"
                   className="absolute inset-0 rounded-xl"
-                  style={{ zIndex: -1, backgroundColor: tab.color }}
+                  style={{ zIndex: -1, backgroundColor: `${tab.color}15` }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
