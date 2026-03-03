@@ -33,7 +33,7 @@ function buildApprovedEmail(customerName: string, businessName: string, reward: 
       <!-- Reward box -->
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:0 0 20px;">
         <p style="margin:0 0 4px;color:#15803d;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Your Reward</p>
-        <p style="margin:0;color:#166534;font-size:17px;font-weight:600;">🎁 ${reward}</p>
+        <p style="margin:0;color:#166534;font-size:17px;font-weight:600;">${reward}</p>
       </div>
       ` : ""}
 

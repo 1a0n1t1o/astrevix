@@ -14,12 +14,12 @@ export interface BusinessData {
   requirements: string[];
 }
 
-export const PLATFORM_INFO: Record<Platform, { label: string; emoji: string; color: string }> = {
-  instagram: { label: "Instagram", emoji: "📸", color: "#E4405F" },
-  tiktok: { label: "TikTok", emoji: "🎵", color: "#000000" },
-  youtube: { label: "YouTube", emoji: "▶️", color: "#FF0000" },
-  x: { label: "X", emoji: "🐦", color: "#000000" },
-  facebook: { label: "Facebook", emoji: "📘", color: "#1877F2" },
+export const PLATFORM_INFO: Record<Platform, { label: string; icon: string; color: string }> = {
+  instagram: { label: "Instagram", icon: "instagram", color: "#E4405F" },
+  tiktok: { label: "TikTok", icon: "music", color: "#000000" },
+  youtube: { label: "YouTube", icon: "youtube", color: "#FF0000" },
+  x: { label: "X", icon: "twitter", color: "#000000" },
+  facebook: { label: "Facebook", icon: "facebook", color: "#1877F2" },
 };
 
 export async function getBusinessBySlug(slug: string): Promise<BusinessData | null> {

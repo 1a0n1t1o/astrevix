@@ -116,8 +116,11 @@ export default function DashboardShell({
       {/* Bottom section */}
       <div className="border-t border-gray-100 px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-lg">
-            {business.logo_emoji || "🏪"}
+          <div
+            className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white"
+            style={{ backgroundColor: business.brand_color || "#2563EB" }}
+          >
+            {business.name?.charAt(0)?.toUpperCase() || "B"}
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-gray-900">

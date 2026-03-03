@@ -143,7 +143,12 @@ export default async function BusinessPage({
           className="mt-8 rounded-2xl p-5"
           style={{ backgroundColor: "#F7F5F2", border: "1px solid #EDEAE6" }}
         >
-          <h2 className="text-lg font-bold text-gray-900">📋 Requirements</h2>
+          <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900">
+            <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            Requirements
+          </h2>
           <ul className="mt-3 space-y-3">
             {business.requirements.map((req) => (
               <li key={req} className="flex items-start gap-3 text-sm">

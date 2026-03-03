@@ -8,13 +8,33 @@ import {
   type Platform,
   type BusinessData,
 } from "@/lib/data";
+import {
+  Instagram,
+  Music,
+  Youtube,
+  Twitter,
+  Facebook,
+  Link,
+  Gift,
+  Lock,
+  Clock,
+} from "lucide-react";
+
+const PLATFORM_ICON_MAP: Record<string, React.ReactNode> = {
+  instagram: <Instagram className="h-3.5 w-3.5" />,
+  music: <Music className="h-3.5 w-3.5" />,
+  youtube: <Youtube className="h-3.5 w-3.5" />,
+  twitter: <Twitter className="h-3.5 w-3.5" />,
+  facebook: <Facebook className="h-3.5 w-3.5" />,
+};
 
 function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
-  const emoji = platform ? PLATFORM_INFO[platform].emoji : "🔗";
+  const iconKey = platform ? PLATFORM_INFO[platform].icon : null;
+  const icon = iconKey ? PLATFORM_ICON_MAP[iconKey] : <Link className="h-3.5 w-3.5" />;
   const label = platform ? PLATFORM_INFO[platform].label : "Link";
   return (
     <span
-      className="inline-flex items-center gap-1 whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 whitespace-nowrap"
       style={{
         backgroundColor: "#F2F0ED",
         borderRadius: "8px",
@@ -23,7 +43,7 @@ function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
         fontWeight: 600,
       }}
     >
-      {emoji} {label}
+      {icon} {label}
     </span>
   );
 }
@@ -138,8 +158,8 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
             className="mt-4 flex w-full items-center gap-3 rounded-xl p-4"
             style={{ backgroundColor: "#F7F5F2" }}
           >
-            <span className="text-lg">
-              {PLATFORM_INFO[detectedPlatform].emoji}
+            <span className="flex h-5 w-5 items-center justify-center text-gray-700">
+              {PLATFORM_ICON_MAP[PLATFORM_INFO[detectedPlatform].icon]}
             </span>
             <div className="min-w-0 text-left">
               <p className="text-sm font-semibold">
@@ -198,7 +218,7 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
         className="mt-5 flex items-center gap-3 rounded-2xl p-4"
         style={{ backgroundColor: `${business.brandColor}0D` }}
       >
-        <span className="text-lg">🎁</span>
+        <Gift className="h-5 w-5 shrink-0" style={{ color: business.brandColor }} />
         <div>
           <p className="text-sm font-semibold text-brand">
             {business.reward}
@@ -332,8 +352,8 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
 
       {/* Trust signals */}
       <div className="mt-4 flex justify-center gap-6 text-xs text-gray-400">
-        <span>🔒 Info stays private</span>
-        <span>⏱ Usually approved in 24h</span>
+        <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> Info stays private</span>
+        <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> Usually approved in 24h</span>
       </div>
     </>
   );

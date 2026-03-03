@@ -3,6 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Submission } from "@/types/database";
+import {
+  Instagram,
+  Music,
+  Youtube,
+  Twitter,
+  Facebook,
+  Link,
+  Inbox,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Gift,
+} from "lucide-react";
 
 type FilterTab = "all" | "pending" | "approved" | "rejected";
 
@@ -13,12 +26,27 @@ const TABS: { label: string; value: FilterTab }[] = [
   { label: "Rejected", value: "rejected" },
 ];
 
-const PLATFORM_INFO: Record<string, { label: string; emoji: string }> = {
-  instagram: { label: "Instagram", emoji: "📸" },
-  tiktok: { label: "TikTok", emoji: "🎵" },
-  youtube: { label: "YouTube", emoji: "▶️" },
-  x: { label: "X", emoji: "🐦" },
-  facebook: { label: "Facebook", emoji: "📘" },
+const PLATFORM_ICONS: Record<string, React.ReactNode> = {
+  instagram: <Instagram className="h-5 w-5" />,
+  tiktok: <Music className="h-5 w-5" />,
+  youtube: <Youtube className="h-5 w-5" />,
+  x: <Twitter className="h-5 w-5" />,
+  facebook: <Facebook className="h-5 w-5" />,
+};
+
+const PLATFORM_LABELS: Record<string, string> = {
+  instagram: "Instagram",
+  tiktok: "TikTok",
+  youtube: "YouTube",
+  x: "X",
+  facebook: "Facebook",
+};
+
+const EMPTY_STATE_ICONS: Record<string, React.ReactNode> = {
+  all: <Inbox className="mx-auto h-10 w-10 text-gray-300" />,
+  pending: <Clock className="mx-auto h-10 w-10 text-gray-300" />,
+  approved: <CheckCircle className="mx-auto h-10 w-10 text-gray-300" />,
+  rejected: <XCircle className="mx-auto h-10 w-10 text-gray-300" />,
 };
 
 function formatDate(dateStr: string): string {
@@ -138,14 +166,8 @@ export default function SubmissionsList({
       {/* Submissions List */}
       {filtered.length === 0 ? (
         <div className="rounded-2xl border border-gray-100 bg-white/70 p-12 text-center">
-          <div className="mx-auto mb-4 text-4xl">
-            {activeTab === "all"
-              ? "📭"
-              : activeTab === "pending"
-                ? "⏳"
-                : activeTab === "approved"
-                  ? "✅"
-                  : "❌"}
+          <div className="mx-auto mb-4">
+            {EMPTY_STATE_ICONS[activeTab]}
           </div>
           <p className="font-medium text-gray-900">
             {activeTab === "all"
@@ -161,8 +183,11 @@ export default function SubmissionsList({
       ) : (
         <div className="space-y-3">
           {filtered.map((sub) => {
-            const platform = sub.detected_platform
-              ? PLATFORM_INFO[sub.detected_platform]
+            const platformIcon = sub.detected_platform
+              ? PLATFORM_ICONS[sub.detected_platform]
+              : null;
+            const platformLabel = sub.detected_platform
+              ? PLATFORM_LABELS[sub.detected_platform]
               : null;
             const isExpanded = expandedId === sub.id;
             const isUpdating = updatingId === sub.id;
@@ -187,8 +212,8 @@ export default function SubmissionsList({
                   className="flex w-full items-center gap-4 p-5 text-left"
                 >
                   {/* Platform avatar */}
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-lg">
-                    {platform?.emoji || "🔗"}
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                    {platformIcon || <Link className="h-5 w-5" />}
                   </div>
 
                   {/* Customer info */}
@@ -197,9 +222,9 @@ export default function SubmissionsList({
                       <p className="font-medium text-gray-900">
                         {sub.customer_name}
                       </p>
-                      {platform && (
+                      {platformLabel && (
                         <span className="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
-                          {platform.label}
+                          {platformLabel}
                         </span>
                       )}
                     </div>
@@ -286,8 +311,8 @@ export default function SubmissionsList({
                           {sub.reward_given && (
                             <div>
                               <p className="text-xs text-gray-500">Reward given</p>
-                              <p className="mt-0.5 text-sm font-medium text-gray-900">
-                                🎁 {sub.reward_given}
+                              <p className="mt-0.5 flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                                <Gift className="h-4 w-4 text-emerald-500" /> {sub.reward_given}
                               </p>
                             </div>
                           )}
