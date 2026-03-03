@@ -29,10 +29,17 @@ export default async function DashboardLayout({
     redirect("/signup");
   }
 
+  const userMetadata = {
+    first_name: (user.user_metadata?.first_name as string) || "",
+    last_name: (user.user_metadata?.last_name as string) || "",
+    avatar_url: (user.user_metadata?.avatar_url as string) || null,
+  };
+
   return (
     <DashboardShell
       business={business as Business}
       userEmail={user.email || ""}
+      userMetadata={userMetadata}
     >
       {children}
     </DashboardShell>

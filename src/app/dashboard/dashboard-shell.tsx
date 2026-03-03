@@ -11,6 +11,11 @@ import type { Business } from "@/types/database";
 interface DashboardShellProps {
   readonly business: Business;
   readonly userEmail: string;
+  readonly userMetadata?: {
+    first_name: string;
+    last_name: string;
+    avatar_url: string | null;
+  };
   readonly children: React.ReactNode;
 }
 
@@ -58,6 +63,7 @@ const NAV_ITEMS = [
 export default function DashboardShell({
   business,
   userEmail,
+  userMetadata,
   children,
 }: DashboardShellProps) {
   const pathname = usePathname();
@@ -135,15 +141,25 @@ export default function DashboardShell({
       {/* Bottom section */}
       <div className="border-t border-gray-100 px-4 py-4">
         <div className="flex items-center gap-3">
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white"
-            style={{ backgroundColor: business.brand_color || "#2563EB" }}
-          >
-            {business.name?.charAt(0)?.toUpperCase() || "B"}
-          </div>
+          {userMetadata?.avatar_url ? (
+            <img
+              src={userMetadata.avatar_url}
+              alt="Avatar"
+              className="h-9 w-9 rounded-full object-cover"
+            />
+          ) : (
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white"
+              style={{ backgroundColor: business.brand_color || "#2563EB" }}
+            >
+              {(userMetadata?.first_name || business.name)?.charAt(0)?.toUpperCase() || "B"}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-gray-900">
-              {business.name}
+              {userMetadata?.first_name && userMetadata?.last_name
+                ? `${userMetadata.first_name} ${userMetadata.last_name}`
+                : business.name}
             </p>
             <p className="truncate text-xs text-gray-500">{userEmail}</p>
           </div>

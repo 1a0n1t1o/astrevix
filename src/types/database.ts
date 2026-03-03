@@ -12,6 +12,19 @@ export interface Business {
   owner_id: string | null;
   created_at: string;
   updated_at: string;
+  // Business Information fields
+  category: string | null;
+  phone: string | null;
+  address_street: string | null;
+  address_city: string | null;
+  address_state: string | null;
+  address_zip: string | null;
+  website: string | null;
+  operating_hours: OperatingHours | null;
+  // QR/NFC defaults
+  qr_default_redirect_url: string | null;
+  qr_default_fallback: string | null;
+  qr_default_branding: boolean | null;
 }
 
 export interface Submission {
@@ -33,4 +46,29 @@ export interface QrScan {
   business_id: string;
   scanned_at: string;
   user_agent: string | null;
+}
+
+// Operating hours types
+export interface DayHours {
+  open: string;
+  close: string;
+  closed: boolean;
+}
+
+export type DayOfWeek =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+export type OperatingHours = Partial<Record<DayOfWeek, DayHours>>;
+
+// User profile (stored in Supabase Auth user_metadata)
+export interface UserProfile {
+  first_name: string;
+  last_name: string;
+  avatar_url: string | null;
 }
