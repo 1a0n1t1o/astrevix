@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { getBusinessBySlug } from "@/lib/data";
 
 const STEPS = [
@@ -33,7 +34,7 @@ export default async function BusinessPage({
   const business = await getBusinessBySlug(slug);
   if (!business) notFound();
 
-  const hasLogo = business.logo && business.logo.trim() !== "";
+  const hasLogo = !!business.logoUrl;
 
   return (
     <>
@@ -47,12 +48,17 @@ export default async function BusinessPage({
         </div>
       </div>
 
-      {/* Business logo (only if emoji set) */}
+      {/* Business logo (only if logo_url exists) */}
       {hasLogo && (
         <div className="mt-6 flex justify-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-4xl shadow-md">
-            {business.logo}
-          </div>
+          <Image
+            src={business.logoUrl!}
+            alt={business.name}
+            width={64}
+            height={64}
+            className="rounded-2xl object-cover shadow-md"
+            style={{ width: "64px", height: "64px" }}
+          />
         </div>
       )}
 

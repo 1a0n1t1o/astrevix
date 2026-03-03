@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Business } from "@/types/database";
@@ -34,10 +34,12 @@ interface CustomizeEditorProps {
 
 export default function CustomizeEditor({ business }: CustomizeEditorProps) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [name, setName] = useState(business.name);
   const [tagline, setTagline] = useState(business.tagline || "");
+  const [logoUrl, setLogoUrl] = useState(business.logo_url || "");
   const [brandColor, setBrandColor] = useState(business.brand_color || "#E8553A");
   const [rewardDescription, setRewardDescription] = useState(business.reward_description);
   const [contentType, setContentType] = useState(business.content_type || "Instagram Reel or TikTok");
@@ -49,6 +51,8 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
 
   // UI state
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   // Suppress unused variable
@@ -69,6 +73,48 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
     setRequirements(updated);
   }
 
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+      setUploadError("File too large. Maximum size is 2MB.");
+      return;
+    }
+
+    setUploading(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("logo", file);
+
+      const res = await fetch("/api/business/upload-logo", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.logoUrl) {
+        // Append cache-buster to force image refresh
+        setLogoUrl(data.logoUrl + "?t=" + Date.now());
+        setToast("Logo uploaded!");
+        setTimeout(() => setToast(null), 3000);
+        router.refresh();
+      } else {
+        setUploadError(data.error || "Failed to upload logo.");
+      }
+    } catch {
+      setUploadError("Failed to upload logo.");
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
   async function handleSave() {
     setSaving(true);
     try {
@@ -78,7 +124,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
         body: JSON.stringify({
           name,
           tagline,
-          logo_emoji: business.logo_emoji,
+          logo_url: logoUrl || null,
           brand_color: brandColor,
           reward_description: rewardDescription,
           content_type: contentType,
@@ -101,6 +147,9 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
       setSaving(false);
     }
   }
+
+  // Letter fallback for logo
+  const nameInitial = (name || "A").charAt(0).toUpperCase();
 
   const inputClasses =
     "w-full rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
@@ -130,6 +179,67 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         {/* Left side — Edit controls */}
         <div className="space-y-8">
+          {/* Business Logo */}
+          <section className="rounded-2xl border border-gray-100 bg-white/70 p-6" style={{ backdropFilter: "blur(12px)" }}>
+            <h2 className="text-base font-semibold text-gray-900">Business Logo</h2>
+            <p className="mt-1 text-sm text-gray-500">Upload your business logo (max 2MB)</p>
+
+            <div className="mt-5 flex items-center gap-5">
+              {/* Logo preview circle */}
+              <div
+                className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full"
+                style={
+                  logoUrl
+                    ? {}
+                    : { backgroundColor: brandColor }
+                }
+              >
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt="Logo"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="text-2xl font-bold text-white">
+                    {nameInitial}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                  id="logo-upload"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                >
+                  {uploading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+                      Uploading...
+                    </span>
+                  ) : (
+                    "Upload logo"
+                  )}
+                </button>
+                {uploadError && (
+                  <p className="mt-2 text-xs text-red-500">{uploadError}</p>
+                )}
+                {!uploadError && (
+                  <p className="mt-2 text-xs text-gray-400">PNG, JPG, or WebP</p>
+                )}
+              </div>
+            </div>
+          </section>
+
           {/* Business Info */}
           <section className="rounded-2xl border border-gray-100 bg-white/70 p-6" style={{ backdropFilter: "blur(12px)" }}>
             <h2 className="text-base font-semibold text-gray-900">Business Info</h2>
@@ -311,11 +421,13 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                 overflow: "hidden",
               }}
             >
-              {/* Preview content — natural size, scrollable, no visible scrollbar */}
+              {/* Scaled preview content */}
               <div
                 style={{
-                  width: "375px",
-                  height: "750px",
+                  width: "480px",
+                  height: "1364px",
+                  transform: "scale(0.55)",
+                  transformOrigin: "top left",
                   overflowY: "auto",
                   scrollbarWidth: "none",
                   msOverflowStyle: "none",
@@ -323,7 +435,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                 }}
                 className="[&::-webkit-scrollbar]:hidden"
               >
-                <div className="px-5 py-8">
+                <div className="mx-auto max-w-[480px] px-5 py-8">
                   {/* Powered by badge */}
                   <div className="flex justify-center">
                     <div
@@ -334,11 +446,23 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                     </div>
                   </div>
 
-                  {/* Business name (no logo in preview) */}
-                  <div className="mt-8 text-center">
+                  {/* Logo */}
+                  {logoUrl && (
+                    <div className="mt-6 flex justify-center">
+                      <img
+                        src={logoUrl}
+                        alt="Logo"
+                        className="rounded-2xl object-cover shadow-md"
+                        style={{ width: "64px", height: "64px" }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Business name + tagline */}
+                  <div className={`${logoUrl ? "mt-4" : "mt-8"} text-center`}>
                     <h3
                       className="font-bold text-gray-900"
-                      style={{ fontSize: "36px" }}
+                      style={{ fontSize: logoUrl ? "24px" : "36px" }}
                     >
                       {name || "Your Business"}
                     </h3>

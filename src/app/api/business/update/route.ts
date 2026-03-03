@@ -17,7 +17,7 @@ export async function PATCH(request: Request) {
   const {
     name,
     tagline,
-    logo_emoji,
+    logo_url,
     brand_color,
     reward_description,
     content_type,
@@ -45,7 +45,7 @@ export async function PATCH(request: Request) {
     .update({
       name,
       tagline: tagline || null,
-      logo_emoji: logo_emoji || null,
+      logo_url: logo_url || null,
       brand_color: brand_color || null,
       reward_description,
       content_type: content_type || null,

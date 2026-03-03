@@ -180,10 +180,12 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
 
       {/* Header with business name */}
       <div className="mt-4 flex items-center gap-3">
-        {business.logo && (
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
-            {business.logo}
-          </div>
+        {business.logoUrl && (
+          <img
+            src={business.logoUrl}
+            alt={business.name}
+            className="h-10 w-10 rounded-xl object-cover shadow-sm"
+          />
         )}
         <div>
           <h1 className="text-xl font-bold">Submit your post</h1>
