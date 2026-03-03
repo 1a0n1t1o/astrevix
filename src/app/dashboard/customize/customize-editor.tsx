@@ -3,7 +3,19 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
 import type { Business } from "@/types/database";
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.4, ease: "easeOut" as const },
+  }),
+};
+
+const SECTION_COLORS = ["#2563EB", "#7c3aed", "#059669", "#d97706", "#e11d48"];
 
 const COLOR_PRESETS = [
   { label: "Coral", value: "#E8553A" },
@@ -157,31 +169,44 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
   return (
     <>
       {/* Toast notification */}
-      {toast && (
-        <div
-          className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-medium text-white shadow-lg transition-all ${
-            toast.includes("Failed") ? "bg-red-500" : "bg-emerald-500"
-          }`}
-        >
-          {toast.includes("Failed") ? (
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-          )}
-          {toast}
-        </div>
-      )}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-medium text-white shadow-lg ${
+              toast.includes("Failed") ? "bg-red-500" : "bg-emerald-500"
+            }`}
+          >
+            {toast.includes("Failed") ? (
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            )}
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_auto]">
         {/* Left side — Edit controls */}
         <div className="space-y-8">
           {/* Business Logo */}
-          <section className="rounded-2xl border border-gray-100 bg-white/70 p-6" style={{ backdropFilter: "blur(12px)" }}>
-            <h2 className="text-base font-semibold text-gray-900">Business Logo</h2>
+          <motion.section
+            custom={0}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+          >
+            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[0]}` }}>Business Logo</h2>
             <p className="mt-1 text-sm text-gray-500">Upload your business logo (max 2MB)</p>
 
             <div className="mt-5 flex items-center gap-5">
@@ -238,11 +263,18 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                 )}
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* Business Info */}
-          <section className="rounded-2xl border border-gray-100 bg-white/70 p-6" style={{ backdropFilter: "blur(12px)" }}>
-            <h2 className="text-base font-semibold text-gray-900">Business Info</h2>
+          <motion.section
+            custom={1}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+          >
+            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[1]}` }}>Business Info</h2>
             <p className="mt-1 text-sm text-gray-500">Basic details about your business</p>
 
             <div className="mt-5 space-y-4">
@@ -274,20 +306,29 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                 />
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* Color Scheme */}
-          <section className="rounded-2xl border border-gray-100 bg-white/70 p-6" style={{ backdropFilter: "blur(12px)" }}>
-            <h2 className="text-base font-semibold text-gray-900">Color Scheme</h2>
+          <motion.section
+            custom={2}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+          >
+            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[2]}` }}>Color Scheme</h2>
             <p className="mt-1 text-sm text-gray-500">Choose your brand color for buttons and accents</p>
 
             <div className="mt-5 grid grid-cols-3 gap-3">
               {COLOR_PRESETS.map((preset) => {
                 const isSelected = brandColor === preset.value;
                 return (
-                  <button
+                  <motion.button
                     key={preset.value}
                     onClick={() => setBrandColor(preset.value)}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     className={`flex items-center gap-3 rounded-xl border-[1.5px] px-4 py-3 text-left transition-all ${
                       isSelected
                         ? "border-gray-900 bg-gray-50 shadow-sm"
@@ -301,15 +342,22 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                     <span className={`text-sm ${isSelected ? "font-medium text-gray-900" : "text-gray-600"}`}>
                       {preset.label}
                     </span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
-          </section>
+          </motion.section>
 
           {/* Reward */}
-          <section className="rounded-2xl border border-gray-100 bg-white/70 p-6" style={{ backdropFilter: "blur(12px)" }}>
-            <h2 className="text-base font-semibold text-gray-900">Reward</h2>
+          <motion.section
+            custom={3}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+          >
+            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[3]}` }}>Reward</h2>
             <p className="mt-1 text-sm text-gray-500">What customers get for posting about you</p>
 
             <div className="mt-5 space-y-4">
@@ -345,11 +393,18 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                 </select>
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* Requirements */}
-          <section className="rounded-2xl border border-gray-100 bg-white/70 p-6" style={{ backdropFilter: "blur(12px)" }}>
-            <h2 className="text-base font-semibold text-gray-900">Requirements</h2>
+          <motion.section
+            custom={4}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+          >
+            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[4]}` }}>Requirements</h2>
             <p className="mt-1 text-sm text-gray-500">Rules customers must follow when posting</p>
 
             <div className="mt-5 space-y-3">
@@ -385,13 +440,15 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                 </button>
               )}
             </div>
-          </section>
+          </motion.section>
 
           {/* Save button */}
-          <button
+          <motion.button
             onClick={handleSave}
             disabled={saving || !name.trim() || !rewardDescription.trim()}
-            className="w-full rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30 disabled:opacity-60 disabled:cursor-not-allowed"
+            whileHover={{ scale: 1.01, boxShadow: "0 12px 28px -4px rgba(37, 99, 235, 0.35)" }}
+            whileTap={{ scale: 0.99 }}
+            className="w-full rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {saving ? (
               <span className="flex items-center justify-center gap-2">
@@ -401,7 +458,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
             ) : (
               "Save changes"
             )}
-          </button>
+          </motion.button>
         </div>
 
         {/* Right side — Live Preview */}

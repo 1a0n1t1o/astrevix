@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import type { Business } from "@/types/database";
 
@@ -100,12 +101,30 @@ export default function DashboardShell({
               key={item.href}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                 active
-                  ? "bg-blue-50 text-[#2563EB]"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  ? "text-[#2563EB]"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >
+              {active && (
+                <motion.div
+                  layoutId="sidebar-active-indicator"
+                  className="absolute inset-0 rounded-xl"
+                  style={{
+                    background: "linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%)",
+                    zIndex: -1,
+                  }}
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                />
+              )}
+              {active && (
+                <motion.div
+                  layoutId="sidebar-active-bar"
+                  className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-[#2563EB]"
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                />
+              )}
               {item.icon}
               {item.label}
             </Link>
@@ -143,20 +162,30 @@ export default function DashboardShell({
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FAFBFC" }}>
+    <div
+      className="min-h-screen"
+      style={{ background: "linear-gradient(135deg, #f0f4ff 0%, #fafbfc 40%, #f5f3ff 100%)" }}
+    >
       {/* Mobile backdrop */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Sidebar - desktop: fixed, mobile: overlay */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 border-r border-gray-100 bg-white transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 border-r border-gray-100/80 transition-transform lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8faff 100%)" }}
       >
         {sidebar}
       </aside>
@@ -186,7 +215,16 @@ export default function DashboardShell({
         </div>
 
         {/* Page content */}
-        <main className="p-6 lg:p-8">{children}</main>
+        <main className="p-6 lg:p-8">
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            {children}
+          </motion.div>
+        </main>
       </div>
     </div>
   );

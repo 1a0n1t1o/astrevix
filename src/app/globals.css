@@ -9,6 +9,15 @@
   --dash-bg: #fafbfc;
   --dash-blue: #2563eb;
   --dash-purple: #7c3aed;
+  --dash-green: #059669;
+  --dash-amber: #d97706;
+  --dash-rose: #e11d48;
+
+  /* Pastel card fills */
+  --dash-blue-soft: #eff6ff;
+  --dash-purple-soft: #f5f3ff;
+  --dash-green-soft: #ecfdf5;
+  --dash-amber-soft: #fffbeb;
 }
 
 @theme inline {
@@ -21,10 +30,81 @@
   --color-dash-bg: var(--dash-bg);
   --color-dash-blue: var(--dash-blue);
   --color-dash-purple: var(--dash-purple);
+  --color-dash-green: var(--dash-green);
+  --color-dash-amber: var(--dash-amber);
+  --color-dash-blue-soft: var(--dash-blue-soft);
+  --color-dash-purple-soft: var(--dash-purple-soft);
+  --color-dash-green-soft: var(--dash-green-soft);
+  --color-dash-amber-soft: var(--dash-amber-soft);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), "Inter", sans-serif;
+}
+
+/* ===== Dashboard Animations (CSS-only for Server Components) ===== */
+
+@keyframes dash-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dash-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dash-number-roll {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Utility animation classes */
+.dash-animate-fade-in-up {
+  animation: dash-fade-in-up 0.5s ease-out both;
+}
+
+.dash-animate-scale-in {
+  animation: dash-scale-in 0.4s ease-out both;
+}
+
+.dash-animate-number {
+  animation: dash-number-roll 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger delays */
+.dash-stagger-1 { animation-delay: 0ms; }
+.dash-stagger-2 { animation-delay: 100ms; }
+.dash-stagger-3 { animation-delay: 200ms; }
+.dash-stagger-4 { animation-delay: 300ms; }
+.dash-stagger-5 { animation-delay: 400ms; }
+
+/* Card hover lift */
+.dash-card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.dash-card-hover:hover {
+  transform: translateY(-2px) scale(1.01);
 }

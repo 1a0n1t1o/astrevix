@@ -159,12 +159,18 @@ export default async function DashboardPage() {
       value: totalCount,
       iconType: "total",
       iconColor: "#2563EB",
+      bgColor: "#eff6ff",
+      borderColor: "#bfdbfe",
+      shadowColor: "rgba(37, 99, 235, 0.08)",
     },
     {
       label: "Pending Review",
       value: pendingCount,
       iconType: "pending",
       iconColor: "#D97706",
+      bgColor: "#fffbeb",
+      borderColor: "#fde68a",
+      shadowColor: "rgba(217, 119, 6, 0.08)",
       highlight: pendingCount > 0,
     },
     {
@@ -172,14 +178,17 @@ export default async function DashboardPage() {
       value: approvedCount,
       iconType: "approved",
       iconColor: "#059669",
+      bgColor: "#ecfdf5",
+      borderColor: "#a7f3d0",
+      shadowColor: "rgba(5, 150, 105, 0.08)",
     },
   ];
 
   return (
     <div>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
+      <div className="dash-animate-fade-in-up mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">
           {getGreeting()}, {business.name}
         </h1>
         <p className="mt-1 text-sm text-gray-500">
@@ -188,35 +197,57 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {stats.map((stat) => (
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+        {stats.map((stat, index) => (
           <div
             key={stat.label}
-            className={`rounded-2xl border p-6 ${
-              stat.highlight
-                ? "border-amber-200 bg-amber-50/50"
-                : "border-gray-100 bg-white/70"
-            }`}
+            className={`dash-animate-fade-in-up dash-stagger-${index + 1} dash-card-hover relative overflow-hidden rounded-2xl p-6`}
             style={{
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
+              backgroundColor: stat.bgColor,
+              border: `1px solid ${stat.borderColor}`,
+              boxShadow: `0 4px 24px -4px ${stat.shadowColor}`,
             }}
           >
-            <div className="mb-3" style={{ color: stat.iconColor }}>
+            {/* Left accent bar */}
+            <div
+              className="absolute left-0 top-4 bottom-4 w-[3px] rounded-full"
+              style={{ backgroundColor: stat.iconColor }}
+            />
+
+            <div
+              className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl"
+              style={{
+                backgroundColor: `${stat.iconColor}18`,
+                color: stat.iconColor,
+              }}
+            >
               <StatIcon type={stat.iconType} />
             </div>
-            <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-900">
+            <p
+              className="dash-animate-number text-4xl font-bold tracking-tight text-gray-900"
+              style={{ animationDelay: `${index * 100 + 200}ms` }}
+            >
               {stat.value}
             </p>
+            <p className="mt-1 text-sm font-medium text-gray-500">
+              {stat.label}
+            </p>
+            {stat.highlight && (
+              <p className="mt-2 text-xs font-medium text-amber-600">
+                Needs attention
+              </p>
+            )}
           </div>
         ))}
       </div>
 
       {/* Recent Submissions */}
-      <div className="mt-10">
+      <div
+        className="dash-animate-fade-in-up mt-10"
+        style={{ animationDelay: "300ms" }}
+      >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-bold text-gray-900">
             Recent Submissions
           </h2>
           {recentSubmissions.length > 0 && (
@@ -230,7 +261,16 @@ export default async function DashboardPage() {
         </div>
 
         {recentSubmissions.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-gray-100 bg-white/70 p-12 text-center">
+          <div
+            className="dash-animate-scale-in mt-6 rounded-2xl border border-gray-100 p-12 text-center"
+            style={{
+              animationDelay: "300ms",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+            }}
+          >
             <div className="mx-auto mb-4 text-gray-300">
               <svg className="mx-auto h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 12h-6l-2 3h-4l-2-3H2" />
@@ -243,31 +283,44 @@ export default async function DashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="mt-4 overflow-hidden rounded-2xl border border-gray-100 bg-white/70">
+          <div
+            className="dash-animate-fade-in-up mt-4 overflow-hidden rounded-2xl border border-gray-100"
+            style={{
+              animationDelay: "400ms",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+            }}
+          >
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  <th className="px-5 py-3">Customer</th>
-                  <th className="px-5 py-3">Platform</th>
-                  <th className="hidden px-5 py-3 md:table-cell">Post</th>
-                  <th className="px-5 py-3">Status</th>
-                  <th className="hidden px-5 py-3 sm:table-cell">Date</th>
+                <tr className="border-b border-gray-100 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                  <th className="px-6 py-4">Customer</th>
+                  <th className="px-6 py-4">Platform</th>
+                  <th className="hidden px-6 py-4 md:table-cell">Post</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="hidden px-6 py-4 sm:table-cell">Date</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {recentSubmissions.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-gray-50/50">
-                    <td className="px-5 py-3.5">
+                {recentSubmissions.map((sub, index) => (
+                  <tr
+                    key={sub.id}
+                    className="dash-animate-fade-in-up hover:bg-blue-50/30"
+                    style={{ animationDelay: `${500 + index * 80}ms` }}
+                  >
+                    <td className="px-6 py-4">
                       <p className="text-sm font-medium text-gray-900">
                         {sub.customer_name}
                       </p>
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-6 py-4">
                       <span className="flex h-5 w-5 text-gray-500">
                         <PlatformIcon platform={sub.detected_platform || ""} />
                       </span>
                     </td>
-                    <td className="hidden px-5 py-3.5 md:table-cell">
+                    <td className="hidden px-6 py-4 md:table-cell">
                       <a
                         href={sub.post_url}
                         target="_blank"
@@ -278,10 +331,10 @@ export default async function DashboardPage() {
                         {sub.post_url.length > 40 ? "..." : ""}
                       </a>
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-6 py-4">
                       <StatusBadge status={sub.status} />
                     </td>
-                    <td className="hidden px-5 py-3.5 sm:table-cell">
+                    <td className="hidden px-6 py-4 sm:table-cell">
                       <span className="text-sm text-gray-500">
                         {formatDate(sub.created_at)}
                       </span>
