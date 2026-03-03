@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   AreaChart,
   Area,
@@ -13,37 +13,9 @@ import {
 
 type TimeRange = "7d" | "30d";
 
-// TODO: Replace with real Supabase query data
-// Query submissions grouped by date for the business:
-// SELECT DATE(created_at) as date, COUNT(*) as submissions
-// FROM submissions WHERE business_id = ? AND created_at >= NOW() - INTERVAL '30 days'
-// GROUP BY DATE(created_at) ORDER BY date ASC;
-function generateMockData(range: TimeRange) {
-  const days = range === "7d" ? 7 : 30;
-  const data = [];
-  const now = new Date();
-
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-
-    const dayOfWeek = date.getDay();
-    // Simulate realistic patterns: higher on weekends, lower on weekdays
-    const base = dayOfWeek === 0 || dayOfWeek === 6 ? 8 : 4;
-    const variance = Math.floor(Math.random() * 6);
-    const submissions = base + variance;
-    const scans = submissions + Math.floor(Math.random() * 8) + 3;
-
-    data.push({
-      date: date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      submissions,
-      scans,
-    });
-  }
-  return data;
+interface ChartDataPoint {
+  readonly date: string;
+  readonly submissions: number;
 }
 
 function CustomTooltip({
@@ -93,56 +65,66 @@ function CustomDot(props: {
   index?: number;
   dataKey?: string;
 }) {
-  const { cx, cy, dataKey } = props;
+  const { cx, cy } = props;
   if (cx === undefined || cy === undefined) return null;
-
-  const color = dataKey === "submissions" ? "#7C3AED" : "#06B6D4";
 
   return (
     <circle
       cx={cx}
       cy={cy}
       r={3.5}
-      fill={color}
+      fill="#7C3AED"
       stroke="white"
       strokeWidth={2}
       style={{
-        filter: `drop-shadow(0 0 4px ${color}66)`,
+        filter: "drop-shadow(0 0 4px rgba(124, 58, 237, 0.4))",
       }}
     />
   );
 }
 
 interface ActivityChartProps {
-  readonly totalSubmissions: number;
-  readonly totalScans: number;
+  readonly chartData: readonly ChartDataPoint[];
 }
 
-export default function ActivityChart({
-  totalSubmissions,
-  totalScans,
-}: ActivityChartProps) {
+export default function ActivityChart({ chartData }: ActivityChartProps) {
   const [range, setRange] = useState<TimeRange>("7d");
-  const data = generateMockData(range);
 
-  // Calculate mock change percentages
-  const changeSubmissions = range === "7d" ? 12 : 24;
-  const changeScans = range === "7d" ? 8 : 18;
+  // Slice data based on selected range
+  const data = useMemo(() => {
+    if (range === "7d") {
+      return chartData.slice(-7);
+    }
+    return chartData;
+  }, [chartData, range]);
 
-  // Suppress unused var (placeholder for future real data)
-  void totalSubmissions;
-  void totalScans;
+  // Calculate total for the selected range
+  const totalInRange = useMemo(
+    () => data.reduce((sum, d) => sum + d.submissions, 0),
+    [data]
+  );
+
+  // Calculate percentage change compared to previous period
+  const changePercent = useMemo(() => {
+    const days = range === "7d" ? 7 : 30;
+    const currentSlice = chartData.slice(-days);
+    const previousSlice = chartData.slice(-days * 2, -days);
+
+    const currentTotal = currentSlice.reduce((sum, d) => sum + d.submissions, 0);
+    const previousTotal = previousSlice.reduce((sum, d) => sum + d.submissions, 0);
+
+    if (previousTotal === 0) return currentTotal > 0 ? 100 : 0;
+    return Math.round(((currentTotal - previousTotal) / previousTotal) * 100);
+  }, [chartData, range]);
+
+  const isPositiveChange = changePercent >= 0;
 
   return (
     <div className="relative">
-      {/* Background gradient blobs for glass effect visibility */}
+      {/* Background gradient blob */}
       <div
         className="pointer-events-none absolute -left-8 -top-8 h-48 w-48 rounded-full opacity-40 blur-3xl"
         style={{ background: "radial-gradient(circle, #7C3AED 0%, transparent 70%)" }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-8 -right-8 h-48 w-48 rounded-full opacity-30 blur-3xl"
-        style={{ background: "radial-gradient(circle, #06B6D4 0%, transparent 70%)" }}
       />
 
       {/* Glass card */}
@@ -170,17 +152,23 @@ export default function ActivityChart({
         <div className="p-6 pb-2">
           {/* Header row: Stats + Toggle */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            {/* Stats row */}
-            <div className="flex gap-8">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  Submissions
-                </p>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-2xl font-bold tracking-tight text-gray-900">
-                    {data.reduce((sum, d) => sum + d.submissions, 0)}
-                  </span>
-                  <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-600">
+            {/* Stats */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Submissions
+              </p>
+              <div className="mt-1 flex items-baseline gap-2">
+                <span className="text-2xl font-bold tracking-tight text-gray-900">
+                  {totalInRange}
+                </span>
+                {changePercent !== 0 && (
+                  <span
+                    className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      isPositiveChange
+                        ? "bg-emerald-50 text-emerald-600"
+                        : "bg-red-50 text-red-600"
+                    }`}
+                  >
                     <svg
                       className="h-3 w-3"
                       viewBox="0 0 24 24"
@@ -189,38 +177,16 @@ export default function ActivityChart({
                       strokeWidth={2.5}
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      style={{
+                        transform: isPositiveChange ? "none" : "rotate(180deg)",
+                      }}
                     >
                       <path d="M7 17l5-5 5 5" />
                       <path d="M7 11l5-5 5 5" />
                     </svg>
-                    {changeSubmissions}%
+                    {Math.abs(changePercent)}%
                   </span>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                  QR Scans
-                </p>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-2xl font-bold tracking-tight text-gray-900">
-                    {data.reduce((sum, d) => sum + d.scans, 0)}
-                  </span>
-                  <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-600">
-                    <svg
-                      className="h-3 w-3"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M7 17l5-5 5 5" />
-                      <path d="M7 11l5-5 5 5" />
-                    </svg>
-                    {changeScans}%
-                  </span>
-                </div>
+                )}
               </div>
             </div>
 
@@ -268,11 +234,6 @@ export default function ActivityChart({
                   <stop offset="60%" stopColor="#7C3AED" stopOpacity={0.08} />
                   <stop offset="100%" stopColor="#7C3AED" stopOpacity={0} />
                 </linearGradient>
-                <linearGradient id="gradScans" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#06B6D4" stopOpacity={0.2} />
-                  <stop offset="60%" stopColor="#06B6D4" stopOpacity={0.05} />
-                  <stop offset="100%" stopColor="#06B6D4" stopOpacity={0} />
-                </linearGradient>
               </defs>
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -304,23 +265,6 @@ export default function ActivityChart({
               />
               <Area
                 type="monotone"
-                dataKey="scans"
-                stroke="#06B6D4"
-                strokeWidth={2}
-                fill="url(#gradScans)"
-                dot={<CustomDot />}
-                activeDot={{
-                  r: 5,
-                  stroke: "#06B6D4",
-                  strokeWidth: 2,
-                  fill: "white",
-                  style: { filter: "drop-shadow(0 0 6px rgba(6, 182, 212, 0.4))" },
-                }}
-                animationDuration={1200}
-                animationEasing="ease-out"
-              />
-              <Area
-                type="monotone"
                 dataKey="submissions"
                 stroke="#7C3AED"
                 strokeWidth={2.5}
@@ -345,10 +289,6 @@ export default function ActivityChart({
           <div className="flex items-center gap-2">
             <div className="h-2.5 w-2.5 rounded-full bg-[#7C3AED]" style={{ boxShadow: "0 0 6px rgba(124, 58, 237, 0.4)" }} />
             <span className="text-xs font-medium text-gray-500">Submissions</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-2.5 w-2.5 rounded-full bg-[#06B6D4]" style={{ boxShadow: "0 0 6px rgba(6, 182, 212, 0.4)" }} />
-            <span className="text-xs font-medium text-gray-500">QR Scans</span>
           </div>
         </div>
       </div>

@@ -124,8 +124,12 @@ export default async function DashboardPage() {
 
   if (!business) return null;
 
-  // Fetch submission counts in parallel
-  const [totalResult, pendingResult, approvedResult, recentResult] =
+  // Fetch submission counts + daily data for chart in parallel
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const thirtyDaysAgoISO = thirtyDaysAgo.toISOString();
+
+  const [totalResult, pendingResult, approvedResult, recentResult, dailyResult] =
     await Promise.all([
       supabase
         .from("submissions")
@@ -147,12 +151,46 @@ export default async function DashboardPage() {
         .eq("business_id", business.id)
         .order("created_at", { ascending: false })
         .limit(5),
+      supabase
+        .from("submissions")
+        .select("created_at")
+        .eq("business_id", business.id)
+        .gte("created_at", thirtyDaysAgoISO)
+        .order("created_at", { ascending: true }),
     ]);
 
   const totalCount = totalResult.count ?? 0;
   const pendingCount = pendingResult.count ?? 0;
   const approvedCount = approvedResult.count ?? 0;
   const recentSubmissions = (recentResult.data as Submission[]) || [];
+
+  // Group submissions by date for the chart
+  const dailySubmissions: Record<string, number> = {};
+  if (dailyResult.data) {
+    for (const row of dailyResult.data) {
+      const dateKey = new Date(row.created_at).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      dailySubmissions[dateKey] = (dailySubmissions[dateKey] || 0) + 1;
+    }
+  }
+
+  // Build full 30-day array (filling in zeros for days with no submissions)
+  const chartData: { date: string; submissions: number }[] = [];
+  const now = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const label = d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+    chartData.push({
+      date: label,
+      submissions: dailySubmissions[label] || 0,
+    });
+  }
 
   const stats = [
     {
@@ -247,10 +285,7 @@ export default async function DashboardPage() {
         className="dash-animate-fade-in-up mt-8"
         style={{ animationDelay: "250ms" }}
       >
-        <ActivityChart
-          totalSubmissions={totalCount}
-          totalScans={0}
-        />
+        <ActivityChart chartData={chartData} />
       </div>
 
       {/* Recent Submissions */}
