@@ -85,17 +85,14 @@ export default function DashboardShell({
   const sidebar = (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-6">
+      <div className="px-5 py-6">
         <Image
-          src="/logo-icon.png"
+          src="/logo-text.png"
           alt="Astrevix"
-          width={32}
-          height={32}
+          width={140}
+          height={28}
           style={{ filter: "brightness(0)" }}
         />
-        <span className="text-lg font-semibold text-gray-900">
-          Astrevix
-        </span>
       </div>
 
       {/* Nav */}
@@ -219,15 +216,12 @@ export default function DashboardShell({
             </svg>
           </button>
           <Image
-            src="/logo-icon.png"
+            src="/logo-text.png"
             alt="Astrevix"
-            width={28}
-            height={28}
+            width={120}
+            height={24}
             style={{ filter: "brightness(0)" }}
           />
-          <span className="text-lg font-semibold text-gray-900">
-            Astrevix
-          </span>
         </div>
 
         {/* Page content */}
