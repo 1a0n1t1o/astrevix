@@ -406,7 +406,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
 
         {/* Right side — Live Preview */}
         <div className="hidden lg:block">
-          <div className="sticky top-8">
+          <div className="sticky top-6 flex flex-col items-center justify-center">
             <p className="mb-3 text-sm font-medium text-gray-500">Live Preview</p>
 
             {/* Phone frame */}
