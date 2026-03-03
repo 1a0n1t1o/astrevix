@@ -85,7 +85,7 @@ export default function DashboardShell({
   const sidebar = (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="px-5 py-6">
+      <div className="px-5 pb-4 pt-6">
         <Image
           src="/logo-text.png"
           alt="Astrevix"
@@ -96,7 +96,7 @@ export default function DashboardShell({
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="space-y-1 px-3">
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
@@ -134,6 +134,9 @@ export default function DashboardShell({
           );
         })}
       </nav>
+
+      {/* Spacer */}
+      <div className="flex-1" />
 
       {/* Bottom section */}
       <div className="border-t border-gray-100 px-4 py-4">

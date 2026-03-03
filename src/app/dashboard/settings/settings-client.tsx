@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Building2, CreditCard, QrCode } from "lucide-react";
+import { User, CreditCard, QrCode } from "lucide-react";
 import type { Business, UserProfile } from "@/types/database";
 import AccountProfile from "./sections/account-profile";
-import BusinessInformation from "./sections/business-information";
 import SubscriptionBilling from "./sections/subscription-billing";
 import QrNfcDefaults from "./sections/qr-nfc-defaults";
 
-type SettingsTab = "account" | "business" | "subscription" | "qr-defaults";
+type SettingsTab = "account" | "subscription" | "qr-defaults";
 
 const SETTINGS_TABS: {
   id: SettingsTab;
@@ -21,12 +20,7 @@ const SETTINGS_TABS: {
     label: "Account & Profile",
     icon: <User className="h-4.5 w-4.5" />,
   },
-  {
-    id: "business",
-    label: "Business Info",
-    icon: <Building2 className="h-4.5 w-4.5" />,
-  },
-  {
+{
     id: "subscription",
     label: "Subscription & Billing",
     icon: <CreditCard className="h-4.5 w-4.5" />,
@@ -217,13 +211,7 @@ export default function SettingsClient({
                   onToast={showToast}
                 />
               )}
-              {activeTab === "business" && (
-                <BusinessInformation
-                  business={business}
-                  onToast={showToast}
-                />
-              )}
-              {activeTab === "subscription" && (
+{activeTab === "subscription" && (
                 <SubscriptionBilling onToast={showToast} />
               )}
               {activeTab === "qr-defaults" && (
