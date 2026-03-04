@@ -30,6 +30,7 @@ export async function PATCH(request: Request) {
     email_brand_color,
     reward_file_url,
     reward_file_name,
+    terms_conditions,
   } = body;
 
   // Validate required fields
@@ -76,6 +77,7 @@ export async function PATCH(request: Request) {
       ...(email_brand_color !== undefined && { email_brand_color: email_brand_color || null }),
       ...(reward_file_url !== undefined && { reward_file_url: reward_file_url || null }),
       ...(reward_file_name !== undefined && { reward_file_name: reward_file_name || null }),
+      ...(terms_conditions !== undefined && { terms_conditions: terms_conditions || null }),
       updated_at: new Date().toISOString(),
     })
     .eq("owner_id", user.id);

@@ -13,6 +13,7 @@ export interface BusinessData {
   contentType: string;
   requirements: string[];
   maxRewardsPerCustomer: number | null;
+  termsConditions: string | null;
   status: "active" | "suspended";
 }
 
@@ -44,6 +45,7 @@ export async function getBusinessBySlug(slug: string): Promise<BusinessData | nu
     contentType: data.content_type || "Instagram Reel or TikTok",
     requirements: data.requirements || [],
     maxRewardsPerCustomer: data.max_rewards_per_customer ?? 1,
+    termsConditions: data.terms_conditions || null,
     status: data.status || "active",
   };
 }

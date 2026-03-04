@@ -15,7 +15,17 @@ const sectionVariants = {
   }),
 };
 
-const SECTION_COLORS = ["#2563EB", "#7c3aed", "#059669", "#d97706", "#e11d48"];
+const SECTION_COLORS = ["#2563EB", "#7c3aed", "#059669", "#d97706", "#e11d48", "#6366f1"];
+
+const DEFAULT_TERMS = `By submitting content through this page, you agree to the following terms:
+
+1. Reward eligibility is at the sole discretion of the business. Submitting content does not guarantee a reward.
+2. Only one reward per person unless otherwise stated. Duplicate or fraudulent submissions may be rejected without notice.
+3. Submitted content must be original, publicly posted, and comply with the platform's community guidelines.
+4. The business reserves the right to use, share, or repost your submitted content for promotional purposes.
+5. Rewards are non-transferable, have no cash value, and may be subject to expiration or additional terms set by the business.
+6. The business and Astrevix are not liable for any issues arising from participation, including but not limited to lost rewards or content removal.
+7. These terms may be updated at any time. Continued participation constitutes acceptance of any changes.`;
 
 const COLOR_PRESETS = [
   "#2563EB",
@@ -62,6 +72,9 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
     business.requirements && business.requirements.length > 0
       ? business.requirements
       : ["Tag @yourbusiness in your post"]
+  );
+  const [termsConditions, setTermsConditions] = useState(
+    business.terms_conditions || DEFAULT_TERMS
   );
 
   // UI state
@@ -145,6 +158,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
           reward_description: rewardDescription,
           content_type: contentType,
           requirements: requirements.filter((r) => r.trim() !== ""),
+          terms_conditions: termsConditions.trim() || null,
         }),
       });
 
@@ -519,6 +533,42 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
           </motion.section>
 
 
+          {/* Terms & Conditions */}
+          <motion.section
+            custom={5}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+          >
+            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[5]}` }}>Terms & Conditions</h2>
+            <p className="mt-1 text-sm text-gray-500">Legal terms displayed on your storefront. Customers see these before submitting.</p>
+
+            <div className="mt-5">
+              <textarea
+                value={termsConditions}
+                onChange={(e) => setTermsConditions(e.target.value)}
+                rows={10}
+                className={`${inputClasses} resize-y !py-3 font-mono text-xs leading-relaxed`}
+                placeholder="Enter your terms and conditions..."
+              />
+              <div className="mt-2 flex items-center justify-between">
+                <p className="text-xs text-gray-400">
+                  These terms appear at the bottom of your storefront page.
+                </p>
+                {termsConditions !== DEFAULT_TERMS && (
+                  <button
+                    onClick={() => setTermsConditions(DEFAULT_TERMS)}
+                    className="text-xs font-medium text-blue-600 hover:text-blue-700"
+                  >
+                    Reset to default
+                  </button>
+                )}
+              </div>
+            </div>
+          </motion.section>
+
           {/* Save button */}
           <motion.button
             onClick={handleSave}
@@ -697,9 +747,22 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                   </div>
 
                   {/* Footer */}
-                  <p className="mt-3 pb-4 text-center text-xs text-gray-400">
+                  <p className="mt-3 text-center text-xs text-gray-400">
                     Rewards issued after review. Usually within 24 hours.
                   </p>
+
+                  {/* Terms & Conditions preview */}
+                  <div className="mt-4 pb-4">
+                    <p className="flex items-center justify-center gap-1 text-center text-[10px] font-medium text-gray-400">
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                      </svg>
+                      Terms & Conditions
+                      <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
