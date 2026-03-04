@@ -1,9 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { WhopCheckoutEmbed } from "@whop/checkout/react";
 
 interface SubscriptionBillingProps {
   readonly onToast: (message: string) => void;
+  readonly userEmail: string;
 }
 
 const sectionVariants = {
@@ -15,7 +18,7 @@ const sectionVariants = {
   }),
 };
 
-const SECTION_COLORS = ["#2563EB", "#7c3aed", "#059669", "#d97706"];
+const SECTION_COLORS = ["#2563EB", "#7c3aed", "#d97706"];
 
 const glassCard = {
   className: "rounded-2xl border border-gray-100 bg-white/70 p-6",
@@ -27,13 +30,80 @@ const glassCard = {
 
 export default function SubscriptionBilling({
   onToast: _onToast,
+  userEmail,
 }: SubscriptionBillingProps) {
-  {/* TODO: Wire up to Stripe Customer Portal */}
+  const [showCheckout, setShowCheckout] = useState(false);
 
   return (
     <div className="space-y-6">
+      {/* Whop Checkout Modal Overlay */}
+      <AnimatePresence>
+        {showCheckout && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowCheckout(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="relative mx-4 w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Upgrade Plan
+                </h3>
+                <button
+                  onClick={() => setShowCheckout(false)}
+                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Whop Checkout Embed */}
+              <div className="p-6">
+                <WhopCheckoutEmbed
+                  planId="plan_hiFPI4u5kBSZD"
+                  theme="light"
+                  prefill={{ email: userEmail }}
+                  disableEmail={true}
+                  returnUrl="https://astrevix.com/dashboard/settings?status=success"
+                  onComplete={() => {
+                    setShowCheckout(false);
+                  }}
+                  fallback={
+                    <div className="flex items-center justify-center py-12">
+                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-[#2563EB]" />
+                    </div>
+                  }
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Section 0: Current Plan */}
-      {/* TODO: Wire up to Stripe Customer Portal */}
       <motion.section
         custom={0}
         variants={sectionVariants}
@@ -68,21 +138,17 @@ export default function SubscriptionBilling({
         </p>
 
         <div className="mt-4">
-          {/* TODO: Wire up to Stripe Customer Portal */}
           <button
             type="button"
-            disabled
-            className="rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-400 cursor-not-allowed opacity-60"
-            title="Coming soon"
+            onClick={() => setShowCheckout(true)}
+            className="rounded-xl border-[1.5px] border-[#2563EB] bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-[#1d4ed8] hover:border-[#1d4ed8] active:scale-[0.98]"
           >
-            Manage Subscription
+            Upgrade Plan
           </button>
-          <p className="mt-1.5 text-xs text-gray-400">Coming soon</p>
         </div>
       </motion.section>
 
       {/* Section 1: Usage */}
-      {/* TODO: Wire up to Stripe Customer Portal */}
       <motion.section
         custom={1}
         variants={sectionVariants}
@@ -111,7 +177,6 @@ export default function SubscriptionBilling({
               <span className="text-sm text-gray-500">12 / 100</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
-              {/* TODO: Wire up to Stripe Customer Portal */}
               <div
                 className="h-full rounded-full bg-blue-500 transition-all"
                 style={{ width: "12%" }}
@@ -128,7 +193,6 @@ export default function SubscriptionBilling({
               <span className="text-sm text-gray-500">1 / 3</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
-              {/* TODO: Wire up to Stripe Customer Portal */}
               <div
                 className="h-full rounded-full bg-purple-500 transition-all"
                 style={{ width: "33%" }}
@@ -138,8 +202,7 @@ export default function SubscriptionBilling({
         </div>
       </motion.section>
 
-      {/* Section 2: Payment Method */}
-      {/* TODO: Wire up to Stripe Customer Portal */}
+      {/* Section 2: Billing History */}
       <motion.section
         custom={2}
         variants={sectionVariants}
@@ -155,48 +218,10 @@ export default function SubscriptionBilling({
             borderLeft: `3px solid ${SECTION_COLORS[2]}`,
           }}
         >
-          Payment Method
-        </h3>
-
-        <p className="mt-5 text-sm text-gray-500">
-          No payment method on file
-        </p>
-
-        <div className="mt-4">
-          {/* TODO: Wire up to Stripe Customer Portal */}
-          <button
-            type="button"
-            disabled
-            className="rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-400 cursor-not-allowed opacity-60"
-            title="Coming soon"
-          >
-            Add payment method
-          </button>
-        </div>
-      </motion.section>
-
-      {/* Section 3: Billing History */}
-      {/* TODO: Wire up to Stripe Customer Portal */}
-      <motion.section
-        custom={3}
-        variants={sectionVariants}
-        initial="hidden"
-        animate="visible"
-        className={glassCard.className}
-        style={glassCard.style}
-      >
-        <h3
-          className="text-base font-semibold text-gray-900"
-          style={{
-            paddingLeft: "12px",
-            borderLeft: `3px solid ${SECTION_COLORS[3]}`,
-          }}
-        >
           Billing History
         </h3>
 
         <div className="mt-5 overflow-x-auto">
-          {/* TODO: Wire up to Stripe Customer Portal */}
           <table className="w-full min-w-[420px]">
             <thead>
               <tr className="border-b border-gray-100">
@@ -215,7 +240,6 @@ export default function SubscriptionBilling({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {/* TODO: Wire up to Stripe Customer Portal */}
               <tr>
                 <td className="py-3 text-sm text-gray-700">Mar 1, 2026</td>
                 <td className="py-3 text-sm text-gray-700">Free plan</td>

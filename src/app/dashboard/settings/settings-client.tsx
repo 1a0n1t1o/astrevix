@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, CreditCard } from "lucide-react";
 import type { Business, UserProfile } from "@/types/database";
@@ -36,13 +37,26 @@ export default function SettingsClient({
   userEmail,
   userProfile,
 }: SettingsClientProps) {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("account");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<SettingsTab>(
+    searchParams.get("status") === "success" ? "subscription" : "account"
+  );
   const [toast, setToast] = useState<string | null>(null);
 
   function showToast(message: string) {
     setToast(message);
     setTimeout(() => setToast(null), 3000);
   }
+
+  // Handle ?status=success after Whop checkout redirect
+  useEffect(() => {
+    if (searchParams.get("status") === "success") {
+      showToast("Subscription upgraded successfully!");
+      router.replace("/dashboard/settings", { scroll: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -205,7 +219,7 @@ export default function SettingsClient({
                 />
               )}
               {activeTab === "subscription" && (
-                <SubscriptionBilling onToast={showToast} />
+                <SubscriptionBilling onToast={showToast} userEmail={userEmail} />
               )}
             </motion.div>
           </AnimatePresence>
