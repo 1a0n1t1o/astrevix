@@ -146,6 +146,23 @@ export async function POST(
   const reward = reward_given || null;
   const comment = submission.review_comment || null;
 
+  // Check if reward was already sent for this submission (idempotency)
+  if (status === "approved") {
+    const { data: existingReward } = await supabase
+      .from("rewards_sent")
+      .select("id")
+      .eq("submission_id", id)
+      .maybeSingle();
+
+    if (existingReward) {
+      return NextResponse.json({
+        success: true,
+        sent: false,
+        reason: "Reward already sent for this submission",
+      });
+    }
+  }
+
   const subject =
     status === "approved"
       ? "Great news! Your post has been approved 🎉"
@@ -170,6 +187,21 @@ export async function POST(
         { error: "Failed to send email", detail: error.message },
         { status: 500 }
       );
+    }
+
+    // Log the reward in rewards_sent table for limit tracking
+    if (status === "approved") {
+      try {
+        await supabase.from("rewards_sent").insert({
+          business_id: submission.business_id,
+          submission_id: id,
+          customer_email: submission.customer_email.toLowerCase().trim(),
+          reward_type: reward,
+        });
+      } catch (logErr) {
+        // Log but don't fail — email was already sent
+        console.error("Failed to log reward_sent:", logErr);
+      }
     }
 
     return NextResponse.json({ success: true, sent: true });

@@ -22,6 +22,7 @@ export async function PATCH(request: Request) {
     reward_description,
     content_type,
     requirements,
+    max_rewards_per_customer,
   } = body;
 
   // Validate required fields
@@ -40,6 +41,16 @@ export async function PATCH(request: Request) {
     );
   }
 
+  // Validate max_rewards_per_customer
+  if (max_rewards_per_customer !== undefined && max_rewards_per_customer !== null) {
+    if (typeof max_rewards_per_customer !== "number" || max_rewards_per_customer < 1) {
+      return NextResponse.json(
+        { error: "Rewards per customer must be at least 1." },
+        { status: 400 }
+      );
+    }
+  }
+
   const { error } = await supabase
     .from("businesses")
     .update({
@@ -50,6 +61,7 @@ export async function PATCH(request: Request) {
       reward_description,
       content_type: content_type || null,
       requirements: requirements && requirements.length > 0 ? requirements : null,
+      ...(max_rewards_per_customer !== undefined && { max_rewards_per_customer }),
       updated_at: new Date().toISOString(),
     })
     .eq("owner_id", user.id);

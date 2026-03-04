@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   detectPlatform,
   createSubmission,
+  checkRewardLimit,
   PLATFORM_INFO,
   type Platform,
   type BusinessData,
@@ -54,6 +55,7 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
   const [touched, setTouched] = useState({ postLink: false, email: false });
 
   const detectedPlatform = detectPlatform(postLink);
@@ -76,6 +78,19 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
     if (!isValid || submitting) return;
     setSubmitting(true);
 
+    // Check reward limit before submitting
+    const limitResult = await checkRewardLimit({
+      businessId: business.id,
+      customerEmail: email,
+      maxRewards: business.maxRewardsPerCustomer,
+    });
+
+    if (!limitResult.allowed) {
+      setLimitReached(true);
+      setSubmitting(false);
+      return;
+    }
+
     const { error } = await createSubmission({
       businessId: business.id,
       postUrl: postLink,
@@ -88,6 +103,60 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
     if (!error) {
       setSubmitted(true);
     }
+  }
+
+  if (limitReached) {
+    return (
+      <div className="flex flex-col items-center pt-6 text-center">
+        {/* Info circle icon */}
+        <div
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: "88px",
+            height: "88px",
+            background: `linear-gradient(135deg, ${business.brandColor}15, ${business.brandColor}25)`,
+          }}
+        >
+          <svg
+            className="h-10 w-10"
+            style={{ color: business.brandColor }}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+
+        <h1
+          className="mt-5"
+          style={{ fontSize: "26px", fontWeight: 700 }}
+        >
+          You&apos;ve already claimed your reward!
+        </h1>
+        <p className="mt-2" style={{ fontSize: "15px", color: "#8B8B9B" }}>
+          You&apos;ve already received your reward from{" "}
+          <strong>{business.name}</strong>. Thank you for your support!
+        </p>
+
+        <a
+          href={`/b/${business.slug}`}
+          className="mt-8 block w-full rounded-2xl py-4 text-center text-base font-semibold transition-colors"
+          style={{
+            backgroundColor: "#fff",
+            color: "#6B6B7B",
+            border: "1.5px solid #E0DDD8",
+          }}
+        >
+          Back to {business.name}
+        </a>
+      </div>
+    );
   }
 
   if (submitted) {

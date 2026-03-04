@@ -25,6 +25,8 @@ export interface Business {
   qr_default_redirect_url: string | null;
   qr_default_fallback: string | null;
   qr_default_branding: boolean | null;
+  // Submission limits
+  max_rewards_per_customer: number | null;
 }
 
 export interface Submission {
@@ -65,6 +67,15 @@ export type DayOfWeek =
   | "sunday";
 
 export type OperatingHours = Partial<Record<DayOfWeek, DayHours>>;
+
+export interface RewardSent {
+  id: string;
+  business_id: string;
+  submission_id: string;
+  customer_email: string;
+  reward_type: string | null;
+  sent_at: string;
+}
 
 // User profile (stored in Supabase Auth user_metadata)
 export interface UserProfile {

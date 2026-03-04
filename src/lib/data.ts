@@ -12,6 +12,7 @@ export interface BusinessData {
   reward: string;
   contentType: string;
   requirements: string[];
+  maxRewardsPerCustomer: number | null;
 }
 
 export const PLATFORM_INFO: Record<Platform, { label: string; icon: string; color: string }> = {
@@ -41,6 +42,7 @@ export async function getBusinessBySlug(slug: string): Promise<BusinessData | nu
     reward: data.reward_description,
     contentType: data.content_type || "Instagram Reel or TikTok",
     requirements: data.requirements || [],
+    maxRewardsPerCustomer: data.max_rewards_per_customer ?? 1,
   };
 }
 
@@ -52,6 +54,42 @@ export function detectPlatform(url: string): Platform | null {
   if (lower.includes("x.com") || lower.includes("twitter.com")) return "x";
   if (lower.includes("facebook.com") || lower.includes("fb.com")) return "facebook";
   return null;
+}
+
+export async function checkRewardLimit(params: {
+  businessId: string;
+  customerEmail: string;
+  maxRewards: number | null;
+}): Promise<{ allowed: boolean; count: number; limit: number | null }> {
+  // Unlimited rewards
+  if (params.maxRewards === null) {
+    return { allowed: true, count: 0, limit: null };
+  }
+
+  try {
+    const { count, error } = await supabase
+      .from("rewards_sent")
+      .select("*", { count: "exact", head: true })
+      .eq("business_id", params.businessId)
+      .eq("customer_email", params.customerEmail.toLowerCase().trim());
+
+    if (error) {
+      // Fail open: if the DB query fails, allow the submission
+      console.error("Reward limit check failed:", error);
+      return { allowed: true, count: 0, limit: params.maxRewards };
+    }
+
+    const currentCount = count ?? 0;
+    return {
+      allowed: currentCount < params.maxRewards,
+      count: currentCount,
+      limit: params.maxRewards,
+    };
+  } catch (err) {
+    // Fail open on any exception
+    console.error("Reward limit check exception:", err);
+    return { allowed: true, count: 0, limit: params.maxRewards };
+  }
 }
 
 export async function createSubmission(params: {
