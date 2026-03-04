@@ -15,7 +15,7 @@ const sectionVariants = {
   }),
 };
 
-const SECTION_COLORS = ["#2563EB", "#7c3aed", "#059669", "#d97706", "#e11d48", "#0891b2"];
+const SECTION_COLORS = ["#2563EB", "#7c3aed", "#059669", "#d97706", "#e11d48"];
 
 const COLOR_PRESETS = [
   { label: "Coral", value: "#E8553A" },
@@ -60,10 +60,6 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
       ? business.requirements
       : ["Tag @yourbusiness in your post"]
   );
-  const [maxRewardsPerCustomer, setMaxRewardsPerCustomer] = useState<number | null>(
-    business.max_rewards_per_customer ?? 1
-  );
-  const isUnlimited = maxRewardsPerCustomer === null;
 
   // UI state
   const [saving, setSaving] = useState(false);
@@ -145,7 +141,6 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
           reward_description: rewardDescription,
           content_type: contentType,
           requirements: requirements.filter((r) => r.trim() !== ""),
-          max_rewards_per_customer: maxRewardsPerCustomer,
         }),
       });
 
@@ -447,67 +442,6 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
             </div>
           </motion.section>
 
-          {/* Submission Limits */}
-          <motion.section
-            custom={5}
-            initial="hidden"
-            animate="visible"
-            variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
-            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
-          >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[5]}` }}>Submission Limits</h2>
-            <p className="mt-1 text-sm text-gray-500">Control how many times each customer can earn a reward</p>
-
-            <div className="mt-5 space-y-4">
-              {/* Unlimited toggle */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-700">Unlimited rewards</p>
-                  <p className="text-xs text-gray-400">Allow customers to earn rewards every time they post</p>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={isUnlimited}
-                  onClick={() => setMaxRewardsPerCustomer(isUnlimited ? 1 : null)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                    isUnlimited ? "bg-[#2563EB]" : "bg-gray-200"
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
-                      isUnlimited ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Number input — only visible when not unlimited */}
-              {!isUnlimited && (
-                <div>
-                  <label htmlFor="maxRewards" className="mb-1.5 block text-sm font-medium text-gray-700">
-                    Rewards per customer
-                  </label>
-                  <input
-                    id="maxRewards"
-                    type="number"
-                    min={1}
-                    max={100}
-                    value={maxRewardsPerCustomer ?? 1}
-                    onChange={(e) => {
-                      const val = parseInt(e.target.value, 10);
-                      setMaxRewardsPerCustomer(isNaN(val) || val < 1 ? 1 : val);
-                    }}
-                    className={inputClasses}
-                  />
-                  <p className="mt-1.5 text-xs text-gray-400">
-                    Each customer can earn up to {maxRewardsPerCustomer ?? 1} reward{(maxRewardsPerCustomer ?? 1) > 1 ? "s" : ""}. Identified by their email address.
-                  </p>
-                </div>
-              )}
-            </div>
-          </motion.section>
 
           {/* Save button */}
           <motion.button
