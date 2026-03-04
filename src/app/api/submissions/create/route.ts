@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         .from("submissions")
         .select("*", { count: "exact", head: true })
         .eq("business_id", business_id)
-        .eq("customer_email", customer_email.toLowerCase().trim());
+        .ilike("customer_email", customer_email.toLowerCase().trim());
 
       const currentCount = count ?? 0;
 
