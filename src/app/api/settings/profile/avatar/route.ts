@@ -27,12 +27,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const ext = file.name.split(".").pop() || "png";
-  const filePath = `${user.id}/avatar.${ext}`;
+  const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+  const filePath = `avatars/${user.id}/avatar.${ext}`;
 
   const { error: uploadError } = await supabase.storage
-    .from("avatars")
-    .upload(filePath, file, { upsert: true });
+    .from("logos")
+    .upload(filePath, file, { cacheControl: "3600", upsert: true });
 
   if (uploadError) {
     console.error("Avatar upload error:", uploadError);
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
   const {
     data: { publicUrl },
-  } = supabase.storage.from("avatars").getPublicUrl(filePath);
+  } = supabase.storage.from("logos").getPublicUrl(filePath);
 
   // Update user metadata with avatar URL
   const { error: updateError } = await supabase.auth.updateUser({
