@@ -1,22 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedBusiness } from "@/lib/get-business";
 import SettingsClient from "./settings-client";
 import type { Business, UserProfile } from "@/types/database";
 
 export default async function SettingsPage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  const { data: business } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("owner_id", user.id)
-    .single();
-
-  if (!business) return null;
+  const { user, business } = await getAuthenticatedBusiness();
+  if (!user || !business) return null;
 
   const userProfile: UserProfile = {
     first_name: (user.user_metadata?.first_name as string) || "",

@@ -1,22 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedBusiness } from "@/lib/get-business";
 import CustomizeEditor from "./customize-editor";
 import type { Business } from "@/types/database";
 
 export default async function CustomizePage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  const { data: business } = await supabase
-    .from("businesses")
-    .select("*")
-    .eq("owner_id", user.id)
-    .single();
-
-  if (!business) return null;
+  const { user, business } = await getAuthenticatedBusiness();
+  if (!user || !business) return null;
 
   return (
     <div className="lg:-mr-4">

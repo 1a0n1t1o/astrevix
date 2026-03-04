@@ -1,24 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedBusiness } from "@/lib/get-business";
 import SubmissionsList from "./submissions-list";
 import type { Submission } from "@/types/database";
 
 export default async function SubmissionsPage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  const { data: business } = await supabase
-    .from("businesses")
-    .select(
-      "id, name, reward_description, brand_color, logo_url, email_subject, email_header, email_body, email_footer, email_brand_color, reward_file_url, reward_file_name"
-    )
-    .eq("owner_id", user.id)
-    .single();
-
-  if (!business) return null;
+  const { user, business, supabase } = await getAuthenticatedBusiness();
+  if (!user || !business) return null;
 
   const { data: submissions } = await supabase
     .from("submissions")
@@ -47,14 +33,14 @@ export default async function SubmissionsPage() {
         rewardDescription={business.reward_description}
         hasEmailTemplate={hasEmailTemplate}
         emailTemplateData={{
-          subject: business.email_subject,
-          header: business.email_header,
-          body: business.email_body,
-          footer: business.email_footer,
+          subject: business.email_subject ?? null,
+          header: business.email_header ?? null,
+          body: business.email_body ?? null,
+          footer: business.email_footer ?? null,
           brandColor: business.email_brand_color || business.brand_color,
           logoUrl: business.logo_url,
-          rewardFileUrl: business.reward_file_url,
-          rewardFileName: business.reward_file_name,
+          rewardFileUrl: business.reward_file_url ?? null,
+          rewardFileName: business.reward_file_name ?? null,
           businessName: business.name,
         }}
       />

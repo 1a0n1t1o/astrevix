@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedBusiness } from "@/lib/get-business";
 import Link from "next/link";
 import type { Submission } from "@/types/database";
 import ActivityChart from "./activity-chart";
@@ -109,22 +109,10 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
 }
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
+  const { user, business, supabase } = await getAuthenticatedBusiness();
+  if (!user || !business) return null;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  const { data: business } = await supabase
-    .from("businesses")
-    .select("id, name")
-    .eq("owner_id", user.id)
-    .single();
-
-  if (!business) return null;
-
-  // Fetch submission counts + daily data for chart in parallel
+  // Fetch all submission data in parallel
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const thirtyDaysAgoISO = thirtyDaysAgo.toISOString();
