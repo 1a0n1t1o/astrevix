@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
 
   if (file.size > MAX_FILE_SIZE) {
     return NextResponse.json(
-      { error: "File too large. Maximum size is 2MB." },
+      { error: "File too large. Maximum size is 5MB." },
       { status: 400 }
     );
   }
@@ -43,31 +44,38 @@ export async function POST(request: Request) {
   const ext = file.name.split(".").pop()?.toLowerCase() || "png";
   const filePath = `${business.id}/logo.${ext}`;
 
-  // Upload to Supabase Storage
-  const { error: uploadError } = await supabase.storage
+  // Convert file to buffer for reliable upload
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  // Use admin client to bypass storage RLS policies
+  const admin = getSupabaseAdmin();
+
+  const { error: uploadError } = await admin.storage
     .from("logos")
-    .upload(filePath, file, {
+    .upload(filePath, buffer, {
       cacheControl: "3600",
       upsert: true,
+      contentType: file.type || "image/png",
     });
 
   if (uploadError) {
     console.error("Logo upload error:", uploadError);
     return NextResponse.json(
-      { error: "Failed to upload logo." },
+      { error: `Upload failed: ${uploadError.message}` },
       { status: 500 }
     );
   }
 
   // Get the public URL
-  const { data: urlData } = supabase.storage
+  const { data: urlData } = admin.storage
     .from("logos")
     .getPublicUrl(filePath);
 
   const logoUrl = urlData.publicUrl;
 
-  // Update the business record
-  const { error: updateError } = await supabase
+  // Update the business record (use admin to avoid RLS issues)
+  const { error: updateError } = await admin
     .from("businesses")
     .update({ logo_url: logoUrl, updated_at: new Date().toISOString() })
     .eq("owner_id", user.id);

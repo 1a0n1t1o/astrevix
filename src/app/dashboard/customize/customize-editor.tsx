@@ -106,9 +106,9 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check file size (2MB max)
-    if (file.size > 2 * 1024 * 1024) {
-      setUploadError("File too large. Maximum size is 2MB.");
+    // Check file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("File too large. Maximum size is 5MB.");
       return;
     }
 
@@ -225,7 +225,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
             style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
           >
             <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[0]}` }}>Business Logo</h2>
-            <p className="mt-1 text-sm text-gray-500">Upload your business logo (max 2MB)</p>
+            <p className="mt-1 text-sm text-gray-500">Upload your business logo (max 5MB)</p>
 
             <div className="mt-5 flex items-center gap-5">
               {/* Logo preview circle */}
