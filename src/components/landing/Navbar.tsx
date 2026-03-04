@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: "Home", href: "#hero" },
   { label: "Features", href: "#features" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 export default function Navbar() {
@@ -48,7 +48,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/logo-text.png"
+              src="/logo-text-black.png"
               alt="Astrevix"
               width={130}
               height={26}
