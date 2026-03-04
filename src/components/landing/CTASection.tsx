@@ -7,53 +7,55 @@ const CALENDLY_URL =
 
 export default function CTASection() {
   return (
-    <section className="relative px-6 py-24 md:py-32">
+    <section
+      className="relative overflow-hidden px-0 py-24 md:py-32"
+      style={{
+        background:
+          "linear-gradient(135deg, #4F46E5 0%, #7C3AED 30%, #9333EA 60%, #6366F1 100%)",
+      }}
+    >
+      {/* Decorative blobs */}
+      <div
+        className="pointer-events-none absolute -left-20 -top-20 h-80 w-80 rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%)",
+          filter: "blur(40px)",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute -bottom-20 -right-20 h-80 w-80 rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 60%)",
+          filter: "blur(40px)",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute left-1/2 top-0 h-40 w-[600px] -translate-x-1/2 rounded-full"
+        style={{
+          background:
+            "radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%)",
+          filter: "blur(30px)",
+        }}
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl px-8 py-16 text-center shadow-2xl shadow-purple-500/20 md:px-16 md:py-20"
-        style={{
-          background:
-            "linear-gradient(135deg, #4F46E5 0%, #7C3AED 30%, #9333EA 60%, #6366F1 100%)",
-        }}
+        className="relative mx-auto max-w-4xl text-center"
       >
-        {/* Decorative blobs */}
-        <div
-          className="pointer-events-none absolute -left-20 -top-20 h-80 w-80 rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%)",
-            filter: "blur(40px)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute -bottom-20 -right-20 h-80 w-80 rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 60%)",
-            filter: "blur(40px)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 h-40 w-[600px] -translate-x-1/2 rounded-full"
-          style={{
-            background:
-              "radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%)",
-            filter: "blur(30px)",
-          }}
-        />
-
-        <h2 className="relative text-3xl font-bold text-white sm:text-4xl">
+        <h2 className="text-3xl font-bold text-white sm:text-4xl">
           Ready to turn your customers
           <br className="hidden sm:block" /> into content creators?
         </h2>
-        <p className="relative mt-4 text-lg text-purple-100">
+        <p className="mt-4 text-lg text-purple-100">
           Get started free. No credit card required.
         </p>
 
-        <div className="relative mt-10">
+        <div className="mt-10">
           <a
             href={CALENDLY_URL}
             target="_blank"

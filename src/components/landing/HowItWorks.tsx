@@ -92,22 +92,82 @@ export default function HowItWorks() {
 
         {/* Steps */}
         <div className="relative mt-16 grid gap-8 md:grid-cols-3">
-          {/* Connecting line (desktop) */}
+          {/* Animated connecting line (desktop) */}
           <div className="pointer-events-none absolute left-0 right-0 top-16 hidden md:block">
             <svg
               className="mx-auto w-full max-w-3xl"
-              height="2"
+              height="4"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
+              <defs>
+                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#2563EB" />
+                  <stop offset="50%" stopColor="#7C3AED" />
+                  <stop offset="100%" stopColor="#059669" />
+                </linearGradient>
+              </defs>
+              {/* Background dashed line */}
               <line
                 x1="16.7%"
-                y1="1"
+                y1="2"
                 x2="83.3%"
-                y2="1"
-                stroke="rgba(99,102,241,0.3)"
+                y2="2"
+                stroke="rgba(99,102,241,0.15)"
                 strokeWidth="2"
                 strokeDasharray="6 6"
+              />
+              {/* Animated traveling dot / pulse */}
+              <motion.line
+                x1="16.7%"
+                y1="2"
+                x2="83.3%"
+                y2="2"
+                stroke="url(#line-gradient)"
+                strokeWidth="2.5"
+                strokeDasharray="40 400"
+                strokeLinecap="round"
+                initial={{ strokeDashoffset: 0 }}
+                whileInView={{
+                  strokeDashoffset: [0, -440, -880],
+                }}
+                viewport={{ once: false }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+              {/* Glowing dot that travels across */}
+              <motion.circle
+                r="4"
+                fill="#7C3AED"
+                opacity="0.8"
+                initial={{ cx: "16.7%" }}
+                whileInView={{
+                  cx: ["16.7%", "50%", "83.3%", "16.7%"],
+                }}
+                viewport={{ once: false }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+              <motion.circle
+                r="8"
+                fill="#7C3AED"
+                opacity="0.15"
+                initial={{ cx: "16.7%" }}
+                whileInView={{
+                  cx: ["16.7%", "50%", "83.3%", "16.7%"],
+                }}
+                viewport={{ once: false }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
               />
             </svg>
           </div>
