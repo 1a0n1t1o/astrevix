@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,14 +17,7 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   function handleNavClick(href: string) {
     setMobileOpen(false);
@@ -38,11 +31,7 @@ export default function Navbar() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-white/80 shadow-sm backdrop-blur-xl"
-            : "bg-transparent"
-        }`}
+        className="fixed left-0 right-0 top-0 z-50 bg-transparent"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo */}
@@ -57,12 +46,12 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav pill */}
-          <div className="hidden items-center gap-1 rounded-full border border-gray-200/60 bg-white/60 px-2 py-1.5 backdrop-blur-md md:flex">
+          <div className="hidden items-center gap-1 rounded-full border border-white/40 bg-white/30 px-2 py-1.5 backdrop-blur-md md:flex">
             {NAV_LINKS.map((link) => (
               <button
                 key={link.label}
                 onClick={() => handleNavClick(link.href)}
-                className="rounded-full px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100/80 hover:text-gray-900"
+                className="rounded-full px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-white/50 hover:text-gray-900"
               >
                 {link.label}
               </button>
@@ -90,7 +79,7 @@ export default function Navbar() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 md:hidden"
+            className="rounded-lg p-2 text-gray-600 hover:bg-white/30 md:hidden"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
