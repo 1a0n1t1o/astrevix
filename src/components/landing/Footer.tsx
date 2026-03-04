@@ -13,7 +13,7 @@ export default function Footer() {
     <footer
       style={{
         background:
-          "linear-gradient(180deg, #4F46E5 0%, #5B21B6 50%, #4C1D95 100%)",
+          "linear-gradient(180deg, #6D28D9 0%, #5B21B6 50%, #4C1D95 100%)",
       }}
     >
       <div className="mx-auto max-w-7xl px-6 py-12">

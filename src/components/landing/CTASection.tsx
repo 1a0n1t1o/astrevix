@@ -11,7 +11,7 @@ export default function CTASection() {
       className="relative overflow-hidden px-0 py-24 md:py-32"
       style={{
         background:
-          "linear-gradient(135deg, #4F46E5 0%, #7C3AED 30%, #9333EA 60%, #6366F1 100%)",
+          "linear-gradient(180deg, #4F46E5 0%, #7C3AED 40%, #6D28D9 100%)",
       }}
     >
       {/* Decorative blobs */}
