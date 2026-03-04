@@ -18,12 +18,14 @@ const sectionVariants = {
 const SECTION_COLORS = ["#2563EB", "#7c3aed", "#059669", "#d97706", "#e11d48"];
 
 const COLOR_PRESETS = [
-  { label: "Coral", value: "#E8553A" },
-  { label: "Ocean Blue", value: "#2563EB" },
-  { label: "Emerald", value: "#059669" },
-  { label: "Purple", value: "#7C3AED" },
-  { label: "Sunset", value: "#F59E0B" },
-  { label: "Rose", value: "#EC4899" },
+  "#2563EB",
+  "#7C3AED",
+  "#0D9488",
+  "#059669",
+  "#E8553A",
+  "#F97316",
+  "#EC4899",
+  "#1F2937",
 ];
 
 const CONTENT_TYPES = [
@@ -47,6 +49,7 @@ interface CustomizeEditorProps {
 export default function CustomizeEditor({ business }: CustomizeEditorProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const colorInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [name, setName] = useState(business.name);
@@ -66,6 +69,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [hexInput, setHexInput] = useState(business.brand_color || "#E8553A");
 
   // Suppress unused variable
   void createClient;
@@ -320,31 +324,103 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
             <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[2]}` }}>Color Scheme</h2>
             <p className="mt-1 text-sm text-gray-500">Choose your brand color for buttons and accents</p>
 
-            <div className="mt-5 grid grid-cols-3 gap-3">
-              {COLOR_PRESETS.map((preset) => {
-                const isSelected = brandColor === preset.value;
+            <div className="mt-5 flex flex-wrap items-center gap-2.5">
+              {/* Preset swatches */}
+              {COLOR_PRESETS.map((color) => {
+                const isSelected = brandColor.toLowerCase() === color.toLowerCase();
                 return (
-                  <motion.button
-                    key={preset.value}
-                    onClick={() => setBrandColor(preset.value)}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`flex items-center gap-3 rounded-xl border-[1.5px] px-4 py-3 text-left transition-all ${
-                      isSelected
-                        ? "border-gray-900 bg-gray-50 shadow-sm"
-                        : "border-gray-200 bg-white hover:border-gray-300"
-                    }`}
+                  <button
+                    key={color}
+                    onClick={() => {
+                      setBrandColor(color);
+                      setHexInput(color);
+                    }}
+                    className="relative flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full transition-transform hover:scale-110"
+                    style={{
+                      backgroundColor: color,
+                      boxShadow: isSelected
+                        ? `0 0 0 2px #fff, 0 0 0 4px ${color}`
+                        : "0 1px 3px rgba(0,0,0,0.15)",
+                    }}
                   >
-                    <div
-                      className="h-6 w-6 shrink-0 rounded-full"
-                      style={{ backgroundColor: preset.value }}
-                    />
-                    <span className={`text-sm ${isSelected ? "font-medium text-gray-900" : "text-gray-600"}`}>
-                      {preset.label}
-                    </span>
-                  </motion.button>
+                    {isSelected && (
+                      <motion.svg
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                        className="h-3.5 w-3.5 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </motion.svg>
+                    )}
+                  </button>
                 );
               })}
+
+              {/* Custom color circle */}
+              <button
+                onClick={() => colorInputRef.current?.click()}
+                className="relative flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full transition-transform hover:scale-110"
+                style={{
+                  background: "conic-gradient(#f44336, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #f44336)",
+                  boxShadow: !COLOR_PRESETS.some((c) => c.toLowerCase() === brandColor.toLowerCase())
+                    ? `0 0 0 2px #fff, 0 0 0 4px ${brandColor}`
+                    : "0 1px 3px rgba(0,0,0,0.15)",
+                }}
+              >
+                {!COLOR_PRESETS.some((c) => c.toLowerCase() === brandColor.toLowerCase()) && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="h-4 w-4 rounded-full border-2 border-white"
+                    style={{ backgroundColor: brandColor }}
+                  />
+                )}
+              </button>
+
+              {/* Hidden native color input */}
+              <input
+                ref={colorInputRef}
+                type="color"
+                value={brandColor}
+                onChange={(e) => {
+                  setBrandColor(e.target.value);
+                  setHexInput(e.target.value);
+                }}
+                className="sr-only"
+                tabIndex={-1}
+              />
+
+              {/* Hex input */}
+              <input
+                type="text"
+                value={hexInput}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setHexInput(val);
+                  if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                    setBrandColor(val);
+                  }
+                }}
+                onBlur={() => {
+                  if (/^#[0-9A-Fa-f]{6}$/.test(hexInput)) {
+                    setBrandColor(hexInput);
+                  } else {
+                    setHexInput(brandColor);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                maxLength={7}
+                className="ml-1 w-[90px] rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 font-mono text-xs text-gray-700 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+              />
             </div>
           </motion.section>
 
