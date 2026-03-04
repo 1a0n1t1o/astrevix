@@ -56,56 +56,33 @@ export function detectPlatform(url: string): Platform | null {
   return null;
 }
 
-export async function checkRewardLimit(params: {
-  businessId: string;
-  customerEmail: string;
-  maxRewards: number | null;
-}): Promise<{ allowed: boolean; count: number; limit: number | null }> {
-  // Unlimited rewards
-  if (params.maxRewards === null) {
-    return { allowed: true, count: 0, limit: null };
-  }
-
-  try {
-    const { count, error } = await supabase
-      .from("rewards_sent")
-      .select("*", { count: "exact", head: true })
-      .eq("business_id", params.businessId)
-      .eq("customer_email", params.customerEmail.toLowerCase().trim());
-
-    if (error) {
-      // Fail open: if the DB query fails, allow the submission
-      console.error("Reward limit check failed:", error);
-      return { allowed: true, count: 0, limit: params.maxRewards };
-    }
-
-    const currentCount = count ?? 0;
-    return {
-      allowed: currentCount < params.maxRewards,
-      count: currentCount,
-      limit: params.maxRewards,
-    };
-  } catch (err) {
-    // Fail open on any exception
-    console.error("Reward limit check exception:", err);
-    return { allowed: true, count: 0, limit: params.maxRewards };
-  }
-}
-
 export async function createSubmission(params: {
   businessId: string;
   postUrl: string;
   detectedPlatform: string | null;
   customerName: string;
   customerEmail: string;
-}) {
-  const { error } = await supabase.from("submissions").insert({
-    business_id: params.businessId,
-    post_url: params.postUrl,
-    detected_platform: params.detectedPlatform,
-    customer_name: params.customerName,
-    customer_email: params.customerEmail,
-  });
+}): Promise<{ error: string | null; code: string | null }> {
+  try {
+    const res = await fetch("/api/submissions/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        business_id: params.businessId,
+        post_url: params.postUrl,
+        detected_platform: params.detectedPlatform,
+        customer_name: params.customerName,
+        customer_email: params.customerEmail,
+      }),
+    });
 
-  return { error };
+    if (!res.ok) {
+      const data = await res.json();
+      return { error: data.error || "Failed to submit.", code: data.code || null };
+    }
+
+    return { error: null, code: null };
+  } catch {
+    return { error: "Network error. Please try again.", code: "NETWORK_ERROR" };
+  }
 }

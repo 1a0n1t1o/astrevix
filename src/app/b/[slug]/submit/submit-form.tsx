@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   detectPlatform,
   createSubmission,
-  checkRewardLimit,
   PLATFORM_INFO,
   type Platform,
   type BusinessData,
@@ -56,6 +55,8 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
+  const [duplicateLink, setDuplicateLink] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [touched, setTouched] = useState({ postLink: false, email: false });
 
   const detectedPlatform = detectPlatform(postLink);
@@ -77,21 +78,10 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
   async function handleSubmit() {
     if (!isValid || submitting) return;
     setSubmitting(true);
+    setDuplicateLink(false);
+    setFormError(null);
 
-    // Check reward limit before submitting
-    const limitResult = await checkRewardLimit({
-      businessId: business.id,
-      customerEmail: email,
-      maxRewards: business.maxRewardsPerCustomer,
-    });
-
-    if (!limitResult.allowed) {
-      setLimitReached(true);
-      setSubmitting(false);
-      return;
-    }
-
-    const { error } = await createSubmission({
+    const { error, code } = await createSubmission({
       businessId: business.id,
       postUrl: postLink,
       detectedPlatform: detectedPlatform,
@@ -100,9 +90,19 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
     });
 
     setSubmitting(false);
-    if (!error) {
-      setSubmitted(true);
+
+    if (error) {
+      if (code === "DUPLICATE_LINK") {
+        setDuplicateLink(true);
+      } else if (code === "LIMIT_REACHED") {
+        setLimitReached(true);
+      } else {
+        setFormError(error);
+      }
+      return;
     }
+
+    setSubmitted(true);
   }
 
   if (limitReached) {
@@ -137,10 +137,10 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
           className="mt-5"
           style={{ fontSize: "26px", fontWeight: 700 }}
         >
-          You&apos;ve already claimed your reward!
+          You&apos;ve reached the limit!
         </h1>
         <p className="mt-2" style={{ fontSize: "15px", color: "#8B8B9B" }}>
-          You&apos;ve already received your reward from{" "}
+          You&apos;ve reached the maximum number of submissions for{" "}
           <strong>{business.name}</strong>. Thank you for your support!
         </p>
 
@@ -296,6 +296,16 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
         </div>
       </div>
 
+      {/* General form error */}
+      {formError && (
+        <div
+          className="mt-4 rounded-xl p-3 text-center text-sm font-medium"
+          style={{ backgroundColor: "#FEF2F2", color: "#DC2626" }}
+        >
+          {formError}
+        </div>
+      )}
+
       {/* Form */}
       <div className="mt-6 space-y-4">
         {/* Post link */}
@@ -308,18 +318,23 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
               id="postLink"
               type="url"
               value={postLink}
-              onChange={(e) => setPostLink(e.target.value)}
+              onChange={(e) => {
+                setPostLink(e.target.value);
+                if (duplicateLink) setDuplicateLink(false);
+              }}
               placeholder="https://www.instagram.com/reel/..."
               className="w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
               style={{
                 borderRadius: "14px",
-                border: "1.5px solid #E0DDD8",
+                border: `1.5px solid ${duplicateLink ? "#EF4444" : "#E0DDD8"}`,
                 padding: "16px",
                 paddingRight: postLink.trim() ? "120px" : "16px",
               }}
-              onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
+              onFocus={(e) => {
+                if (!duplicateLink) e.target.style.borderColor = business.brandColor;
+              }}
               onBlur={(e) => {
-                e.target.style.borderColor = "#E0DDD8";
+                if (!duplicateLink) e.target.style.borderColor = "#E0DDD8";
                 setTouched((t) => ({ ...t, postLink: true }));
               }}
             />
@@ -329,7 +344,11 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
               </span>
             )}
           </div>
-          {touched.postLink && !isValidUrl ? (
+          {duplicateLink ? (
+            <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
+              This link has already been submitted
+            </p>
+          ) : touched.postLink && !isValidUrl ? (
             <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
               Please enter a valid URL
             </p>
