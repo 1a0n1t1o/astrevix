@@ -17,6 +17,8 @@ import {
   XCircle,
   Gift,
   ChevronDown,
+  Search,
+  X,
 } from "lucide-react";
 
 type FilterTab = "all" | "pending" | "approved" | "rejected";
@@ -96,6 +98,7 @@ export default function SubmissionsList({
   emailTemplateData,
 }: SubmissionsListProps) {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [rewardValue, setRewardValue] = useState<string>("");
@@ -108,10 +111,21 @@ export default function SubmissionsList({
   // Suppress unused variable warning
   void businessId;
 
+  const query = searchQuery.toLowerCase().trim();
+
+  const searched = query
+    ? submissions.filter(
+        (s) =>
+          s.customer_name.toLowerCase().includes(query) ||
+          s.customer_email.toLowerCase().includes(query) ||
+          s.post_url.toLowerCase().includes(query)
+      )
+    : submissions;
+
   const filtered =
     activeTab === "all"
-      ? submissions
-      : submissions.filter((s) => s.status === activeTab);
+      ? searched
+      : searched.filter((s) => s.status === activeTab);
 
   function toggleExpand(id: string) {
     if (expandedId === id) {
@@ -166,8 +180,8 @@ export default function SubmissionsList({
         {TABS.map((tab) => {
           const count =
             tab.value === "all"
-              ? submissions.length
-              : submissions.filter((s) => s.status === tab.value).length;
+              ? searched.length
+              : searched.filter((s) => s.status === tab.value).length;
           const isActive = activeTab === tab.value;
 
           return (
@@ -204,21 +218,52 @@ export default function SubmissionsList({
         })}
       </div>
 
+      {/* Search Bar */}
+      {submissions.length > 0 && (
+        <div className="relative mb-5">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by name, email, or link..."
+            className="w-full rounded-xl border border-gray-200 bg-white/80 py-2.5 pl-10 pr-9 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10"
+            style={{ backdropFilter: "blur(8px)" }}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Submissions List */}
       {filtered.length === 0 ? (
         <div className="dash-animate-scale-in rounded-2xl border border-gray-100 bg-white/70 p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]">
           <div className="mx-auto mb-4">
-            {EMPTY_STATE_ICONS[activeTab]}
+            {query ? (
+              <Search className="mx-auto h-10 w-10 text-gray-300" />
+            ) : (
+              EMPTY_STATE_ICONS[activeTab]
+            )}
           </div>
           <p className="font-medium text-gray-900">
-            {activeTab === "all"
-              ? "No submissions yet"
-              : `No ${activeTab} submissions`}
+            {query
+              ? "No results found"
+              : activeTab === "all"
+                ? "No submissions yet"
+                : `No ${activeTab} submissions`}
           </p>
           <p className="mt-1 text-sm text-gray-500">
-            {activeTab === "all"
-              ? "Share your QR code to start getting customer content!"
-              : `You don't have any ${activeTab} submissions right now.`}
+            {query
+              ? `No submissions match "${searchQuery}"`
+              : activeTab === "all"
+                ? "Share your QR code to start getting customer content!"
+                : `You don't have any ${activeTab} submissions right now.`}
           </p>
         </div>
       ) : (
