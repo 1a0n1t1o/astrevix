@@ -76,12 +76,6 @@ function StatIcon({ type, className = "h-6 w-6" }: { type: string; className?: s
   }
 }
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -216,7 +210,7 @@ export default async function DashboardPage() {
       {/* Header */}
       <div className="dash-animate-fade-in-up mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-          {getGreeting()}, {business.name}
+          Welcome, {business.name}
         </h1>
         <p className="mt-1 text-sm text-gray-500">
           Here&apos;s what&apos;s happening with your submissions
