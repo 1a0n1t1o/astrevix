@@ -1,0 +1,113 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+
+const FAQS = [
+  {
+    q: "What is Astrevix?",
+    a: "Astrevix is a platform that helps local businesses collect authentic social media content from their customers. Customers scan a QR code, post about your business, submit their link, and receive a reward automatically.",
+  },
+  {
+    q: "How do customers submit content?",
+    a: "Customers scan your QR code (placed on tables, receipts, or storefronts) which takes them to your branded landing page. They post content on TikTok or Instagram, then paste their post link into a simple 3-field form. No app download required.",
+  },
+  {
+    q: "What kind of rewards can I offer?",
+    a: "You can offer anything your business provides — discounts, free items, coupons, or digital rewards. Rewards are delivered automatically via email after you approve the submission.",
+  },
+  {
+    q: "How does the QR code work?",
+    a: "When you sign up, Astrevix creates a unique branded page for your business. The QR code links directly to that page. You can print it and place it anywhere in your store.",
+  },
+  {
+    q: "Can I customize the look of my page?",
+    a: "Yes! You can customize your brand colors, logo, tagline, reward description, content requirements, and more. Everything matches your brand identity.",
+  },
+  {
+    q: "Is there a free plan?",
+    a: "Yes. Our free plan includes everything you need to get started — a custom branded page, QR code generation, up to 50 submissions per month, and email rewards. Upgrade anytime for unlimited submissions and advanced features.",
+  },
+];
+
+export default function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <section id="faq" className="relative py-24 md:py-32">
+      <div className="relative mx-auto max-w-3xl px-6">
+        {/* Header */}
+        <div className="text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/80 px-4 py-1.5 text-sm font-medium text-blue-700"
+          >
+            FAQ
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+          >
+            Frequently asked questions
+          </motion.h2>
+        </div>
+
+        {/* Accordion */}
+        <div className="mt-12 space-y-3">
+          {FAQS.map((faq, i) => {
+            const isOpen = openIndex === i;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                className={`overflow-hidden rounded-2xl border transition-colors ${
+                  isOpen
+                    ? "border-blue-200 bg-blue-50/30"
+                    : "border-gray-100 bg-white/60 hover:bg-white"
+                }`}
+              >
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  className="flex w-full items-center justify-between px-6 py-5 text-left"
+                >
+                  <span className="text-sm font-semibold text-gray-900 pr-4">
+                    {faq.q}
+                  </span>
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                    >
+                      <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
+                        {faq.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
