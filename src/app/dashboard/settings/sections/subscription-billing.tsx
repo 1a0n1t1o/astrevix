@@ -7,6 +7,7 @@ import { WhopCheckoutEmbed } from "@whop/checkout/react";
 interface SubscriptionBillingProps {
   readonly onToast: (message: string) => void;
   readonly userEmail: string;
+  readonly approvedThisMonth: number;
 }
 
 const sectionVariants = {
@@ -31,7 +32,13 @@ const glassCard = {
 export default function SubscriptionBilling({
   onToast: _onToast,
   userEmail,
+  approvedThisMonth,
 }: SubscriptionBillingProps) {
+  const approvedLimit = 100;
+  const approvedPercent = Math.min(
+    Math.round((approvedThisMonth / approvedLimit) * 100),
+    100
+  );
   const [showCheckout, setShowCheckout] = useState(false);
 
   return (
@@ -167,35 +174,18 @@ export default function SubscriptionBilling({
           Usage
         </h3>
 
-        <div className="mt-5 space-y-5">
-          {/* Submissions this month */}
+        <div className="mt-5">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">
-                Submissions this month
+                Approved submissions this month
               </span>
-              <span className="text-sm text-gray-500">12 / 100</span>
+              <span className="text-sm text-gray-500">{approvedThisMonth} / {approvedLimit}</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
               <div
                 className="h-full rounded-full bg-blue-500 transition-all"
-                style={{ width: "12%" }}
-              />
-            </div>
-          </div>
-
-          {/* Active QR codes */}
-          <div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                Active QR codes
-              </span>
-              <span className="text-sm text-gray-500">1 / 3</span>
-            </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
-              <div
-                className="h-full rounded-full bg-purple-500 transition-all"
-                style={{ width: "33%" }}
+                style={{ width: `${approvedPercent}%` }}
               />
             </div>
           </div>

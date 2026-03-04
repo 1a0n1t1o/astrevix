@@ -31,11 +31,13 @@ interface SettingsClientProps {
   readonly business: Business;
   readonly userEmail: string;
   readonly userProfile: UserProfile;
+  readonly approvedThisMonth: number;
 }
 
 export default function SettingsClient({
   userEmail,
   userProfile,
+  approvedThisMonth,
 }: SettingsClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -219,7 +221,7 @@ export default function SettingsClient({
                 />
               )}
               {activeTab === "subscription" && (
-                <SubscriptionBilling onToast={showToast} userEmail={userEmail} />
+                <SubscriptionBilling onToast={showToast} userEmail={userEmail} approvedThisMonth={approvedThisMonth} />
               )}
             </motion.div>
           </AnimatePresence>

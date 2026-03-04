@@ -3,7 +3,7 @@ import SettingsClient from "./settings-client";
 import type { Business, UserProfile } from "@/types/database";
 
 export default async function SettingsPage() {
-  const { user, business } = await getAuthenticatedBusiness();
+  const { user, business, supabase } = await getAuthenticatedBusiness();
   if (!user || !business) return null;
 
   const userProfile: UserProfile = {
@@ -11,6 +11,16 @@ export default async function SettingsPage() {
     last_name: (user.user_metadata?.last_name as string) || "",
     avatar_url: (user.user_metadata?.avatar_url as string) || null,
   };
+
+  // Fetch approved submissions count for the current month
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const { count: approvedThisMonth } = await supabase
+    .from("submissions")
+    .select("*", { count: "exact", head: true })
+    .eq("business_id", business.id)
+    .eq("status", "approved")
+    .gte("created_at", startOfMonth);
 
   return (
     <div>
@@ -26,6 +36,7 @@ export default async function SettingsPage() {
         business={business as Business}
         userEmail={user.email || ""}
         userProfile={userProfile}
+        approvedThisMonth={approvedThisMonth ?? 0}
       />
     </div>
   );
