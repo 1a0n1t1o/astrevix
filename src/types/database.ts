@@ -35,6 +35,10 @@ export interface Business {
   email_brand_color: string | null;
   reward_file_url: string | null;
   reward_file_name: string | null;
+  // Admin fields
+  plan: "free" | "pro" | "enterprise";
+  status: "active" | "suspended";
+  deleted_at: string | null;
 }
 
 export interface Submission {

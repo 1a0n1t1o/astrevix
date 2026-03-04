@@ -13,6 +13,7 @@ export interface BusinessData {
   contentType: string;
   requirements: string[];
   maxRewardsPerCustomer: number | null;
+  status: "active" | "suspended";
 }
 
 export const PLATFORM_INFO: Record<Platform, { label: string; icon: string; color: string }> = {
@@ -43,6 +44,7 @@ export async function getBusinessBySlug(slug: string): Promise<BusinessData | nu
     contentType: data.content_type || "Instagram Reel or TikTok",
     requirements: data.requirements || [],
     maxRewardsPerCustomer: data.max_rewards_per_customer ?? 1,
+    status: data.status || "active",
   };
 }
 

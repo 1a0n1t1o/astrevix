@@ -20,6 +20,20 @@ export async function POST(request: Request) {
     );
   }
 
+  // Check if business is suspended
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("id, status")
+    .eq("id", business_id)
+    .single();
+
+  if (!business || business.status === "suspended") {
+    return NextResponse.json(
+      { error: "This business is not currently accepting submissions.", code: "BUSINESS_SUSPENDED" },
+      { status: 403 }
+    );
+  }
+
   // Insert the submission — the database handles enforcement:
   //   - Unique index on (business_id, post_url) blocks duplicate links
   //   - BEFORE INSERT trigger checks per-customer submission limit
