@@ -16,6 +16,7 @@ import {
   CheckCircle,
   XCircle,
   Gift,
+  ChevronDown,
 } from "lucide-react";
 
 type FilterTab = "all" | "pending" | "approved" | "rejected";
@@ -67,22 +68,41 @@ function formatTime(dateStr: string): string {
   });
 }
 
+interface EmailTemplateData {
+  subject: string | null;
+  header: string | null;
+  body: string | null;
+  footer: string | null;
+  brandColor: string | null;
+  logoUrl: string | null;
+  rewardFileUrl: string | null;
+  rewardFileName: string | null;
+  businessName: string;
+}
+
 interface SubmissionsListProps {
   readonly submissions: Submission[];
   readonly businessId: string;
   readonly rewardDescription: string;
+  readonly hasEmailTemplate: boolean;
+  readonly emailTemplateData: EmailTemplateData;
 }
 
 export default function SubmissionsList({
   submissions,
   businessId,
   rewardDescription,
+  hasEmailTemplate,
+  emailTemplateData,
 }: SubmissionsListProps) {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [rewardValue, setRewardValue] = useState<string>("");
   const [commentValue, setCommentValue] = useState<string>("");
+  const [personalNoteOpen, setPersonalNoteOpen] = useState(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [previewSub, setPreviewSub] = useState<Submission | null>(null);
   const router = useRouter();
 
   // Suppress unused variable warning
@@ -98,12 +118,18 @@ export default function SubmissionsList({
       setExpandedId(null);
       setRewardValue("");
       setCommentValue("");
+      setPersonalNoteOpen(false);
     } else {
       setExpandedId(id);
-      // Pre-fill reward with business default
       setRewardValue(rewardDescription);
       setCommentValue("");
+      setPersonalNoteOpen(false);
     }
+  }
+
+  function openPreview(sub: Submission) {
+    setPreviewSub(sub);
+    setPreviewModalOpen(true);
   }
 
   async function handleReview(id: string, status: "approved" | "rejected") {
@@ -121,6 +147,7 @@ export default function SubmissionsList({
       setExpandedId(null);
       setRewardValue("");
       setCommentValue("");
+      setPersonalNoteOpen(false);
       router.refresh();
     } catch {
       // silently fail
@@ -128,6 +155,9 @@ export default function SubmissionsList({
       setUpdatingId(null);
     }
   }
+
+  const et = emailTemplateData;
+  const brandColor = et.brandColor || "#2563EB";
 
   return (
     <div>
@@ -402,7 +432,7 @@ export default function SubmissionsList({
                               {sub.review_comment && (
                                 <div className="mt-3">
                                   <p className="text-xs text-gray-500">
-                                    Comment
+                                    Personal note
                                   </p>
                                   <p className="mt-0.5 text-sm text-gray-700">
                                     {sub.review_comment}
@@ -439,27 +469,79 @@ export default function SubmissionsList({
                                 />
                               </div>
 
-                              {/* Comment textarea */}
+                              {/* Email template notice */}
+                              {hasEmailTemplate ? (
+                                <div className="mb-3 flex items-center justify-between rounded-lg bg-blue-50 border border-blue-100 px-3 py-2.5">
+                                  <div className="flex items-center gap-2">
+                                    <svg className="h-4 w-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                    </svg>
+                                    <p className="text-xs text-blue-700">
+                                      Reward email will be sent using your template
+                                    </p>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openPreview(sub);
+                                    }}
+                                    className="text-xs font-medium text-blue-600 hover:text-blue-800"
+                                  >
+                                    Preview
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="mb-3 flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-100 px-3 py-2.5">
+                                  <svg className="h-4 w-4 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                  </svg>
+                                  <p className="text-xs text-amber-700">
+                                    <a href="/dashboard/email" className="font-medium underline hover:text-amber-900">Set up your reward email template</a>{" "}
+                                    to customize what customers receive
+                                  </p>
+                                </div>
+                              )}
+
+                              {/* Collapsible personal note */}
                               <div className="mb-4">
-                                <label
-                                  htmlFor={`comment-${sub.id}`}
-                                  className="mb-1.5 block text-xs font-medium text-gray-500"
+                                <button
+                                  type="button"
+                                  onClick={() => setPersonalNoteOpen(!personalNoteOpen)}
+                                  className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-700"
                                 >
-                                  Comment{" "}
+                                  <ChevronDown
+                                    className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                                      personalNoteOpen ? "rotate-180" : ""
+                                    }`}
+                                  />
+                                  Add a personal note{" "}
                                   <span className="font-normal text-gray-400">
                                     (optional)
                                   </span>
-                                </label>
-                                <textarea
-                                  id={`comment-${sub.id}`}
-                                  value={commentValue}
-                                  onChange={(e) =>
-                                    setCommentValue(e.target.value)
-                                  }
-                                  placeholder="Add a note about this submission..."
-                                  rows={2}
-                                  className="w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
-                                />
+                                </button>
+                                <AnimatePresence>
+                                  {personalNoteOpen && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: "auto", opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.2 }}
+                                      className="overflow-hidden"
+                                    >
+                                      <textarea
+                                        id={`comment-${sub.id}`}
+                                        value={commentValue}
+                                        onChange={(e) =>
+                                          setCommentValue(e.target.value)
+                                        }
+                                        placeholder="Add a personal message to include in the reward email..."
+                                        rows={2}
+                                        className="mt-2 w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+                                      />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </div>
 
                               {/* Action buttons */}
@@ -529,6 +611,111 @@ export default function SubmissionsList({
           </AnimatePresence>
         </div>
       )}
+
+      {/* Email Preview Modal */}
+      <AnimatePresence>
+        {previewModalOpen && previewSub && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+              onClick={() => setPreviewModalOpen(false)}
+            />
+            {/* Modal content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-2xl"
+            >
+              {/* Modal header */}
+              <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-6 py-4">
+                <h3 className="text-base font-semibold text-gray-900">
+                  Email Preview
+                </h3>
+                <button
+                  onClick={() => setPreviewModalOpen(false)}
+                  className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                >
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Email preview */}
+              <div style={{ backgroundColor: "#f9fafb", padding: "20px 16px" }}>
+                <div style={{ maxWidth: "520px", margin: "0 auto", backgroundColor: "#ffffff", borderRadius: "12px", overflow: "hidden", border: "1px solid #e5e7eb" }}>
+                  {/* Header */}
+                  <div style={{ backgroundColor: brandColor, padding: "24px 24px 20px" }}>
+                    {et.logoUrl && (
+                      <img src={et.logoUrl} alt={et.businessName} style={{ width: "40px", height: "40px", borderRadius: "10px", marginBottom: "10px", objectFit: "cover" }} />
+                    )}
+                    <p style={{ margin: 0, color: "#ffffff", fontSize: "18px", fontWeight: 600 }}>
+                      {et.header || "Thank you for your post!"}
+                    </p>
+                    <p style={{ margin: "6px 0 0", color: "rgba(255,255,255,0.85)", fontSize: "13px" }}>
+                      Your post has been approved
+                    </p>
+                  </div>
+
+                  {/* Body */}
+                  <div style={{ padding: "24px" }}>
+                    <p style={{ margin: "0 0 12px", color: "#111827", fontSize: "13px", lineHeight: 1.6 }}>
+                      Hi {previewSub.customer_name},
+                    </p>
+                    <p style={{ margin: "0 0 16px", color: "#374151", fontSize: "13px", lineHeight: 1.6 }}>
+                      {et.body || "We appreciate you sharing your experience. Here's your reward as a thank you!"}
+                    </p>
+
+                    {/* Reward */}
+                    {rewardValue && (
+                      <div style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "10px", padding: "16px", marginBottom: "16px" }}>
+                        <p style={{ margin: "0 0 4px", color: "#15803d", fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Your Reward</p>
+                        <p style={{ margin: 0, color: "#166534", fontSize: "15px", fontWeight: 600 }}>{rewardValue}</p>
+                      </div>
+                    )}
+
+                    {/* Personal note */}
+                    {commentValue && (
+                      <div style={{ backgroundColor: "#f9fafb", borderRadius: "10px", padding: "12px 16px", marginBottom: "16px" }}>
+                        <p style={{ margin: "0 0 4px", color: "#6b7280", fontSize: "11px", fontWeight: 500 }}>Personal note from {et.businessName}</p>
+                        <p style={{ margin: 0, color: "#374151", fontSize: "12px", lineHeight: 1.5, fontStyle: "italic" }}>&ldquo;{commentValue}&rdquo;</p>
+                      </div>
+                    )}
+
+                    {/* Attachment */}
+                    {et.rewardFileName && (
+                      <div style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "10px", padding: "12px 14px", marginBottom: "16px" }}>
+                        <p style={{ margin: 0, color: "#1e40af", fontSize: "12px" }}>
+                          &#128206; {et.rewardFileName}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div style={{ borderTop: "1px solid #f3f4f6", padding: "16px 24px", textAlign: "center" }}>
+                    <p style={{ margin: 0, color: "#6b7280", fontSize: "11px" }}>
+                      {et.footer || `Thanks for being a valued customer of ${et.businessName}`}
+                    </p>
+                    <p style={{ margin: "6px 0 0", color: "#9ca3af", fontSize: "10px" }}>Sent via Astrevix</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -4,7 +4,51 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-function buildApprovedEmail(customerName: string, businessName: string, reward: string | null, comment: string | null): string {
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+interface BusinessEmailFields {
+  name: string;
+  email_subject: string | null;
+  email_header: string | null;
+  email_body: string | null;
+  email_footer: string | null;
+  email_brand_color: string | null;
+  brand_color: string | null;
+  logo_url: string | null;
+  reward_file_url: string | null;
+  reward_file_name: string | null;
+}
+
+function buildApprovedEmail(
+  customerName: string,
+  business: BusinessEmailFields,
+  reward: string | null,
+  personalNote: string | null
+): string {
+  const brandColor =
+    business.email_brand_color || business.brand_color || "#2563EB";
+  const headerText = escapeHtml(
+    business.email_header || "Thank you for your post!"
+  );
+  const bodyText = escapeHtml(
+    business.email_body ||
+      `Thank you for posting about ${business.name}! Your submission has been reviewed and approved.`
+  );
+  const footerText = escapeHtml(
+    business.email_footer ||
+      `Thanks for being a valued customer of ${business.name}`
+  );
+  const safeName = escapeHtml(customerName);
+  const safeBusinessName = escapeHtml(business.name);
+  const safeReward = reward ? escapeHtml(reward) : null;
+  const safeNote = personalNote ? escapeHtml(personalNote) : null;
+
   return `
 <!DOCTYPE html>
 <html>
@@ -15,34 +59,57 @@ function buildApprovedEmail(customerName: string, businessName: string, reward: 
 <body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
   <div style="max-width:520px;margin:40px auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb;">
     <!-- Header -->
-    <div style="background:linear-gradient(135deg,#2563EB,#7C3AED);padding:32px 32px 28px;">
-      <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:600;">Great news! 🎉</h1>
+    <div style="background:${brandColor};padding:32px 32px 28px;">
+      ${
+        business.logo_url
+          ? `<img src="${business.logo_url}" alt="${safeBusinessName}" style="width:48px;height:48px;border-radius:12px;margin-bottom:12px;object-fit:cover;" />`
+          : ""
+      }
+      <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:600;">${headerText}</h1>
       <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:15px;">Your post has been approved</p>
     </div>
 
     <!-- Body -->
     <div style="padding:32px;">
       <p style="margin:0 0 16px;color:#111827;font-size:15px;line-height:1.6;">
-        Hi ${customerName},
+        Hi ${safeName},
       </p>
       <p style="margin:0 0 20px;color:#374151;font-size:15px;line-height:1.6;">
-        Thank you for posting about <strong>${businessName}</strong>! Your submission has been reviewed and approved.
+        ${bodyText}
       </p>
 
-      ${reward ? `
+      ${
+        safeReward
+          ? `
       <!-- Reward box -->
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:0 0 20px;">
         <p style="margin:0 0 4px;color:#15803d;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Your Reward</p>
-        <p style="margin:0;color:#166534;font-size:17px;font-weight:600;">${reward}</p>
+        <p style="margin:0;color:#166534;font-size:17px;font-weight:600;">${safeReward}</p>
       </div>
-      ` : ""}
+      `
+          : ""
+      }
 
-      ${comment ? `
+      ${
+        safeNote
+          ? `
       <div style="background:#f9fafb;border-radius:12px;padding:16px 20px;margin:0 0 20px;">
-        <p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:500;">Message from ${businessName}</p>
-        <p style="margin:0;color:#374151;font-size:14px;line-height:1.5;font-style:italic;">"${comment}"</p>
+        <p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:500;">Personal note from ${safeBusinessName}</p>
+        <p style="margin:0;color:#374151;font-size:14px;line-height:1.5;font-style:italic;">&ldquo;${safeNote}&rdquo;</p>
       </div>
-      ` : ""}
+      `
+          : ""
+      }
+
+      ${
+        business.reward_file_url && business.reward_file_name
+          ? `
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px;margin:0 0 20px;">
+        <p style="margin:0;color:#1e40af;font-size:14px;">&#128206; Reward file attached: ${escapeHtml(business.reward_file_name)}</p>
+      </div>
+      `
+          : ""
+      }
 
       <p style="margin:0;color:#6b7280;font-size:14px;line-height:1.6;">
         We appreciate you creating amazing content. Keep it up!
@@ -51,14 +118,23 @@ function buildApprovedEmail(customerName: string, businessName: string, reward: 
 
     <!-- Footer -->
     <div style="border-top:1px solid #f3f4f6;padding:20px 32px;text-align:center;">
-      <p style="margin:0;color:#9ca3af;font-size:12px;">Sent via Astrevix</p>
+      <p style="margin:0;color:#6b7280;font-size:13px;">${footerText}</p>
+      <p style="margin:8px 0 0;color:#9ca3af;font-size:12px;">Sent via Astrevix</p>
     </div>
   </div>
 </body>
 </html>`.trim();
 }
 
-function buildRejectedEmail(customerName: string, businessName: string, comment: string | null): string {
+function buildRejectedEmail(
+  customerName: string,
+  businessName: string,
+  personalNote: string | null
+): string {
+  const safeName = escapeHtml(customerName);
+  const safeBusinessName = escapeHtml(businessName);
+  const safeNote = personalNote ? escapeHtml(personalNote) : null;
+
   return `
 <!DOCTYPE html>
 <html>
@@ -71,27 +147,31 @@ function buildRejectedEmail(customerName: string, businessName: string, comment:
     <!-- Header -->
     <div style="background:#374151;padding:32px 32px 28px;">
       <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:600;">Update on your submission</h1>
-      <p style="margin:8px 0 0;color:rgba(255,255,255,0.7);font-size:15px;">From ${businessName}</p>
+      <p style="margin:8px 0 0;color:rgba(255,255,255,0.7);font-size:15px;">From ${safeBusinessName}</p>
     </div>
 
     <!-- Body -->
     <div style="padding:32px;">
       <p style="margin:0 0 16px;color:#111827;font-size:15px;line-height:1.6;">
-        Hi ${customerName},
+        Hi ${safeName},
       </p>
       <p style="margin:0 0 20px;color:#374151;font-size:15px;line-height:1.6;">
-        Thank you for submitting content to <strong>${businessName}</strong>. Unfortunately, your post didn't meet the requirements this time.
+        Thank you for submitting content to <strong>${safeBusinessName}</strong>. Unfortunately, your post didn&rsquo;t meet the requirements this time.
       </p>
 
-      ${comment ? `
+      ${
+        safeNote
+          ? `
       <div style="background:#f9fafb;border-radius:12px;padding:16px 20px;margin:0 0 20px;">
-        <p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:500;">Message from ${businessName}</p>
-        <p style="margin:0;color:#374151;font-size:14px;line-height:1.5;font-style:italic;">"${comment}"</p>
+        <p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:500;">Message from ${safeBusinessName}</p>
+        <p style="margin:0;color:#374151;font-size:14px;line-height:1.5;font-style:italic;">&ldquo;${safeNote}&rdquo;</p>
       </div>
-      ` : ""}
+      `
+          : ""
+      }
 
       <p style="margin:0;color:#374151;font-size:15px;line-height:1.6;">
-        Don't worry — we'd love to see you try again! Check the requirements and submit a new post anytime.
+        Don&rsquo;t worry &mdash; we&rsquo;d love to see you try again! Check the requirements and submit a new post anytime.
       </p>
     </div>
 
@@ -109,7 +189,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const { status, reward_given } = await request.json();
+  const { status, reward_given, review_comment } = await request.json();
 
   const supabase = await createClient();
 
@@ -135,16 +215,18 @@ export async function POST(
     );
   }
 
-  // Fetch business details
+  // Fetch full business record (for email template fields)
   const { data: business } = await supabase
     .from("businesses")
-    .select("name")
+    .select(
+      "name, brand_color, logo_url, email_subject, email_header, email_body, email_footer, email_brand_color, reward_file_url, reward_file_name"
+    )
     .eq("id", submission.business_id)
     .single();
 
   const businessName = business?.name || "the business";
   const reward = reward_given || null;
-  const comment = submission.review_comment || null;
+  const personalNote = review_comment || null;
 
   // Check if reward was already sent for this submission (idempotency)
   if (status === "approved") {
@@ -163,22 +245,48 @@ export async function POST(
     }
   }
 
+  // Build subject and HTML from template or defaults
   const subject =
     status === "approved"
-      ? "Great news! Your post has been approved 🎉"
+      ? business?.email_subject ||
+        "Great news! Your post has been approved \uD83C\uDF89"
       : "Update on your submission";
 
   const html =
     status === "approved"
-      ? buildApprovedEmail(submission.customer_name, businessName, reward, comment)
-      : buildRejectedEmail(submission.customer_name, businessName, comment);
+      ? buildApprovedEmail(
+          submission.customer_name,
+          business as BusinessEmailFields,
+          reward,
+          personalNote
+        )
+      : buildRejectedEmail(
+          submission.customer_name,
+          businessName,
+          personalNote
+        );
 
   try {
+    // Build attachments array for Resend
+    const attachments: Array<{ filename: string; path: string }> = [];
+
+    if (
+      status === "approved" &&
+      business?.reward_file_url &&
+      business?.reward_file_name
+    ) {
+      attachments.push({
+        filename: business.reward_file_name,
+        path: business.reward_file_url,
+      });
+    }
+
     const { error } = await resend.emails.send({
       from: "Astrevix <onboarding@resend.dev>",
       to: submission.customer_email,
       subject,
       html,
+      ...(attachments.length > 0 && { attachments }),
     });
 
     if (error) {

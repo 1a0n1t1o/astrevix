@@ -49,7 +49,7 @@ export async function PATCH(
     fetch(`${origin}/api/submissions/${id}/notify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, reward_given }),
+      body: JSON.stringify({ status, reward_given, review_comment: review_comment || null }),
     }).catch(() => {
       // Silently fail — notification is best-effort
     });

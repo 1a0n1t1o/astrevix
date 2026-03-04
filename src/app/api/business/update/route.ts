@@ -23,6 +23,13 @@ export async function PATCH(request: Request) {
     content_type,
     requirements,
     max_rewards_per_customer,
+    email_subject,
+    email_header,
+    email_body,
+    email_footer,
+    email_brand_color,
+    reward_file_url,
+    reward_file_name,
   } = body;
 
   // Validate required fields
@@ -62,6 +69,13 @@ export async function PATCH(request: Request) {
       content_type: content_type || null,
       requirements: requirements && requirements.length > 0 ? requirements : null,
       ...(max_rewards_per_customer !== undefined && { max_rewards_per_customer }),
+      ...(email_subject !== undefined && { email_subject: email_subject || null }),
+      ...(email_header !== undefined && { email_header: email_header || null }),
+      ...(email_body !== undefined && { email_body: email_body || null }),
+      ...(email_footer !== undefined && { email_footer: email_footer || null }),
+      ...(email_brand_color !== undefined && { email_brand_color: email_brand_color || null }),
+      ...(reward_file_url !== undefined && { reward_file_url: reward_file_url || null }),
+      ...(reward_file_name !== undefined && { reward_file_name: reward_file_name || null }),
       updated_at: new Date().toISOString(),
     })
     .eq("owner_id", user.id);

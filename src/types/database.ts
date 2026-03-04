@@ -27,6 +27,14 @@ export interface Business {
   qr_default_branding: boolean | null;
   // Submission limits
   max_rewards_per_customer: number | null;
+  // Email template
+  email_subject: string | null;
+  email_header: string | null;
+  email_body: string | null;
+  email_footer: string | null;
+  email_brand_color: string | null;
+  reward_file_url: string | null;
+  reward_file_name: string | null;
 }
 
 export interface Submission {

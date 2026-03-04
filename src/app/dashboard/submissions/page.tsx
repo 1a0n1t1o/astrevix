@@ -12,7 +12,9 @@ export default async function SubmissionsPage() {
 
   const { data: business } = await supabase
     .from("businesses")
-    .select("id, reward_description")
+    .select(
+      "id, name, reward_description, brand_color, logo_url, email_subject, email_header, email_body, email_footer, email_brand_color, reward_file_url, reward_file_name"
+    )
     .eq("owner_id", user.id)
     .single();
 
@@ -23,6 +25,10 @@ export default async function SubmissionsPage() {
     .select("*")
     .eq("business_id", business.id)
     .order("created_at", { ascending: false });
+
+  const hasEmailTemplate = Boolean(
+    business.email_subject || business.email_header || business.email_body
+  );
 
   return (
     <div>
@@ -39,6 +45,18 @@ export default async function SubmissionsPage() {
         submissions={(submissions as Submission[]) || []}
         businessId={business.id}
         rewardDescription={business.reward_description}
+        hasEmailTemplate={hasEmailTemplate}
+        emailTemplateData={{
+          subject: business.email_subject,
+          header: business.email_header,
+          body: business.email_body,
+          footer: business.email_footer,
+          brandColor: business.email_brand_color || business.brand_color,
+          logoUrl: business.logo_url,
+          rewardFileUrl: business.reward_file_url,
+          rewardFileName: business.reward_file_name,
+          businessName: business.name,
+        }}
       />
     </div>
   );
