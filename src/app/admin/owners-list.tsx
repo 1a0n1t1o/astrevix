@@ -37,8 +37,7 @@ const TABS: { label: string; value: StatusFilter; color: string }[] = [
 
 const PLAN_BADGE_CLASSES: Record<string, string> = {
   free: "bg-gray-100 text-gray-600 ring-gray-500/10",
-  pro: "bg-purple-50 text-purple-700 ring-purple-600/20",
-  enterprise: "bg-amber-50 text-amber-700 ring-amber-600/20",
+  pro: "bg-blue-50 text-blue-700 ring-blue-600/20",
 };
 
 const STATUS_BADGE_CLASSES: Record<string, string> = {

@@ -36,7 +36,7 @@ export interface Business {
   reward_file_url: string | null;
   reward_file_name: string | null;
   // Admin fields
-  plan: "free" | "pro" | "enterprise";
+  plan: "free" | "pro";
   status: "active" | "suspended";
   deleted_at: string | null;
 }

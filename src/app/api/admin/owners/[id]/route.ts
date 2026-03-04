@@ -6,8 +6,11 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  void request;
   const { id } = await params;
+  const url = new URL(request.url);
+  const subSearch = url.searchParams.get("sub_search") || "";
+  const subPage = Math.max(1, parseInt(url.searchParams.get("sub_page") || "1", 10));
+  const subLimit = Math.min(50, Math.max(1, parseInt(url.searchParams.get("sub_limit") || "20", 10)));
 
   const supabase = await createClient();
   const {
@@ -85,13 +88,23 @@ export async function GET(
     .select("*", { count: "exact", head: true })
     .eq("business_id", id);
 
-  // Fetch recent 20 submissions
-  const { data: recentSubmissions } = await admin
+  // Fetch paginated submissions with optional search
+  const subOffset = (subPage - 1) * subLimit;
+
+  let submissionsQuery = admin
     .from("submissions")
-    .select("*")
-    .eq("business_id", id)
+    .select("*", { count: "exact" })
+    .eq("business_id", id);
+
+  if (subSearch) {
+    submissionsQuery = submissionsQuery.or(
+      `customer_name.ilike.%${subSearch}%,customer_email.ilike.%${subSearch}%,post_url.ilike.%${subSearch}%`
+    );
+  }
+
+  const { data: submissions, count: submissionsTotal } = await submissionsQuery
     .order("created_at", { ascending: false })
-    .limit(20);
+    .range(subOffset, subOffset + subLimit - 1);
 
   const total = totalSubmissions || 0;
   const approved = approvedCount || 0;
@@ -108,6 +121,9 @@ export async function GET(
       approval_rate: approvalRate,
       rewards_sent: rewardsSent || 0,
     },
-    recent_submissions: recentSubmissions || [],
+    submissions: submissions || [],
+    submissions_total: submissionsTotal || 0,
+    submissions_page: subPage,
+    submissions_limit: subLimit,
   });
 }

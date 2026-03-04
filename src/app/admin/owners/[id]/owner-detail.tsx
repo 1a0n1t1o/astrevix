@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Shield, Trash2, Mail, Crown } from "lucide-react";
+import { ArrowLeft, Shield, Trash2, Mail, Crown, Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Business {
   id: string;
@@ -46,7 +46,10 @@ interface OwnerData {
   business: Business;
   owner: Owner;
   stats: Stats;
-  recent_submissions: Submission[];
+  submissions: Submission[];
+  submissions_total: number;
+  submissions_page: number;
+  submissions_limit: number;
 }
 
 interface Toast {
@@ -88,7 +91,6 @@ function PlanBadge({ plan }: Readonly<{ plan: string }>) {
   const colors: Record<string, string> = {
     free: "bg-gray-100 text-gray-600",
     pro: "bg-blue-100 text-blue-700",
-    enterprise: "bg-purple-100 text-purple-700",
   };
   return (
     <span
@@ -186,10 +188,41 @@ export default function OwnerDetail({
   const [deleteConfirmName, setDeleteConfirmName] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Submissions search & pagination
+  const [subSearch, setSubSearch] = useState("");
+  const [subPage, setSubPage] = useState(1);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [subLoading, setSubLoading] = useState(false);
+  const SUB_LIMIT = 20;
+
   function showToast(message: string, type: "success" | "error") {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
   }
+
+  const fetchSubmissions = useCallback(
+    async (search: string, page: number) => {
+      setSubLoading(true);
+      try {
+        const params = new URLSearchParams({
+          sub_search: search,
+          sub_page: String(page),
+          sub_limit: String(SUB_LIMIT),
+        });
+        const res = await fetch(`/api/admin/owners/${businessId}?${params.toString()}`);
+        if (!res.ok) throw new Error("Failed to fetch");
+        const json = await res.json();
+        setSubmissions(json.submissions);
+        setSubTotal(json.submissions_total);
+      } catch {
+        // keep existing submissions on error
+      } finally {
+        setSubLoading(false);
+      }
+    },
+    [businessId]
+  );
 
   useEffect(() => {
     async function fetchData() {
@@ -199,6 +232,8 @@ export default function OwnerDetail({
         const json = await res.json();
         setData(json);
         setSelectedPlan(json.business.plan);
+        setSubmissions(json.submissions);
+        setSubTotal(json.submissions_total);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
@@ -207,6 +242,24 @@ export default function OwnerDetail({
     }
     fetchData();
   }, [businessId]);
+
+  // Debounced search for submissions
+  useEffect(() => {
+    if (loading) return;
+    const timer = setTimeout(() => {
+      setSubPage(1);
+      fetchSubmissions(subSearch, 1);
+    }, 300);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subSearch, fetchSubmissions]);
+
+  // Page change for submissions (no debounce)
+  useEffect(() => {
+    if (loading || subPage === 1) return;
+    fetchSubmissions(subSearch, subPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subPage]);
 
   async function handleChangePlan() {
     setActionLoading(true);
@@ -327,7 +380,7 @@ export default function OwnerDetail({
     );
   }
 
-  const { business, owner, stats, recent_submissions } = data;
+  const { business, owner, stats } = data;
   const isSuspended = business.status === "suspended";
 
   return (
@@ -494,71 +547,130 @@ export default function OwnerDetail({
           </div>
         </div>
 
-        {/* Recent Submissions */}
+        {/* Submissions */}
         <div className={glassCard} style={glassStyle}>
-          <div className="mb-4 flex items-center gap-3">
-            <div className="h-6 w-1 rounded-full bg-blue-600" />
-            <h2 className="text-lg font-semibold text-gray-900">
-              Recent Submissions
-            </h2>
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-6 w-1 rounded-full bg-blue-600" />
+              <h2 className="text-lg font-semibold text-gray-900">
+                Submissions
+              </h2>
+              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                {subTotal}
+              </span>
+            </div>
           </div>
 
-          {recent_submissions.length === 0 ? (
+          {/* Search bar */}
+          <div className="relative mb-4">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={subSearch}
+              onChange={(e) => setSubSearch(e.target.value)}
+              placeholder="Search by name, email, or link..."
+              className="w-full rounded-xl border border-gray-200 bg-white/80 py-2.5 pl-10 pr-9 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+            />
+            {subSearch && (
+              <button
+                onClick={() => setSubSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          {subLoading && submissions.length === 0 ? (
             <div className="py-12 text-center">
+              <div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+            </div>
+          ) : submissions.length === 0 ? (
+            <div className="py-12 text-center">
+              <Search className="mx-auto mb-3 h-8 w-8 text-gray-300" />
               <p className="text-sm text-gray-400">
-                No submissions yet
+                {subSearch ? `No submissions match "${subSearch}"` : "No submissions yet"}
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="pb-3 pr-4 font-medium text-gray-500">
-                      Customer
-                    </th>
-                    <th className="pb-3 pr-4 font-medium text-gray-500">
-                      Email
-                    </th>
-                    <th className="pb-3 pr-4 font-medium text-gray-500">
-                      Post Link
-                    </th>
-                    <th className="pb-3 pr-4 font-medium text-gray-500">
-                      Status
-                    </th>
-                    <th className="pb-3 font-medium text-gray-500">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {recent_submissions.map((sub) => (
-                    <tr key={sub.id} className="group">
-                      <td className="py-3 pr-4 text-gray-900">
-                        {sub.customer_name}
-                      </td>
-                      <td className="py-3 pr-4 text-gray-500">
-                        {sub.customer_email}
-                      </td>
-                      <td className="py-3 pr-4">
-                        <a
-                          href={sub.post_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          {truncate(sub.post_url, 30)}
-                        </a>
-                      </td>
-                      <td className="py-3 pr-4">
-                        <SubmissionStatusBadge status={sub.status} />
-                      </td>
-                      <td className="py-3 text-gray-400">
-                        {formatDate(sub.created_at)}
-                      </td>
+            <>
+              <div className={`overflow-x-auto ${subLoading ? "opacity-50" : ""}`}>
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-100">
+                      <th className="pb-3 pr-4 font-medium text-gray-500">
+                        Customer
+                      </th>
+                      <th className="pb-3 pr-4 font-medium text-gray-500">
+                        Email
+                      </th>
+                      <th className="pb-3 pr-4 font-medium text-gray-500">
+                        Post Link
+                      </th>
+                      <th className="pb-3 pr-4 font-medium text-gray-500">
+                        Status
+                      </th>
+                      <th className="pb-3 font-medium text-gray-500">Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {submissions.map((sub) => (
+                      <tr key={sub.id} className="group">
+                        <td className="py-3 pr-4 text-gray-900">
+                          {sub.customer_name}
+                        </td>
+                        <td className="py-3 pr-4 text-gray-500">
+                          {sub.customer_email}
+                        </td>
+                        <td className="py-3 pr-4">
+                          <a
+                            href={sub.post_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {truncate(sub.post_url, 30)}
+                          </a>
+                        </td>
+                        <td className="py-3 pr-4">
+                          <SubmissionStatusBadge status={sub.status} />
+                        </td>
+                        <td className="py-3 text-gray-400">
+                          {formatDate(sub.created_at)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              {subTotal > SUB_LIMIT && (
+                <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+                  <p className="text-sm text-gray-500">
+                    Showing {(subPage - 1) * SUB_LIMIT + 1}-{Math.min(subPage * SUB_LIMIT, subTotal)} of {subTotal}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setSubPage((p) => Math.max(1, p - 1))}
+                      disabled={subPage <= 1}
+                      className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Previous
+                    </button>
+                    <button
+                      onClick={() => setSubPage((p) => Math.min(Math.ceil(subTotal / SUB_LIMIT), p + 1))}
+                      disabled={subPage >= Math.ceil(subTotal / SUB_LIMIT)}
+                      className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -590,7 +702,7 @@ export default function OwnerDetail({
             </button>
           </div>
           <div className="space-y-3">
-            {["free", "pro", "enterprise"].map((plan) => (
+            {["free", "pro"].map((plan) => (
               <label
                 key={plan}
                 className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors ${
