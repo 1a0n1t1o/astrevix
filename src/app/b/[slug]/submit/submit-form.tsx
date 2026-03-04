@@ -137,10 +137,10 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
           className="mt-5"
           style={{ fontSize: "26px", fontWeight: 700 }}
         >
-          You&apos;ve reached the limit!
+          You&apos;ve already submitted!
         </h1>
         <p className="mt-2" style={{ fontSize: "15px", color: "#8B8B9B" }}>
-          You&apos;ve reached the maximum number of submissions for{" "}
+          You&apos;ve already submitted content for{" "}
           <strong>{business.name}</strong>. Thank you for your support!
         </p>
 

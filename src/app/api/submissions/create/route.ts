@@ -52,23 +52,28 @@ export async function POST(request: Request) {
       .eq("id", business_id)
       .single();
 
-    const maxRewards = business?.max_rewards_per_customer ?? 1;
+    // Raw value from DB: number = enforced limit, null = unlimited
+    const maxRewards = business?.max_rewards_per_customer;
+
+    console.log("[submission-limit] business:", business_id, "max_rewards_per_customer:", maxRewards);
 
     // Only enforce if not unlimited (null = unlimited)
-    if (maxRewards !== null) {
+    if (maxRewards !== null && maxRewards !== undefined) {
+      // Count ALL submissions for this email + business (any status)
       const { count } = await supabase
         .from("submissions")
         .select("*", { count: "exact", head: true })
         .eq("business_id", business_id)
-        .eq("customer_email", customer_email.toLowerCase().trim())
-        .in("status", ["pending", "approved"]);
+        .eq("customer_email", customer_email.toLowerCase().trim());
 
       const currentCount = count ?? 0;
+
+      console.log("[submission-limit] email:", customer_email.toLowerCase().trim(), "existing:", currentCount, "max:", maxRewards);
 
       if (currentCount >= maxRewards) {
         return NextResponse.json(
           {
-            error: `You've reached the maximum number of submissions for ${business?.name || "this business"}.`,
+            error: `You've already submitted content for ${business?.name || "this business"}. Thank you for your support!`,
             code: "LIMIT_REACHED",
           },
           { status: 429 }
