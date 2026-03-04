@@ -13,7 +13,15 @@ const BUSINESS_TYPES = [
 
 export default function TrustBar() {
   return (
-    <section className="relative border-y border-gray-100 bg-white/50 py-12 backdrop-blur-sm">
+    <section
+      className="relative py-12"
+      style={{
+        background:
+          "linear-gradient(180deg, #FFFFFF 0%, #F8F7FF 50%, #FFFFFF 100%)",
+        borderTop: "1px solid rgba(139,92,246,0.1)",
+        borderBottom: "1px solid rgba(139,92,246,0.1)",
+      }}
+    >
       <div className="mx-auto max-w-7xl px-6 text-center">
         <motion.p
           initial={{ opacity: 0, y: 10 }}

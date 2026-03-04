@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import Link from "next/link";
+
+const CALENDLY_URL =
+  "https://calendly.com/contact-astrevix/new-meeting";
 
 const PLANS = [
   {
@@ -42,8 +44,32 @@ export default function Pricing() {
   return (
     <section
       id="pricing"
-      className="relative bg-gradient-to-b from-white to-gray-50/80 py-24 md:py-32"
+      className="relative py-24 md:py-32"
+      style={{
+        background:
+          "linear-gradient(180deg, #F5F3FF 0%, #EDE9FE 30%, #F5F3FF 60%, #FFFFFF 100%)",
+      }}
     >
+      {/* Decorative blobs */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute -left-32 top-20 h-[350px] w-[350px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+        <div
+          className="absolute -right-32 bottom-20 h-[300px] w-[300px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+      </div>
+
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
@@ -52,7 +78,7 @@ export default function Pricing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center rounded-full border border-green-200/60 bg-green-50/80 px-4 py-1.5 text-sm font-medium text-green-700"
+            className="inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm"
           >
             Pricing
           </motion.span>
@@ -90,8 +116,8 @@ export default function Pricing() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className={`relative rounded-2xl border p-8 transition-all hover:-translate-y-1 hover:shadow-xl ${
                 plan.popular
-                  ? "border-blue-200 bg-white shadow-lg shadow-blue-500/10"
-                  : "border-gray-100 bg-white/60 backdrop-blur-sm"
+                  ? "border-purple-200 bg-white shadow-lg shadow-purple-500/10"
+                  : "border-white/60 bg-white/70 backdrop-blur-sm"
               }`}
             >
               {plan.popular && (
@@ -122,7 +148,7 @@ export default function Pricing() {
                   >
                     <Check
                       className={`h-4 w-4 shrink-0 ${
-                        plan.popular ? "text-blue-600" : "text-gray-400"
+                        plan.popular ? "text-purple-600" : "text-gray-400"
                       }`}
                       strokeWidth={2}
                     />
@@ -131,16 +157,18 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <Link
-                href="/signup"
+              <a
+                href={CALENDLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`mt-8 block w-full rounded-xl py-3 text-center text-sm font-semibold transition-all ${
                   plan.popular
-                    ? "bg-gradient-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30"
-                    : "border border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+                    ? "bg-gradient-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30"
+                    : "border border-gray-200 bg-white text-gray-700 hover:border-purple-200 hover:bg-purple-50/50"
                 }`}
               >
                 {plan.cta}
-              </Link>
+              </a>
             </motion.div>
           ))}
         </div>

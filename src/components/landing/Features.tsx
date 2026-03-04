@@ -10,8 +10,9 @@ const FEATURES = [
     description:
       "Customers scan your QR code, submit their content, and earn rewards. No app downloads needed.",
     color: "#2563EB",
-    bgColor: "rgba(37, 99, 235, 0.08)",
+    bgColor: "rgba(37, 99, 235, 0.1)",
     borderColor: "rgba(37, 99, 235, 0.15)",
+    cardBg: "linear-gradient(135deg, rgba(239,246,255,0.7) 0%, rgba(219,234,254,0.3) 100%)",
   },
   {
     icon: Gift,
@@ -19,8 +20,9 @@ const FEATURES = [
     description:
       "Set up your own coupons, discounts, or freebies. Deliver them automatically via email.",
     color: "#7C3AED",
-    bgColor: "rgba(124, 58, 237, 0.08)",
+    bgColor: "rgba(124, 58, 237, 0.1)",
     borderColor: "rgba(124, 58, 237, 0.15)",
+    cardBg: "linear-gradient(135deg, rgba(245,243,255,0.7) 0%, rgba(237,233,254,0.3) 100%)",
   },
   {
     icon: ClipboardCheck,
@@ -28,8 +30,9 @@ const FEATURES = [
     description:
       "Approve or reject content before rewards go out. Stay in full control of quality.",
     color: "#059669",
-    bgColor: "rgba(5, 150, 105, 0.08)",
+    bgColor: "rgba(5, 150, 105, 0.1)",
     borderColor: "rgba(5, 150, 105, 0.15)",
+    cardBg: "linear-gradient(135deg, rgba(236,253,245,0.7) 0%, rgba(209,250,229,0.3) 100%)",
   },
   {
     icon: Palette,
@@ -37,22 +40,41 @@ const FEATURES = [
     description:
       "Your colors, your logo, your customer experience. Every page matches your brand.",
     color: "#D97706",
-    bgColor: "rgba(217, 119, 6, 0.08)",
+    bgColor: "rgba(217, 119, 6, 0.1)",
     borderColor: "rgba(217, 119, 6, 0.15)",
+    cardBg: "linear-gradient(135deg, rgba(255,251,235,0.7) 0%, rgba(254,243,199,0.3) 100%)",
   },
 ];
 
 export default function Features() {
   return (
-    <section id="features" className="relative py-24 md:py-32">
-      {/* Background accent */}
-      <div
-        className="pointer-events-none absolute right-0 top-0 h-[600px] w-[600px] -translate-y-1/3 translate-x-1/3 rounded-full opacity-10"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(124,58,237,0.4) 0%, transparent 70%)",
-        }}
-      />
+    <section
+      id="features"
+      className="relative py-24 md:py-32"
+      style={{
+        background:
+          "linear-gradient(180deg, #FFFFFF 0%, #F8F7FF 30%, #F3F1FE 50%, #F8F7FF 70%, #FFFFFF 100%)",
+      }}
+    >
+      {/* Background accents */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute right-0 top-0 h-[500px] w-[500px] -translate-y-1/4 translate-x-1/4 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+        <div
+          className="absolute -left-20 bottom-0 h-[400px] w-[400px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+      </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}
@@ -62,7 +84,7 @@ export default function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center rounded-full border border-purple-200/60 bg-purple-50/80 px-4 py-1.5 text-sm font-medium text-purple-700"
+            className="inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm"
           >
             Features
           </motion.span>
@@ -101,8 +123,11 @@ export default function Features() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group rounded-2xl border bg-white/60 p-8 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl"
-                style={{ borderColor: feature.borderColor }}
+                className="group rounded-2xl border p-8 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                style={{
+                  borderColor: feature.borderColor,
+                  background: feature.cardBg,
+                }}
               >
                 <div
                   className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl"

@@ -41,7 +41,13 @@ const SOCIAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-100 bg-white/50">
+    <footer
+      style={{
+        background:
+          "linear-gradient(180deg, #FFFFFF 0%, #FAF8FF 50%, #F5F3FF 100%)",
+        borderTop: "1px solid rgba(139,92,246,0.1)",
+      }}
+    >
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
           {/* Logo */}
@@ -88,7 +94,10 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-100 pt-8 text-center">
+        <div
+          className="mt-8 pt-8 text-center"
+          style={{ borderTop: "1px solid rgba(139,92,246,0.08)" }}
+        >
           <p className="text-xs text-gray-400">
             &copy; {new Date().getFullYear()} Astrevix. All rights reserved.
           </p>

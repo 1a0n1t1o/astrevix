@@ -35,7 +35,26 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="relative py-24 md:py-32">
+    <section
+      id="faq"
+      className="relative py-24 md:py-32"
+      style={{
+        background:
+          "linear-gradient(180deg, #FFFFFF 0%, #FBF9FF 30%, #F5F3FF 50%, #FBF9FF 70%, #FFFFFF 100%)",
+      }}
+    >
+      {/* Subtle blob */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+      </div>
+
       <div className="relative mx-auto max-w-3xl px-6">
         {/* Header */}
         <div className="text-center">
@@ -44,7 +63,7 @@ export default function FAQ() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/80 px-4 py-1.5 text-sm font-medium text-blue-700"
+            className="inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm"
           >
             FAQ
           </motion.span>
@@ -72,8 +91,8 @@ export default function FAQ() {
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 className={`overflow-hidden rounded-2xl border transition-colors ${
                   isOpen
-                    ? "border-blue-200 bg-blue-50/30"
-                    : "border-gray-100 bg-white/60 hover:bg-white"
+                    ? "border-purple-200 bg-purple-50/40"
+                    : "border-purple-100/40 bg-white/70 hover:bg-white"
                 }`}
               >
                 <button
