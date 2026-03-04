@@ -94,12 +94,12 @@ export default function DashboardShell({
   const sidebar = (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="px-5 pb-4 pt-6">
+      <div className="px-5 pb-2 pt-4">
         <Image
           src="/logo-text.png"
           alt="Astrevix"
-          width={140}
-          height={28}
+          width={130}
+          height={26}
           style={{ filter: "brightness(0)" }}
         />
       </div>
