@@ -3,6 +3,14 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg"];
+const ALLOWED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/svg+xml",
+];
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -40,8 +48,22 @@ export async function POST(request: Request) {
     );
   }
 
-  // Get file extension
-  const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+  // Validate file extension
+  const ext = file.name.split(".").pop()?.toLowerCase() || "";
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    return NextResponse.json(
+      { error: `Invalid file type. Allowed: ${ALLOWED_EXTENSIONS.join(", ")}` },
+      { status: 400 }
+    );
+  }
+
+  // Validate MIME type
+  if (file.type && !ALLOWED_MIME_TYPES.includes(file.type)) {
+    return NextResponse.json(
+      { error: "Invalid file type. Only image files are allowed." },
+      { status: 400 }
+    );
+  }
   const filePath = `${business.id}/logo.${ext}`;
 
   // Convert file to buffer for reliable upload

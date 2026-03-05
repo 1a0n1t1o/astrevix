@@ -1,10 +1,24 @@
 import { supabase } from "@/lib/supabase";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { parsePhoneToE164 } from "@/lib/phone-utils";
 import { sendSms, renderSmsTemplate, DEFAULT_SMS_TEMPLATES } from "@/lib/twilio";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  // Rate limiting: 5 submissions per IP per minute
+  const headersList = await headers();
+  const ip =
+    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const { success: allowed } = rateLimit(`submission:${ip}`, 5, 60_000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many submissions. Please try again later.", code: "RATE_LIMITED" },
+      { status: 429 }
+    );
+  }
+
   const body = await request.json();
 
   const {

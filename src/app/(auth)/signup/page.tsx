@@ -110,7 +110,6 @@ function SignupForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         code: inviteCode,
-        user_id: authData.user.id,
       }),
     }).catch(() => {
       // Non-blocking — account was already created successfully

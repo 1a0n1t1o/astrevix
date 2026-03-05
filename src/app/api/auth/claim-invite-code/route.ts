@@ -1,16 +1,44 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { rateLimit } from "@/lib/rate-limit";
 
 // POST /api/auth/claim-invite-code — called after successful signup
 export async function POST(request: Request) {
-  const { code, user_id } = await request.json();
-
-  if (!code || !user_id) {
+  // Rate limiting: 5 requests per IP per minute
+  const headersList = await headers();
+  const ip =
+    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const { success: allowed } = rateLimit(`claim:${ip}`, 5, 60_000);
+  if (!allowed) {
     return NextResponse.json(
-      { error: "Missing code or user_id" },
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
+  // Authenticate the user
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { code } = await request.json();
+
+  if (!code) {
+    return NextResponse.json(
+      { error: "Missing code" },
       { status: 400 }
     );
   }
+
+  // Use the authenticated user's ID instead of client-provided user_id
+  const user_id = user.id;
 
   const admin = getSupabaseAdmin();
 

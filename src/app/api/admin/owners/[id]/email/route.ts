@@ -62,6 +62,19 @@ export async function POST(
     ? "Astrevix <contact@astrevix.com>"
     : "Astrevix <onboarding@resend.dev>";
 
+  // Sanitize user input to prevent XSS in HTML emails
+  function escapeHtml(str: string): string {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  const safeSubject = escapeHtml(subject);
+  const safeBody = escapeHtml(body);
+
   const htmlBody = `
     <!DOCTYPE html>
     <html>
@@ -73,8 +86,8 @@ export async function POST(
         <div style="border-bottom: 2px solid #eee; padding-bottom: 16px; margin-bottom: 24px;">
           <h2 style="margin: 0; color: #111;">Astrevix</h2>
         </div>
-        <h3 style="color: #111;">${subject}</h3>
-        <div style="white-space: pre-wrap;">${body}</div>
+        <h3 style="color: #111;">${safeSubject}</h3>
+        <div style="white-space: pre-wrap;">${safeBody}</div>
         <div style="border-top: 2px solid #eee; padding-top: 16px; margin-top: 32px; font-size: 12px; color: #888;">
           This email was sent by the Astrevix team.
         </div>

@@ -32,7 +32,11 @@ export async function GET(request: Request) {
   }
 
   if (search) {
-    query = query.or(`name.ilike.%${search}%,slug.ilike.%${search}%`);
+    // Sanitize search input to prevent filter injection
+    const sanitized = search.replace(/[^a-zA-Z0-9\s@.\-_]/g, "").slice(0, 100);
+    if (sanitized) {
+      query = query.or(`name.ilike.%${sanitized}%,slug.ilike.%${sanitized}%`);
+    }
   }
 
   const { data: businesses, count, error } = await query;

@@ -48,9 +48,13 @@ export async function GET(request: Request) {
   }
 
   if (search) {
-    query = query.or(
-      `code.ilike.%${search}%,business_name.ilike.%${search}%,business_email.ilike.%${search}%`
-    );
+    // Sanitize search input to prevent filter injection
+    const sanitized = search.replace(/[^a-zA-Z0-9\s@.\-_]/g, "").slice(0, 100);
+    if (sanitized) {
+      query = query.or(
+        `code.ilike.%${sanitized}%,business_name.ilike.%${sanitized}%,business_email.ilike.%${sanitized}%`
+      );
+    }
   }
 
   const { data: inviteCodes, count, error } = await query;
