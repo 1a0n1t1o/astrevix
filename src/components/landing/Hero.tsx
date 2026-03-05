@@ -37,7 +37,7 @@ const floatingBadges: FloatingBadge[] = [
   },
   {
     icon: <Star className="h-3.5 w-3.5" />,
-    label: "5-star review posted",
+    label: "58 pending submissions",
     accentColor: "#D97706",
     className: "left-[4%] bottom-[18%] lg:left-[8%]",
     fromX: -30,
