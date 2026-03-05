@@ -210,29 +210,67 @@ export default function Hero() {
               }}
             />
 
+            {/* Side buttons — right side (power) */}
+            <div
+              className="pointer-events-none absolute -right-[3px] top-[28%] z-10 w-[3px] rounded-r-sm md:-right-[3.5px] md:w-[3.5px]"
+              style={{
+                height: "60px",
+                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                boxShadow: "1px 0 2px rgba(0,0,0,0.3)",
+              }}
+            />
+
+            {/* Side buttons — left side (volume up) */}
+            <div
+              className="pointer-events-none absolute -left-[3px] top-[22%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
+              style={{
+                height: "36px",
+                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
+              }}
+            />
+            {/* Side buttons — left side (volume down) */}
+            <div
+              className="pointer-events-none absolute -left-[3px] top-[32%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
+              style={{
+                height: "36px",
+                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
+              }}
+            />
+            {/* Side buttons — left side (mute toggle) */}
+            <div
+              className="pointer-events-none absolute -left-[3px] top-[15%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
+              style={{
+                height: "20px",
+                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
+              }}
+            />
+
             {/* Outer phone body */}
             <div
-              className="relative overflow-hidden rounded-[48px] bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] p-[11px] md:rounded-[52px] md:p-[12px]"
+              className="relative overflow-hidden rounded-[44px] bg-gradient-to-b from-[#2a2a2a] to-[#111111] p-[6px] md:rounded-[48px] md:p-[7px]"
               style={{
                 boxShadow:
-                  "0 40px 80px -12px rgba(0, 0, 0, 0.4), 0 20px 40px -8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.08) inset, 0 -2px 8px rgba(0,0,0,0.3) inset",
+                  "0 40px 80px -12px rgba(0, 0, 0, 0.4), 0 20px 40px -8px rgba(0, 0, 0, 0.2), 0 0 0 0.5px rgba(255,255,255,0.1) inset, 0 -2px 8px rgba(0,0,0,0.3) inset",
               }}
             >
               {/* Subtle frame shine */}
               <div
-                className="pointer-events-none absolute inset-0 rounded-[48px] md:rounded-[52px]"
+                className="pointer-events-none absolute inset-0 rounded-[44px] md:rounded-[48px]"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)",
+                    "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.04) 100%)",
                 }}
               />
 
               {/* Dynamic Island (notch) */}
-              <div className="absolute left-1/2 top-[14px] z-20 h-[24px] w-[100px] -translate-x-1/2 rounded-full bg-black md:h-[26px] md:w-[110px]" />
+              <div className="absolute left-1/2 top-[12px] z-20 h-[22px] w-[90px] -translate-x-1/2 rounded-full bg-black md:h-[24px] md:w-[100px]" />
 
               {/* Inner screen */}
               <div
-                className="relative overflow-hidden rounded-[37px] bg-[#FEFCFA] md:rounded-[40px]"
+                className="relative overflow-hidden rounded-[38px] bg-[#FEFCFA] md:rounded-[41px]"
                 style={{ aspectRatio: "9/19.5" }}
               >
                 {/* Phone content mockup */}
