@@ -8,6 +8,7 @@ import {
   type Platform,
   type BusinessData,
 } from "@/lib/data";
+import { formatPhoneInput, parsePhoneToE164, isValidUSPhone } from "@/lib/phone-utils";
 import {
   Instagram,
   Music,
@@ -51,13 +52,13 @@ function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
 export default function SubmitForm({ business }: { business: BusinessData }) {
   const [postLink, setPostLink] = useState("");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
   const [duplicateLink, setDuplicateLink] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [touched, setTouched] = useState({ postLink: false, email: false });
+  const [touched, setTouched] = useState({ postLink: false, phone: false });
 
   const detectedPlatform = detectPlatform(postLink);
 
@@ -65,15 +66,15 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
     postLink.trim() === "" ||
     postLink.startsWith("http://") ||
     postLink.startsWith("https://");
-  const isValidEmail =
-    email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const phoneDigits = phone.replace(/\D/g, "");
+  const isPhoneValid = phone.trim() === "" || isValidUSPhone(phone);
 
   const isValid =
     postLink.trim() !== "" &&
     isValidUrl &&
     name.trim() !== "" &&
-    email.trim() !== "" &&
-    isValidEmail;
+    phoneDigits.length === 10 &&
+    isPhoneValid;
 
   async function handleSubmit() {
     if (!isValid || submitting) return;
@@ -81,12 +82,19 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
     setDuplicateLink(false);
     setFormError(null);
 
+    const e164 = parsePhoneToE164(phone);
+    if (!e164) {
+      setFormError("Invalid phone number.");
+      setSubmitting(false);
+      return;
+    }
+
     const { error, code } = await createSubmission({
       businessId: business.id,
       postUrl: postLink,
       detectedPlatform: detectedPlatform,
       customerName: name,
-      customerEmail: email,
+      customerPhone: e164,
     });
 
     setSubmitting(false);
@@ -216,7 +224,7 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
             {business.reward}
           </p>
           <p className="mt-2 text-xs" style={{ color: "#8B8B9B" }}>
-            We&apos;ll send it to the email you provided once your post is
+            We&apos;ll text it to the number you provided once your post is
             approved.
           </p>
         </div>
@@ -381,36 +389,48 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
           />
         </div>
 
-        {/* Email */}
+        {/* Phone number */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium">
-            Email
+          <label htmlFor="phone" className="block text-sm font-medium">
+            Phone number
           </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            className="mt-1.5 w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
-            style={{
-              borderRadius: "14px",
-              border: "1.5px solid #E0DDD8",
-              padding: "16px",
-            }}
-            onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
-            onBlur={(e) => {
-              e.target.style.borderColor = "#E0DDD8";
-              setTouched((t) => ({ ...t, email: true }));
-            }}
-          />
-          {touched.email && !isValidEmail ? (
+          <div className="relative mt-1.5">
+            <span
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-sm text-gray-500"
+            >
+              <span className="text-base leading-none">🇺🇸</span> +1
+            </span>
+            <input
+              id="phone"
+              type="tel"
+              inputMode="numeric"
+              value={phone}
+              onChange={(e) => {
+                const formatted = formatPhoneInput(e.target.value);
+                setPhone(formatted);
+              }}
+              placeholder="(555) 123-4567"
+              className="w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
+              style={{
+                borderRadius: "14px",
+                border: "1.5px solid #E0DDD8",
+                padding: "16px",
+                paddingLeft: "72px",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#E0DDD8";
+                setTouched((t) => ({ ...t, phone: true }));
+              }}
+            />
+          </div>
+          {touched.phone && !isPhoneValid ? (
             <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
-              Please enter a valid email address
+              Please enter a valid 10-digit US phone number
             </p>
           ) : (
             <p className="mt-1.5 text-xs text-gray-400">
-              Only used to send your reward. We never spam.
+              Only used to text your reward. We never spam.
             </p>
           )}
         </div>

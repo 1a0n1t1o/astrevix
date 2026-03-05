@@ -43,7 +43,7 @@ export async function PATCH(
     );
   }
 
-  // Fire-and-forget email notification
+  // Fire-and-forget SMS notification
   try {
     const origin = request.headers.get("origin") || request.headers.get("referer")?.replace(/\/[^/]*$/, "") || "";
     fetch(`${origin}/api/submissions/${id}/notify`, {

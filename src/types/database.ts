@@ -27,7 +27,7 @@ export interface Business {
   qr_default_branding: boolean | null;
   // Submission limits
   max_rewards_per_customer: number | null;
-  // Email template
+  // Email template (legacy)
   email_subject: string | null;
   email_header: string | null;
   email_body: string | null;
@@ -35,6 +35,13 @@ export interface Business {
   email_brand_color: string | null;
   reward_file_url: string | null;
   reward_file_name: string | null;
+  // SMS templates
+  sms_confirmation_template: string | null;
+  sms_confirmation_enabled: boolean | null;
+  sms_approval_template: string | null;
+  sms_approval_enabled: boolean | null;
+  sms_rejection_template: string | null;
+  sms_rejection_enabled: boolean | null;
   // Terms & Conditions
   terms_conditions: string | null;
   // Admin fields
@@ -49,7 +56,8 @@ export interface Submission {
   post_url: string;
   detected_platform: string | null;
   customer_name: string;
-  customer_email: string;
+  customer_email: string | null;
+  customer_phone: string | null;
   status: "pending" | "approved" | "rejected";
   reviewed_at: string | null;
   reward_given: string | null;
@@ -86,9 +94,22 @@ export interface RewardSent {
   id: string;
   business_id: string;
   submission_id: string;
-  customer_email: string;
+  customer_email: string | null;
+  customer_phone: string | null;
   reward_type: string | null;
   sent_at: string;
+}
+
+export interface SmsLog {
+  id: string;
+  business_id: string;
+  submission_id: string | null;
+  customer_phone: string;
+  message_type: "confirmation" | "approval" | "rejection";
+  message_body: string;
+  twilio_sid: string | null;
+  status: string;
+  created_at: string;
 }
 
 // User profile (stored in Supabase Auth user_metadata)

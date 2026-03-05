@@ -12,8 +12,8 @@ export default async function SubmissionsPage() {
     .eq("business_id", business.id)
     .order("created_at", { ascending: false });
 
-  const hasEmailTemplate = Boolean(
-    business.email_subject || business.email_header || business.email_body
+  const hasSmsTemplate = Boolean(
+    business.sms_approval_template || business.sms_confirmation_template
   );
 
   return (
@@ -31,17 +31,12 @@ export default async function SubmissionsPage() {
         submissions={(submissions as Submission[]) || []}
         businessId={business.id}
         rewardDescription={business.reward_description}
-        hasEmailTemplate={hasEmailTemplate}
-        emailTemplateData={{
-          subject: business.email_subject ?? null,
-          header: business.email_header ?? null,
-          body: business.email_body ?? null,
-          footer: business.email_footer ?? null,
-          brandColor: business.email_brand_color || business.brand_color,
-          logoUrl: business.logo_url,
-          rewardFileUrl: business.reward_file_url ?? null,
-          rewardFileName: business.reward_file_name ?? null,
+        hasSmsTemplate={hasSmsTemplate}
+        smsTemplateData={{
+          approvalTemplate: business.sms_approval_template ?? null,
+          rejectionTemplate: business.sms_rejection_template ?? null,
           businessName: business.name,
+          rewardDescription: business.reward_description,
         }}
       />
     </div>

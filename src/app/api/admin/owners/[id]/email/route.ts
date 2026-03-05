@@ -3,7 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 export async function POST(
   request: Request,
@@ -81,7 +83,7 @@ export async function POST(
   `.trim();
 
   try {
-    const { error: sendError } = await resend.emails.send({
+    const { error: sendError } = await getResend().emails.send({
       from: fromAddress,
       to: ownerData.user.email,
       subject,

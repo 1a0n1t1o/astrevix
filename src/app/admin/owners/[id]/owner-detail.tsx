@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Shield, Trash2, Mail, Crown, Search, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { formatPhoneForDisplay } from "@/lib/phone-utils";
 
 interface Business {
   id: string;
@@ -35,7 +36,8 @@ interface Stats {
 interface Submission {
   id: string;
   customer_name: string;
-  customer_email: string;
+  customer_email?: string;
+  customer_phone: string;
   post_url: string;
   detected_platform: string;
   status: string;
@@ -602,7 +604,7 @@ export default function OwnerDetail({
                         Customer
                       </th>
                       <th className="pb-3 pr-4 font-medium text-gray-500">
-                        Email
+                        Phone
                       </th>
                       <th className="pb-3 pr-4 font-medium text-gray-500">
                         Post Link
@@ -620,7 +622,7 @@ export default function OwnerDetail({
                           {sub.customer_name}
                         </td>
                         <td className="py-3 pr-4 text-gray-500">
-                          {sub.customer_email}
+                          {formatPhoneForDisplay(sub.customer_phone)}
                         </td>
                         <td className="py-3 pr-4">
                           <a

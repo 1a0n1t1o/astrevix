@@ -1,8 +1,8 @@
 import { getAuthenticatedBusiness } from "@/lib/get-business";
-import EmailEditor from "./email-editor";
+import SmsEditor from "./sms-editor";
 import type { Business } from "@/types/database";
 
-export default async function EmailPage() {
+export default async function SmsPage() {
   const { user, business } = await getAuthenticatedBusiness();
   if (!user || !business) return null;
 
@@ -10,14 +10,14 @@ export default async function EmailPage() {
     <div className="lg:-mr-4">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-900">
-          Email Template
+          SMS Templates
         </h1>
         <p className="mt-1 text-sm text-gray-500">
-          Customize the reward email your customers receive when approved
+          Customize the text messages your customers receive
         </p>
       </div>
 
-      <EmailEditor business={business as Business} />
+      <SmsEditor business={business as Business} />
     </div>
   );
 }

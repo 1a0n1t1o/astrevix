@@ -31,6 +31,12 @@ export async function PATCH(request: Request) {
     reward_file_url,
     reward_file_name,
     terms_conditions,
+    sms_confirmation_template,
+    sms_confirmation_enabled,
+    sms_approval_template,
+    sms_approval_enabled,
+    sms_rejection_template,
+    sms_rejection_enabled,
   } = body;
 
   // Validate required fields
@@ -78,6 +84,12 @@ export async function PATCH(request: Request) {
       ...(reward_file_url !== undefined && { reward_file_url: reward_file_url || null }),
       ...(reward_file_name !== undefined && { reward_file_name: reward_file_name || null }),
       ...(terms_conditions !== undefined && { terms_conditions: terms_conditions || null }),
+      ...(sms_confirmation_template !== undefined && { sms_confirmation_template: sms_confirmation_template || null }),
+      ...(sms_confirmation_enabled !== undefined && { sms_confirmation_enabled }),
+      ...(sms_approval_template !== undefined && { sms_approval_template: sms_approval_template || null }),
+      ...(sms_approval_enabled !== undefined && { sms_approval_enabled }),
+      ...(sms_rejection_template !== undefined && { sms_rejection_template: sms_rejection_template || null }),
+      ...(sms_rejection_enabled !== undefined && { sms_rejection_enabled }),
       updated_at: new Date().toISOString(),
     })
     .eq("owner_id", user.id);

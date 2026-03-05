@@ -65,7 +65,7 @@ export async function createSubmission(params: {
   postUrl: string;
   detectedPlatform: string | null;
   customerName: string;
-  customerEmail: string;
+  customerPhone: string;
 }): Promise<{ error: string | null; code: string | null }> {
   try {
     const res = await fetch("/api/submissions/create", {
@@ -76,7 +76,7 @@ export async function createSubmission(params: {
         post_url: params.postUrl,
         detected_platform: params.detectedPlatform,
         customer_name: params.customerName,
-        customer_email: params.customerEmail,
+        customer_phone: params.customerPhone,
       }),
     });
 

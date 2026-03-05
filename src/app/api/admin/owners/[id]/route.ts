@@ -98,7 +98,7 @@ export async function GET(
 
   if (subSearch) {
     submissionsQuery = submissionsQuery.or(
-      `customer_name.ilike.%${subSearch}%,customer_email.ilike.%${subSearch}%,post_url.ilike.%${subSearch}%`
+      `customer_name.ilike.%${subSearch}%,customer_phone.ilike.%${subSearch}%,post_url.ilike.%${subSearch}%`
     );
   }
 
