@@ -1,17 +1,25 @@
 import { getAuthenticatedBusiness } from "@/lib/get-business";
 import SubmissionsList from "./submissions-list";
-import type { Submission } from "@/types/database";
+import type { Submission, RewardTier } from "@/types/database";
 
 export default async function SubmissionsPage() {
   const { user, business, supabase } = await getAuthenticatedBusiness();
   if (!user || !business) return null;
 
-  const { data: submissions } = await supabase
-    .from("submissions")
-    .select("*")
-    .eq("business_id", business.id)
-    .order("created_at", { ascending: false })
-    .limit(50);
+  // Fetch submissions and reward tiers in parallel
+  const [{ data: submissions }, { data: rewardTiers }] = await Promise.all([
+    supabase
+      .from("submissions")
+      .select("*")
+      .eq("business_id", business.id)
+      .order("created_at", { ascending: false })
+      .limit(50),
+    supabase
+      .from("reward_tiers")
+      .select("*")
+      .eq("business_id", business.id)
+      .order("sort_order", { ascending: true }),
+  ]);
 
   const hasSmsTemplate = Boolean(
     business.sms_approval_template || business.sms_confirmation_template
@@ -32,6 +40,7 @@ export default async function SubmissionsPage() {
         submissions={(submissions as Submission[]) || []}
         businessId={business.id}
         rewardDescription={business.reward_description}
+        rewardTiers={(rewardTiers as RewardTier[]) || []}
         hasSmsTemplate={hasSmsTemplate}
         smsTemplateData={{
           approvalTemplate: business.sms_approval_template ?? null,

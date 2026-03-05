@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Submission } from "@/types/database";
+import type { Submission, RewardTier } from "@/types/database";
 import { formatPhoneForDisplay } from "@/lib/phone-utils";
 import {
   Instagram,
@@ -20,6 +20,11 @@ import {
   ChevronDown,
   Search,
   X,
+  Shield,
+  ShieldCheck,
+  ShieldX,
+  Star,
+  AlertTriangle,
 } from "lucide-react";
 
 type FilterTab = "all" | "pending" | "approved" | "rejected";
@@ -71,6 +76,54 @@ function formatTime(dateStr: string): string {
   });
 }
 
+const TIER_PLATFORM_ICONS: Record<string, React.ReactNode> = {
+  instagram: <Instagram className="h-4 w-4" />,
+  tiktok: <Music className="h-4 w-4" />,
+  facebook: <Facebook className="h-4 w-4" />,
+  google: <Star className="h-4 w-4" />,
+};
+
+const TIER_PLATFORM_COLORS: Record<string, { bg: string; text: string }> = {
+  instagram: { bg: "#fce7f3", text: "#db2777" },
+  tiktok: { bg: "#ede9fe", text: "#7c3aed" },
+  facebook: { bg: "#dbeafe", text: "#2563eb" },
+  google: { bg: "#fef3c7", text: "#d97706" },
+};
+
+function getVerificationInfo(sub: Submission) {
+  if (!sub.verification_deadline || !sub.verification_status) return null;
+
+  const deadline = new Date(sub.verification_deadline);
+  const now = new Date();
+  const isPast = now >= deadline;
+  const diffMs = deadline.getTime() - now.getTime();
+  const diffHours = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60)));
+
+  let timeLabel = "";
+  if (isPast) {
+    timeLabel = "Deadline passed";
+  } else if (diffHours > 24) {
+    const days = Math.ceil(diffHours / 24);
+    timeLabel = `${days} day${days > 1 ? "s" : ""} remaining`;
+  } else {
+    timeLabel = `${diffHours} hour${diffHours !== 1 ? "s" : ""} remaining`;
+  }
+
+  return {
+    status: sub.verification_status,
+    isPast,
+    diffHours,
+    timeLabel,
+    deadline: deadline.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    }),
+  };
+}
+
 interface SmsTemplateData {
   approvalTemplate: string | null;
   rejectionTemplate: string | null;
@@ -82,6 +135,7 @@ interface SubmissionsListProps {
   readonly submissions: Submission[];
   readonly businessId: string;
   readonly rewardDescription: string;
+  readonly rewardTiers: RewardTier[];
   readonly hasSmsTemplate: boolean;
   readonly smsTemplateData: SmsTemplateData;
 }
@@ -108,6 +162,7 @@ export default function SubmissionsList({
   submissions,
   businessId,
   rewardDescription,
+  rewardTiers,
   hasSmsTemplate,
   smsTemplateData,
 }: SubmissionsListProps) {
@@ -115,6 +170,7 @@ export default function SubmissionsList({
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [rewardValue, setRewardValue] = useState<string>("");
   const [commentValue, setCommentValue] = useState<string>("");
   const [personalNoteOpen, setPersonalNoteOpen] = useState(false);
@@ -124,6 +180,9 @@ export default function SubmissionsList({
 
   // Suppress unused variable warning
   void businessId;
+
+  // Build a lookup map for reward tiers
+  const tierMap = new Map(rewardTiers.map((t) => [t.id, t]));
 
   const query = searchQuery.toLowerCase().trim();
 
@@ -149,9 +208,26 @@ export default function SubmissionsList({
       setPersonalNoteOpen(false);
     } else {
       setExpandedId(id);
-      setRewardValue(rewardDescription);
+      // Pre-fill reward with tier-specific value if available
+      const sub = submissions.find((s) => s.id === id);
+      const tier = sub?.reward_tier_id ? tierMap.get(sub.reward_tier_id) : null;
+      setRewardValue(tier?.reward_description || rewardDescription);
       setCommentValue("");
       setPersonalNoteOpen(false);
+    }
+  }
+
+  async function handleVerify(id: string, action: "verify" | "fail") {
+    setVerifyingId(id);
+    try {
+      await fetch(`/api/submissions/${id}/verify?action=${action}`, {
+        method: "PATCH",
+      });
+      router.refresh();
+    } catch {
+      // silently fail
+    } finally {
+      setVerifyingId(null);
     }
   }
 
@@ -368,13 +444,24 @@ export default function SubmissionsList({
 
                     {/* Customer info */}
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-medium text-gray-900">
                           {sub.customer_name}
                         </p>
                         {platformLabel && (
                           <span className="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
                             {platformLabel}
+                          </span>
+                        )}
+                        {sub.reward_tier_id && tierMap.get(sub.reward_tier_id) && (
+                          <span
+                            className="rounded-lg px-2 py-0.5 text-xs font-medium"
+                            style={{
+                              backgroundColor: TIER_PLATFORM_COLORS[tierMap.get(sub.reward_tier_id)!.platform]?.bg || "#f3f4f6",
+                              color: TIER_PLATFORM_COLORS[tierMap.get(sub.reward_tier_id)!.platform]?.text || "#6b7280",
+                            }}
+                          >
+                            {tierMap.get(sub.reward_tier_id)!.tier_name}
                           </span>
                         )}
                       </div>
@@ -457,6 +544,111 @@ export default function SubmissionsList({
                               </a>
                             </div>
                           </div>
+
+                          {/* Tier info + Verification status */}
+                          {(() => {
+                            const tier = sub.reward_tier_id ? tierMap.get(sub.reward_tier_id) : null;
+                            const vInfo = getVerificationInfo(sub);
+                            if (!tier && !vInfo) return null;
+
+                            return (
+                              <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
+                                {/* Tier info */}
+                                {tier && (
+                                  <div className="flex items-center gap-3">
+                                    <div
+                                      className="flex h-8 w-8 items-center justify-center rounded-lg"
+                                      style={{
+                                        backgroundColor: TIER_PLATFORM_COLORS[tier.platform]?.bg || "#f3f4f6",
+                                        color: TIER_PLATFORM_COLORS[tier.platform]?.text || "#6b7280",
+                                      }}
+                                    >
+                                      {TIER_PLATFORM_ICONS[tier.platform] || <Gift className="h-4 w-4" />}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-xs font-medium text-gray-500">{tier.tier_name}</p>
+                                      <p className="text-sm font-semibold text-gray-900">{tier.reward_description}</p>
+                                    </div>
+                                    {tier.reward_value && (
+                                      <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                                        {tier.reward_value}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+
+                                {/* Verification status */}
+                                {vInfo && (
+                                  <div className={`${tier ? "mt-3 border-t border-gray-100 pt-3" : ""}`}>
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        {vInfo.status === "verified" ? (
+                                          <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                                        ) : vInfo.status === "failed" ? (
+                                          <ShieldX className="h-4 w-4 text-red-500" />
+                                        ) : vInfo.status === "expired" ? (
+                                          <AlertTriangle className="h-4 w-4 text-amber-500" />
+                                        ) : (
+                                          <Shield className="h-4 w-4 text-blue-500" />
+                                        )}
+                                        <span className="text-xs font-medium text-gray-600">
+                                          Verification:{" "}
+                                          <span
+                                            className={`font-semibold capitalize ${
+                                              vInfo.status === "verified"
+                                                ? "text-emerald-600"
+                                                : vInfo.status === "failed"
+                                                  ? "text-red-600"
+                                                  : vInfo.status === "expired"
+                                                    ? "text-amber-600"
+                                                    : "text-blue-600"
+                                            }`}
+                                          >
+                                            {vInfo.status}
+                                          </span>
+                                        </span>
+                                      </div>
+                                      <span className="text-xs text-gray-500">
+                                        {vInfo.status === "pending" ? vInfo.timeLabel : `Deadline: ${vInfo.deadline}`}
+                                      </span>
+                                    </div>
+
+                                    {/* Verify/Fail buttons — only show for pending submissions */}
+                                    {vInfo.status === "pending" && !isReviewed && (
+                                      <div className="mt-3 flex gap-2">
+                                        <button
+                                          onClick={() => handleVerify(sub.id, "verify")}
+                                          disabled={!vInfo.isPast || verifyingId === sub.id}
+                                          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                          style={{
+                                            backgroundColor: vInfo.isPast ? "#ecfdf5" : "#f3f4f6",
+                                            color: vInfo.isPast ? "#059669" : "#9ca3af",
+                                            border: `1px solid ${vInfo.isPast ? "#a7f3d0" : "#e5e7eb"}`,
+                                          }}
+                                          title={!vInfo.isPast ? "Wait until the verification deadline passes" : "Mark the post as verified"}
+                                        >
+                                          {verifyingId === sub.id ? (
+                                            <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-emerald-300/30 border-t-emerald-500" />
+                                          ) : (
+                                            <ShieldCheck className="h-3.5 w-3.5" />
+                                          )}
+                                          {vInfo.isPast ? "Verify Post" : `Verify in ${vInfo.diffHours}h`}
+                                        </button>
+                                        <button
+                                          onClick={() => handleVerify(sub.id, "fail")}
+                                          disabled={verifyingId === sub.id}
+                                          className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                          <ShieldX className="h-3.5 w-3.5" />
+                                          Post Removed
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()}
 
                           {/* Reviewed submission details */}
                           {isReviewed && (
@@ -602,13 +794,25 @@ export default function SubmissionsList({
                                 </AnimatePresence>
                               </div>
 
-                              {/* Action buttons */}
+                              {/* Action buttons — approval gated by verification for tiered submissions */}
                               <div className="flex gap-2">
                                 <button
                                   onClick={() =>
                                     handleReview(sub.id, "approved")
                                   }
-                                  disabled={isUpdating}
+                                  disabled={
+                                    isUpdating ||
+                                    (!!sub.reward_tier_id &&
+                                      !!sub.verification_status &&
+                                      sub.verification_status !== "verified")
+                                  }
+                                  title={
+                                    sub.reward_tier_id &&
+                                    sub.verification_status &&
+                                    sub.verification_status !== "verified"
+                                      ? "Post must be verified before approval"
+                                      : undefined
+                                  }
                                   className="flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   {isUpdating ? (

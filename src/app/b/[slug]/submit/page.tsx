@@ -4,10 +4,13 @@ import SubmitForm from "./submit-form";
 
 export default async function SubmitPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ tier?: string }>;
 }) {
   const { slug } = await params;
+  const { tier: tierId } = await searchParams;
   const business = await getBusinessBySlug(slug);
   if (!business) notFound();
 
@@ -28,5 +31,5 @@ export default async function SubmitPage({
     );
   }
 
-  return <SubmitForm business={business} />;
+  return <SubmitForm business={business} selectedTierId={tierId || null} />;
 }

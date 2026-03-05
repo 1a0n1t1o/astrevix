@@ -1,10 +1,17 @@
 import { getAuthenticatedBusiness } from "@/lib/get-business";
 import CustomizeEditor from "./customize-editor";
-import type { Business } from "@/types/database";
+import type { Business, RewardTier } from "@/types/database";
 
 export default async function CustomizePage() {
-  const { user, business } = await getAuthenticatedBusiness();
+  const { user, business, supabase } = await getAuthenticatedBusiness();
   if (!user || !business) return null;
+
+  // Fetch reward tiers for this business
+  const { data: rewardTiers } = await supabase
+    .from("reward_tiers")
+    .select("*")
+    .eq("business_id", business.id)
+    .order("sort_order", { ascending: true });
 
   return (
     <div className="lg:-mr-4">
@@ -17,7 +24,10 @@ export default async function CustomizePage() {
         </p>
       </div>
 
-      <CustomizeEditor business={business as Business} />
+      <CustomizeEditor
+        business={business as Business}
+        rewardTiers={(rewardTiers as RewardTier[]) || []}
+      />
     </div>
   );
 }

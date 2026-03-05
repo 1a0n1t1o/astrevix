@@ -4,7 +4,9 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Business } from "@/types/database";
+import type { Business, RewardTier } from "@/types/database";
+import { TIER_PLATFORM_EMOJIS } from "@/lib/data";
+import RewardTiersEditor from "./reward-tiers-editor";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 16 },
@@ -54,9 +56,10 @@ const PREVIEW_STEPS = [
 
 interface CustomizeEditorProps {
   readonly business: Business;
+  readonly rewardTiers: RewardTier[];
 }
 
-export default function CustomizeEditor({ business }: CustomizeEditorProps) {
+export default function CustomizeEditor({ business, rewardTiers }: CustomizeEditorProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const colorInputRef = useRef<HTMLInputElement>(null);
@@ -83,6 +86,8 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [hexInput, setHexInput] = useState(business.brand_color || "#E8553A");
+  const [showTiersEditor, setShowTiersEditor] = useState(rewardTiers.length > 0);
+  const [liveTiers, setLiveTiers] = useState<RewardTier[]>(rewardTiers);
 
   // Suppress unused variable
   void createClient;
@@ -438,7 +443,7 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
             </div>
           </motion.section>
 
-          {/* Reward */}
+          {/* Reward Tiers */}
           <motion.section
             custom={3}
             initial="hidden"
@@ -447,41 +452,73 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
             className="rounded-2xl border border-gray-100 bg-white/70 p-6"
             style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
           >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[3]}` }}>Reward</h2>
-            <p className="mt-1 text-sm text-gray-500">What customers get for posting about you</p>
+            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[3]}` }}>Reward Tiers</h2>
+            <p className="mt-1 text-sm text-gray-500">Offer different rewards for different types of content</p>
 
-            <div className="mt-5 space-y-4">
-              <div>
-                <label htmlFor="reward" className="mb-1.5 block text-sm font-medium text-gray-700">
-                  Reward description
-                </label>
-                <input
-                  id="reward"
-                  type="text"
-                  value={rewardDescription}
-                  onChange={(e) => setRewardDescription(e.target.value)}
-                  placeholder="e.g. $10 off your next visit"
-                  className={inputClasses}
+            <div className="mt-5">
+              {showTiersEditor ? (
+                <RewardTiersEditor
+                  businessId={business.id}
+                  initialTiers={liveTiers}
+                  onToast={(msg) => {
+                    setToast(msg);
+                    setTimeout(() => setToast(null), 3000);
+                    // Refresh tiers for preview
+                    fetch("/api/business/reward-tiers")
+                      .then((r) => r.json())
+                      .then((d) => { if (d.tiers) setLiveTiers(d.tiers); })
+                      .catch(() => {});
+                  }}
                 />
-              </div>
+              ) : (
+                <>
+                  {/* Legacy single reward */}
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="reward" className="mb-1.5 block text-sm font-medium text-gray-700">
+                        Reward description
+                      </label>
+                      <input
+                        id="reward"
+                        type="text"
+                        value={rewardDescription}
+                        onChange={(e) => setRewardDescription(e.target.value)}
+                        placeholder="e.g. $10 off your next visit"
+                        className={inputClasses}
+                      />
+                    </div>
 
-              <div>
-                <label htmlFor="contentType" className="mb-1.5 block text-sm font-medium text-gray-700">
-                  Content type
-                </label>
-                <select
-                  id="contentType"
-                  value={contentType}
-                  onChange={(e) => setContentType(e.target.value)}
-                  className={inputClasses}
-                >
-                  {CONTENT_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                    <div>
+                      <label htmlFor="contentType" className="mb-1.5 block text-sm font-medium text-gray-700">
+                        Content type
+                      </label>
+                      <select
+                        id="contentType"
+                        value={contentType}
+                        onChange={(e) => setContentType(e.target.value)}
+                        className={inputClasses}
+                      >
+                        {CONTENT_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowTiersEditor(true)}
+                      className="mt-2 inline-flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100"
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                      Set up Reward Tiers
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </motion.section>
 
@@ -652,36 +689,81 @@ export default function CustomizeEditor({ business }: CustomizeEditorProps) {
                     )}
                   </div>
 
-                  {/* Reward card — liquid glass */}
-                  <div className="relative mt-6">
-                    <div
-                      className="absolute inset-0 rounded-[20px] opacity-20 blur-xl"
-                      style={{ backgroundColor: brandColor }}
-                    />
-                    <div
-                      className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
-                      style={{
-                        background: "rgba(255,255,255,0.6)",
-                        backdropFilter: "blur(20px)",
-                        WebkitBackdropFilter: "blur(20px)",
-                        border: "1px solid rgba(255,255,255,0.4)",
-                        boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
-                      }}
-                    >
+                  {/* Reward section — tiers or single */}
+                  {liveTiers.filter((t) => t.is_active).length > 0 ? (
+                    <div className="mt-6 space-y-3">
                       <p
-                        className="text-xs font-semibold uppercase tracking-widest"
+                        className="text-center text-xs font-semibold uppercase tracking-widest"
                         style={{ color: brandColor }}
                       >
-                        Your Reward
+                        Choose Your Reward
                       </p>
-                      <p className="mt-3 text-2xl font-bold text-gray-900">
-                        {rewardDescription || "Your reward here"}
-                      </p>
-                      <p className="mt-2 text-sm text-gray-500">
-                        Create a {contentType}
-                      </p>
+                      {liveTiers
+                        .filter((t) => t.is_active)
+                        .sort((a, b) => a.sort_order - b.sort_order)
+                        .map((tier, i) => (
+                          <div
+                            key={tier.id}
+                            className="relative overflow-hidden rounded-[16px] px-4 py-4 transition-all"
+                            style={{
+                              background: i === 0 ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
+                              backdropFilter: "blur(12px)",
+                              border: i === 0 ? `2px solid ${brandColor}40` : "1px solid rgba(255,255,255,0.4)",
+                              boxShadow: i === 0
+                                ? `0 4px 16px ${brandColor}15`
+                                : "0 2px 8px rgba(0,0,0,0.04)",
+                            }}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="text-xl">
+                                {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-medium text-gray-500">
+                                  {tier.tier_name}
+                                </p>
+                                <p className="text-base font-bold text-gray-900">
+                                  {tier.reward_description}
+                                </p>
+                              </div>
+                              <svg className="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                              </svg>
+                            </div>
+                          </div>
+                        ))}
                     </div>
-                  </div>
+                  ) : (
+                    <div className="relative mt-6">
+                      <div
+                        className="absolute inset-0 rounded-[20px] opacity-20 blur-xl"
+                        style={{ backgroundColor: brandColor }}
+                      />
+                      <div
+                        className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
+                        style={{
+                          background: "rgba(255,255,255,0.6)",
+                          backdropFilter: "blur(20px)",
+                          WebkitBackdropFilter: "blur(20px)",
+                          border: "1px solid rgba(255,255,255,0.4)",
+                          boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+                        }}
+                      >
+                        <p
+                          className="text-xs font-semibold uppercase tracking-widest"
+                          style={{ color: brandColor }}
+                        >
+                          Your Reward
+                        </p>
+                        <p className="mt-3 text-2xl font-bold text-gray-900">
+                          {rewardDescription || "Your reward here"}
+                        </p>
+                        <p className="mt-2 text-sm text-gray-500">
+                          Create a {contentType}
+                        </p>
+                      </div>
+                    </div>
+                  )}
 
                   {/* How it works */}
                   <div className="mt-8">

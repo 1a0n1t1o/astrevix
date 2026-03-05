@@ -5,8 +5,10 @@ import {
   detectPlatform,
   createSubmission,
   PLATFORM_INFO,
+  TIER_PLATFORM_EMOJIS,
   type Platform,
   type BusinessData,
+  type RewardTierPublic,
 } from "@/lib/data";
 import { formatPhoneInput, parsePhoneToE164, isValidUSPhone } from "@/lib/phone-utils";
 import {
@@ -19,6 +21,7 @@ import {
   Gift,
   Lock,
   Clock,
+  ArrowRight,
 } from "lucide-react";
 
 const PLATFORM_ICON_MAP: Record<string, React.ReactNode> = {
@@ -49,7 +52,18 @@ function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
   );
 }
 
-export default function SubmitForm({ business }: { business: BusinessData }) {
+export default function SubmitForm({
+  business,
+  selectedTierId,
+}: {
+  business: BusinessData;
+  selectedTierId: string | null;
+}) {
+  const hasTiers = business.rewardTiers.length > 0;
+  const initialTier = selectedTierId
+    ? business.rewardTiers.find((t) => t.id === selectedTierId) || null
+    : null;
+
   const [postLink, setPostLink] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -60,8 +74,13 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
   const [duplicateLink, setDuplicateLink] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [touched, setTouched] = useState({ postLink: false, phone: false });
+  const [selectedTier, setSelectedTier] = useState<RewardTierPublic | null>(initialTier);
+  const [showTierPicker, setShowTierPicker] = useState(false);
 
   const detectedPlatform = detectPlatform(postLink);
+
+  // Reward display: use tier reward or fallback to business reward
+  const displayReward = selectedTier?.reward_description || business.reward;
 
   const isValidUrl =
     postLink.trim() === "" ||
@@ -76,7 +95,8 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
     name.trim() !== "" &&
     phoneDigits.length === 10 &&
     isPhoneValid &&
-    smsConsent;
+    smsConsent &&
+    (!hasTiers || selectedTier !== null);
 
   async function handleSubmit() {
     if (!isValid || submitting) return;
@@ -97,6 +117,7 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
       detectedPlatform: detectedPlatform,
       customerName: name,
       customerPhone: e164,
+      rewardTierId: selectedTier?.id || null,
     });
 
     setSubmitting(false);
@@ -204,8 +225,9 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
           You&apos;re all set!
         </h1>
         <p className="mt-2" style={{ fontSize: "15px", color: "#8B8B9B" }}>
-          {business.name} will review your post and send your reward within 24
-          hours.
+          {selectedTier
+            ? `Your post needs to stay live for ${selectedTier.verification_hours} hours. ${business.name} will verify and send your reward after that.`
+            : `${business.name} will review your post and send your reward within 24 hours.`}
         </p>
 
         {/* Reward summary card */}
@@ -219,15 +241,32 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
           >
             Your Reward
           </p>
+          {selectedTier && (
+            <p className="mt-1 text-xs text-gray-500">
+              {TIER_PLATFORM_EMOJIS[selectedTier.platform] || "🎁"}{" "}
+              {selectedTier.tier_name}
+            </p>
+          )}
           <p
             className="mt-2 font-bold text-brand"
             style={{ fontSize: "22px" }}
           >
-            {business.reward}
+            {displayReward}
           </p>
+          {selectedTier?.reward_value && (
+            <span
+              className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
+              style={{
+                backgroundColor: `${business.brandColor}15`,
+                color: business.brandColor,
+              }}
+            >
+              {selectedTier.reward_value}
+            </span>
+          )}
           <p className="mt-2 text-xs" style={{ color: "#8B8B9B" }}>
             We&apos;ll text it to the number you provided once your post is
-            approved.
+            {selectedTier ? " verified and" : ""} approved.
           </p>
         </div>
 
@@ -292,19 +331,130 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
         </div>
       </div>
 
-      {/* Reward reminder banner */}
-      <div
-        className="mt-5 flex items-center gap-3 rounded-2xl p-4"
-        style={{ backgroundColor: `${business.brandColor}0D` }}
-      >
-        <Gift className="h-5 w-5 shrink-0" style={{ color: business.brandColor }} />
-        <div>
-          <p className="text-sm font-semibold text-brand">
-            {business.reward}
-          </p>
-          <p className="text-xs text-gray-500">After your post is approved</p>
+      {/* Reward reminder banner — tier-aware */}
+      {hasTiers && selectedTier ? (
+        <div
+          className="mt-5 rounded-2xl p-4"
+          style={{ backgroundColor: `${business.brandColor}0D` }}
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-xl">
+              {TIER_PLATFORM_EMOJIS[selectedTier.platform] || "🎁"}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-gray-500">
+                {selectedTier.tier_name}
+              </p>
+              <p className="text-sm font-semibold text-brand">
+                {selectedTier.reward_description}
+              </p>
+              {selectedTier.reward_value && (
+                <span
+                  className="mt-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                  style={{
+                    backgroundColor: `${business.brandColor}15`,
+                    color: business.brandColor,
+                  }}
+                >
+                  {selectedTier.reward_value}
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowTierPicker(!showTierPicker)}
+              className="shrink-0 text-xs font-medium underline"
+              style={{ color: business.brandColor }}
+            >
+              Change
+            </button>
+          </div>
+
+          {/* Tier picker dropdown */}
+          {showTierPicker && (
+            <div className="mt-3 space-y-2 border-t pt-3" style={{ borderColor: `${business.brandColor}20` }}>
+              {business.rewardTiers.map((tier) => (
+                <button
+                  key={tier.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedTier(tier);
+                    setShowTierPicker(false);
+                  }}
+                  className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors ${
+                    tier.id === selectedTier.id
+                      ? "bg-white shadow-sm"
+                      : "hover:bg-white/50"
+                  }`}
+                >
+                  <span className="text-lg">
+                    {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-gray-500">
+                      {tier.tier_name}
+                    </p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {tier.reward_description}
+                    </p>
+                  </div>
+                  {tier.id === selectedTier.id && (
+                    <svg className="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+      ) : hasTiers && !selectedTier ? (
+        /* Tier selection when none is selected yet */
+        <div className="mt-5 space-y-2">
+          <p
+            className="text-center text-xs font-semibold uppercase tracking-widest"
+            style={{ color: business.brandColor }}
+          >
+            Select Your Reward
+          </p>
+          {business.rewardTiers.map((tier) => (
+            <button
+              key={tier.id}
+              type="button"
+              onClick={() => setSelectedTier(tier)}
+              className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+              style={{ border: "1px solid rgba(0,0,0,0.06)" }}
+            >
+              <span className="text-xl">
+                {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-gray-500">
+                  {tier.tier_name}
+                </p>
+                <p className="text-sm font-bold text-gray-900">
+                  {tier.reward_description}
+                </p>
+              </div>
+              <ArrowRight className="h-4 w-4 shrink-0 text-gray-400" />
+            </button>
+          ))}
+        </div>
+      ) : (
+        /* Legacy single reward banner */
+        <div
+          className="mt-5 flex items-center gap-3 rounded-2xl p-4"
+          style={{ backgroundColor: `${business.brandColor}0D` }}
+        >
+          <Gift className="h-5 w-5 shrink-0" style={{ color: business.brandColor }} />
+          <div>
+            <p className="text-sm font-semibold text-brand">
+              {business.reward}
+            </p>
+            <p className="text-xs text-gray-500">After your post is approved</p>
+          </div>
+        </div>
+      )}
 
       {/* General form error */}
       {formError && (

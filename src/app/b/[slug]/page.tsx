@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getBusinessBySlug } from "@/lib/data";
+import { getBusinessBySlug, TIER_PLATFORM_EMOJIS } from "@/lib/data";
 
 const DEFAULT_TERMS = `By submitting content through this page, you agree to the following terms:
 
@@ -102,37 +102,97 @@ export default async function BusinessPage({
         )}
       </div>
 
-      {/* Reward card — liquid glass */}
-      <div className="relative mt-6">
-        {/* Brand color glow behind */}
-        <div
-          className="absolute inset-0 rounded-[20px] opacity-20 blur-xl"
-          style={{ backgroundColor: business.brandColor }}
-        />
-        <div
-          className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
-          style={{
-            background: "rgba(255,255,255,0.6)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(255,255,255,0.4)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
-          }}
-        >
+      {/* Reward section — tiers or single card */}
+      {business.rewardTiers.length > 0 ? (
+        <div className="mt-6 space-y-3">
           <p
-            className="text-xs font-semibold uppercase tracking-widest"
+            className="text-center text-xs font-semibold uppercase tracking-widest"
             style={{ color: business.brandColor }}
           >
-            Your Reward
+            Choose Your Reward
           </p>
-          <p className="mt-3 text-2xl font-bold text-gray-900">
-            {business.reward}
-          </p>
-          <p className="mt-2 text-sm text-gray-500">
-            Create a {business.contentType}
-          </p>
+          {business.rewardTiers.map((tier, i) => (
+            <a
+              key={tier.id}
+              href={`/b/${business.slug}/submit?tier=${tier.id}`}
+              className="block transition-transform active:scale-[0.98]"
+            >
+              <div
+                className="relative overflow-hidden rounded-[20px] px-5 py-5"
+                style={{
+                  background: i === 0 ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.6)",
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                  border: i === 0
+                    ? `2px solid ${business.brandColor}40`
+                    : "1px solid rgba(255,255,255,0.4)",
+                  boxShadow: i === 0
+                    ? `0 8px 24px ${business.brandColor}15`
+                    : "0 4px 16px rgba(0,0,0,0.04)",
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-2xl">
+                    {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-gray-500">
+                      {tier.tier_name}
+                    </p>
+                    <p className="text-lg font-bold text-gray-900">
+                      {tier.reward_description}
+                    </p>
+                    {tier.reward_value && (
+                      <span
+                        className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                        style={{
+                          backgroundColor: `${business.brandColor}15`,
+                          color: business.brandColor,
+                        }}
+                      >
+                        {tier.reward_value}
+                      </span>
+                    )}
+                  </div>
+                  <svg className="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className="relative mt-6">
+          <div
+            className="absolute inset-0 rounded-[20px] opacity-20 blur-xl"
+            style={{ backgroundColor: business.brandColor }}
+          />
+          <div
+            className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
+            style={{
+              background: "rgba(255,255,255,0.6)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.4)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+            }}
+          >
+            <p
+              className="text-xs font-semibold uppercase tracking-widest"
+              style={{ color: business.brandColor }}
+            >
+              Your Reward
+            </p>
+            <p className="mt-3 text-2xl font-bold text-gray-900">
+              {business.reward}
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              Create a {business.contentType}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* How it works */}
       <div className="mt-8">

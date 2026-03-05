@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     detected_platform,
     customer_name,
     customer_phone,
+    reward_tier_id,
   } = body;
 
   // Basic validation
@@ -60,6 +61,32 @@ export async function POST(request: Request) {
     );
   }
 
+  // If a reward tier is specified, look it up to get verification_hours
+  let verificationDeadline: string | null = null;
+  let verificationStatus: string | null = null;
+
+  if (reward_tier_id) {
+    const { data: tier } = await supabase
+      .from("reward_tiers")
+      .select("id, verification_hours, is_active, reward_description")
+      .eq("id", reward_tier_id)
+      .eq("business_id", business_id)
+      .single();
+
+    if (!tier || !tier.is_active) {
+      return NextResponse.json(
+        { error: "Selected reward tier is not available.", code: "INVALID_TIER" },
+        { status: 400 }
+      );
+    }
+
+    // Calculate verification deadline: now + verification_hours
+    const deadline = new Date();
+    deadline.setHours(deadline.getHours() + tier.verification_hours);
+    verificationDeadline = deadline.toISOString();
+    verificationStatus = "pending";
+  }
+
   // Insert the submission — the database handles enforcement:
   //   - Unique index on (business_id, post_url) blocks duplicate links
   //   - BEFORE INSERT trigger checks per-customer submission limit (by phone)
@@ -69,6 +96,9 @@ export async function POST(request: Request) {
     detected_platform: detected_platform || null,
     customer_name: customer_name.trim(),
     customer_phone: normalizedPhone,
+    reward_tier_id: reward_tier_id || null,
+    verification_deadline: verificationDeadline,
+    verification_status: verificationStatus,
   });
 
   if (error) {

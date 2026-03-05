@@ -63,6 +63,26 @@ export interface Submission {
   reward_given: string | null;
   review_comment: string | null;
   created_at: string;
+  // Tiered rewards & verification
+  reward_tier_id: string | null;
+  verification_deadline: string | null;
+  verification_status: "pending" | "verified" | "expired" | "failed" | null;
+  verified_at: string | null;
+}
+
+export interface RewardTier {
+  id: string;
+  business_id: string;
+  tier_name: string;
+  platform: "instagram" | "tiktok" | "facebook" | "google";
+  content_type: string;
+  reward_description: string;
+  reward_value: string | null;
+  verification_hours: number;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface QrScan {
