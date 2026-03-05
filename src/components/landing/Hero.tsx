@@ -1,64 +1,66 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Camera, Gift, Star, TrendingUp, Zap } from "lucide-react";
 
 const CALENDLY_URL =
   "https://calendly.com/contact-astrevix/new-meeting";
 
-const floatingCards = [
+type FloatingBadge = {
+  icon: React.ReactNode;
+  label: string;
+  accentColor: string;
+  className: string;
+  fromX: number;
+  delay: number;
+  floatDelay: number;
+};
+
+const floatingBadges: FloatingBadge[] = [
   {
-    text: "New submission received!",
-    emoji: "🎬",
-    className: "left-[-8%] top-[10%] lg:left-[-2%]",
-    delay: 0.8,
-    duration: 3.5,
+    icon: <Camera className="h-3.5 w-3.5" />,
+    label: "New post submitted!",
     accentColor: "#2563EB",
-    bgTint: "rgba(37, 99, 235, 0.06)",
+    className: "left-[2%] top-[8%] lg:left-[6%]",
+    fromX: -30,
+    delay: 0.6,
+    floatDelay: 0,
   },
   {
-    text: "+15 posts this week",
-    emoji: "📈",
-    className: "right-[-8%] top-[5%] lg:right-[-2%]",
-    delay: 1.1,
-    duration: 4,
+    icon: <Gift className="h-3.5 w-3.5" />,
+    label: "Reward claimed · 2m ago",
     accentColor: "#7C3AED",
-    bgTint: "rgba(124, 58, 237, 0.06)",
+    className: "left-[-2%] top-[42%] lg:left-[2%]",
+    fromX: -30,
+    delay: 0.7,
+    floatDelay: 0.5,
   },
   {
-    text: "Reward sent!",
-    emoji: "🎁",
-    className: "left-[-10%] bottom-[28%] lg:left-[-6%]",
-    delay: 1.4,
-    duration: 3.8,
-    accentColor: "#059669",
-    bgTint: "rgba(5, 150, 105, 0.06)",
-  },
-  {
-    text: "5-star review posted",
-    emoji: "⭐",
-    className: "right-[-10%] bottom-[35%] lg:right-[-6%]",
-    delay: 1.7,
-    duration: 4.2,
+    icon: <Star className="h-3.5 w-3.5" />,
+    label: "5-star review posted",
     accentColor: "#D97706",
-    bgTint: "rgba(217, 119, 6, 0.06)",
+    className: "left-[4%] bottom-[18%] lg:left-[8%]",
+    fromX: -30,
+    delay: 0.8,
+    floatDelay: 1.0,
   },
   {
-    text: "98% delivery rate",
-    emoji: "✅",
-    className: "left-[-4%] top-[45%] lg:left-[2%]",
-    delay: 2.0,
-    duration: 3.6,
+    icon: <TrendingUp className="h-3.5 w-3.5" />,
+    label: "+23 posts this month",
     accentColor: "#059669",
-    bgTint: "rgba(5, 150, 105, 0.06)",
+    className: "right-[2%] top-[12%] lg:right-[6%]",
+    fromX: 30,
+    delay: 0.9,
+    floatDelay: 0.3,
   },
   {
-    text: "2 min avg setup",
-    emoji: "⚡",
-    className: "right-[-4%] bottom-[55%] lg:right-[2%]",
-    delay: 2.3,
-    duration: 4.4,
-    accentColor: "#2563EB",
-    bgTint: "rgba(37, 99, 235, 0.06)",
+    icon: <Zap className="h-3.5 w-3.5" />,
+    label: "Setup in under 2 min",
+    accentColor: "#EA580C",
+    className: "right-[-2%] top-[48%] lg:right-[2%]",
+    fromX: 30,
+    delay: 1.0,
+    floatDelay: 0.8,
   },
 ];
 
@@ -66,15 +68,15 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden pb-20 pt-32 md:pb-32 md:pt-40"
+      className="relative overflow-hidden pb-24 pt-36 md:pb-40 md:pt-44"
       style={{
         background:
           "linear-gradient(180deg, #EDE9FE 0%, #E0E7FF 25%, #EEE8FC 50%, #F5F3FF 75%, #FFFFFF 100%)",
       }}
     >
-      {/* Large blurred gradient blobs */}
+      {/* Background color orbs for depth */}
       <div className="pointer-events-none absolute inset-0">
-        {/* Purple blob - left */}
+        {/* Purple orb - left */}
         <div
           className="absolute -left-20 top-10 h-[500px] w-[500px] rounded-full"
           style={{
@@ -83,7 +85,7 @@ export default function Hero() {
             filter: "blur(100px)",
           }}
         />
-        {/* Blue blob - right */}
+        {/* Blue orb - right */}
         <div
           className="absolute -right-20 top-32 h-[450px] w-[450px] rounded-full"
           style={{
@@ -92,12 +94,12 @@ export default function Hero() {
             filter: "blur(100px)",
           }}
         />
-        {/* Pink/magenta blob - center-right */}
+        {/* Pink orb - center behind phone */}
         <div
-          className="absolute right-1/4 top-0 h-[350px] w-[350px] rounded-full"
+          className="absolute left-1/2 top-[55%] h-[400px] w-[400px] -translate-x-1/2 rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(219,39,119,0.2) 0%, rgba(219,39,119,0.05) 50%, transparent 70%)",
+              "radial-gradient(circle, rgba(219,39,119,0.3) 0%, rgba(219,39,119,0.08) 50%, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
@@ -180,10 +182,10 @@ export default function Hero() {
         </div>
 
         {/* Phone mockup area */}
-        <div className="relative mx-auto mt-16 max-w-2xl md:mt-20">
+        <div className="relative mx-auto mt-16 max-w-3xl md:mt-24">
           {/* Glowing arc behind phone */}
           <div
-            className="pointer-events-none absolute bottom-[-20%] left-1/2 h-[400px] w-[700px] -translate-x-1/2 md:h-[500px] md:w-[900px]"
+            className="pointer-events-none absolute bottom-[-20%] left-1/2 h-[500px] w-[800px] -translate-x-1/2 md:h-[600px] md:w-[1000px]"
             style={{
               background:
                 "radial-gradient(ellipse at 50% 80%, rgba(99,102,241,0.5) 0%, rgba(124,58,237,0.35) 20%, rgba(59,130,246,0.2) 40%, transparent 65%)",
@@ -192,24 +194,33 @@ export default function Hero() {
             }}
           />
 
-          {/* Phone frame — realistic 3D mockup */}
+          {/* Phone frame — larger, more prominent */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="relative mx-auto w-[280px] md:w-[320px]"
+            className="relative mx-auto w-[300px] md:w-[380px]"
           >
+            {/* Deep drop shadow beneath phone */}
+            <div
+              className="pointer-events-none absolute inset-x-8 -bottom-6 h-24 rounded-[50%]"
+              style={{
+                background: "radial-gradient(ellipse, rgba(0,0,0,0.25) 0%, transparent 70%)",
+                filter: "blur(20px)",
+              }}
+            />
+
             {/* Outer phone body */}
             <div
-              className="relative overflow-hidden rounded-[44px] bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] p-[10px]"
+              className="relative overflow-hidden rounded-[48px] bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] p-[11px] md:rounded-[52px] md:p-[12px]"
               style={{
                 boxShadow:
-                  "0 25px 60px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.08) inset, 0 -2px 8px rgba(0,0,0,0.3) inset",
+                  "0 40px 80px -12px rgba(0, 0, 0, 0.4), 0 20px 40px -8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255,255,255,0.08) inset, 0 -2px 8px rgba(0,0,0,0.3) inset",
               }}
             >
               {/* Subtle frame shine */}
               <div
-                className="pointer-events-none absolute inset-0 rounded-[44px]"
+                className="pointer-events-none absolute inset-0 rounded-[48px] md:rounded-[52px]"
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)",
@@ -217,33 +228,33 @@ export default function Hero() {
               />
 
               {/* Dynamic Island (notch) */}
-              <div className="absolute left-1/2 top-[14px] z-20 h-[22px] w-[90px] -translate-x-1/2 rounded-full bg-black" />
+              <div className="absolute left-1/2 top-[14px] z-20 h-[24px] w-[100px] -translate-x-1/2 rounded-full bg-black md:h-[26px] md:w-[110px]" />
 
               {/* Inner screen */}
               <div
-                className="relative overflow-hidden rounded-[34px] bg-[#FEFCFA]"
+                className="relative overflow-hidden rounded-[37px] bg-[#FEFCFA] md:rounded-[40px]"
                 style={{ aspectRatio: "9/19.5" }}
               >
                 {/* Phone content mockup */}
-                <div className="p-5 pt-14">
+                <div className="p-5 pt-14 md:p-6 md:pt-16">
                   {/* Powered by badge */}
                   <div className="flex justify-center">
-                    <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500">
+                    <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500 md:text-[11px]">
                       Powered by{" "}
                       <span className="font-semibold">Astrevix</span>
                     </div>
                   </div>
                   {/* Business icon */}
                   <div className="mt-4 flex justify-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg md:h-14 md:w-14 md:text-xl">
                       S
                     </div>
                   </div>
                   {/* Name */}
-                  <p className="mt-3 text-center text-base font-bold text-gray-900">
+                  <p className="mt-3 text-center text-base font-bold text-gray-900 md:text-lg">
                     Sunrise Cafe
                   </p>
-                  <p className="mt-0.5 text-center text-[10px] text-gray-500">
+                  <p className="mt-0.5 text-center text-[10px] text-gray-500 md:text-[11px]">
                     The best coffee in town
                   </p>
                   {/* Reward card */}
@@ -251,13 +262,13 @@ export default function Hero() {
                     className="mt-4 rounded-2xl bg-white/80 p-4 text-center shadow-sm"
                     style={{ border: "1px solid rgba(255,255,255,0.4)" }}
                   >
-                    <p className="text-[9px] font-semibold uppercase tracking-widest text-blue-600">
+                    <p className="text-[9px] font-semibold uppercase tracking-widest text-blue-600 md:text-[10px]">
                       Your Reward
                     </p>
-                    <p className="mt-1.5 text-sm font-bold text-gray-900">
+                    <p className="mt-1.5 text-sm font-bold text-gray-900 md:text-base">
                       Free coffee on us
                     </p>
-                    <p className="mt-1 text-[10px] text-gray-500">
+                    <p className="mt-1 text-[10px] text-gray-500 md:text-[11px]">
                       Create an Instagram Reel
                     </p>
                   </div>
@@ -271,19 +282,19 @@ export default function Hero() {
                     ].map((step, i) => (
                       <div
                         key={step}
-                        className="flex items-center gap-2.5 rounded-lg bg-white p-2 shadow-sm"
+                        className="flex items-center gap-2.5 rounded-lg bg-white p-2 shadow-sm md:p-2.5"
                       >
-                        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-gray-100 text-[9px] font-bold text-gray-700">
+                        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-gray-100 text-[9px] font-bold text-gray-700 md:h-6 md:w-6 md:text-[10px]">
                           {i + 1}
                         </div>
-                        <span className="text-[10px] font-medium text-gray-800">
+                        <span className="text-[10px] font-medium text-gray-800 md:text-[11px]">
                           {step}
                         </span>
                       </div>
                     ))}
                   </div>
                   {/* CTA */}
-                  <div className="mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-2.5 text-center text-xs font-semibold text-white">
+                  <div className="mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-2.5 text-center text-xs font-semibold text-white md:py-3 md:text-sm">
                     Submit Your Post &rarr;
                   </div>
                 </div>
@@ -291,37 +302,50 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Floating notification cards */}
-          {floatingCards.map((card) => (
+          {/* Floating notification badges */}
+          {floatingBadges.map((badge) => (
             <motion.div
-              key={card.text}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
+              key={badge.label}
+              initial={{ opacity: 0, x: badge.fromX }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{
-                duration: 0.5,
-                delay: card.delay,
+                duration: 0.6,
+                delay: badge.delay,
                 ease: "easeOut",
               }}
-              className={`absolute hidden md:flex ${card.className}`}
+              className={`absolute hidden md:block ${badge.className}`}
             >
               <motion.div
-                animate={{ y: [0, -8, 0] }}
+                animate={{ y: [0, -6, 0] }}
                 transition={{
-                  duration: card.duration,
+                  duration: 3,
                   repeat: Infinity,
                   ease: "easeInOut",
+                  delay: badge.floatDelay,
                 }}
-                className="flex items-center gap-2.5 rounded-2xl border border-white/50 px-4 py-3 shadow-xl backdrop-blur-xl"
+                className="flex items-center gap-2.5 px-4 py-3"
                 style={{
-                  background: `linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65))`,
-                  borderLeft: `3px solid ${card.accentColor}`,
+                  background: "rgba(255,255,255,0.85)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  borderRadius: "14px",
+                  border: "1px solid rgba(255,255,255,0.6)",
                   boxShadow:
                     "0 8px 32px -4px rgba(0,0,0,0.1), 0 2px 8px -2px rgba(0,0,0,0.06)",
                 }}
               >
-                <span className="text-lg">{card.emoji}</span>
-                <span className="whitespace-nowrap text-sm font-medium text-gray-800">
-                  {card.text}
+                {/* Icon in colored square */}
+                <div
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                  style={{
+                    backgroundColor: `${badge.accentColor}26`,
+                    color: badge.accentColor,
+                  }}
+                >
+                  {badge.icon}
+                </div>
+                <span className="whitespace-nowrap text-[13px] font-semibold text-[#1a1a1a]">
+                  {badge.label}
                 </span>
               </motion.div>
             </motion.div>
