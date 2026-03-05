@@ -18,11 +18,11 @@ const FEATURES = [
     icon: Gift,
     title: "Custom Rewards",
     description:
-      "Set up your own coupons, discounts, or freebies. Deliver them automatically via email.",
+      "Set up your own coupons, discounts, or freebies. Deliver them automatically via SMS.",
     color: "#7C3AED",
-    bgColor: "rgba(124, 58, 237, 0.1)",
-    borderColor: "rgba(124, 58, 237, 0.15)",
-    cardBg: "linear-gradient(135deg, rgba(245,243,255,0.7) 0%, rgba(237,233,254,0.3) 100%)",
+    bgColor: "rgba(124, 58, 237, 0.12)",
+    borderColor: "rgba(124, 58, 237, 0.2)",
+    cardBg: "linear-gradient(135deg, rgba(237,233,254,0.9) 0%, rgba(221,214,254,0.5) 100%)",
   },
   {
     icon: ClipboardCheck,
