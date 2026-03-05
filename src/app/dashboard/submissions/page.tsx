@@ -10,7 +10,8 @@ export default async function SubmissionsPage() {
     .from("submissions")
     .select("*")
     .eq("business_id", business.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(50);
 
   const hasSmsTemplate = Boolean(
     business.sms_approval_template || business.sms_confirmation_template
