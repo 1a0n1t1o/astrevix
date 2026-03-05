@@ -112,7 +112,10 @@ export default function DashboardShell({
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               onClick={() => setSidebarOpen(false)}
+              onMouseEnter={() => router.prefetch(item.href)}
+              onTouchStart={() => router.prefetch(item.href)}
               className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                 active
                   ? "text-[#2563EB]"
