@@ -53,6 +53,7 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
   const [postLink, setPostLink] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
@@ -74,7 +75,8 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
     isValidUrl &&
     name.trim() !== "" &&
     phoneDigits.length === 10 &&
-    isPhoneValid;
+    isPhoneValid &&
+    smsConsent;
 
   async function handleSubmit() {
     if (!isValid || submitting) return;
@@ -435,6 +437,22 @@ export default function SubmitForm({ business }: { business: BusinessData }) {
           )}
         </div>
       </div>
+
+      {/* SMS consent checkbox */}
+      <label className="mt-5 flex items-start gap-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={smsConsent}
+          onChange={(e) => setSmsConsent(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 accent-[var(--brand-color)]"
+        />
+        <span className="text-xs leading-relaxed text-gray-500">
+          I agree to receive SMS messages about my submission and reward. Message &amp; data rates may apply. Reply STOP to opt-out.{" "}
+          <a href="/privacy" target="_blank" className="underline hover:text-gray-700">Privacy Policy</a>
+          {" & "}
+          <a href="/terms" target="_blank" className="underline hover:text-gray-700">Terms</a>.
+        </span>
+      </label>
 
       {/* Submit button */}
       <button

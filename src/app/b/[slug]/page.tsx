@@ -203,6 +203,13 @@ export default async function BusinessPage({
         Rewards issued after review. Usually within 24 hours.
       </p>
 
+      {/* Legal links */}
+      <div className="mt-2 flex justify-center gap-3 text-[11px] text-gray-400">
+        <a href="/privacy" target="_blank" className="underline hover:text-gray-600">Privacy Policy</a>
+        <span>&middot;</span>
+        <a href="/terms" target="_blank" className="underline hover:text-gray-600">Terms &amp; Conditions</a>
+      </div>
+
       {/* Terms & Conditions */}
       <details className="group mt-6 mb-4">
         <summary className="flex cursor-pointer items-center justify-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-gray-600">
