@@ -118,3 +118,18 @@ export interface UserProfile {
   last_name: string;
   avatar_url: string | null;
 }
+
+export interface InviteCode {
+  id: string;
+  code: string;
+  business_name: string | null;
+  business_email: string | null;
+  max_uses: number;
+  times_used: number;
+  status: "active" | "used" | "expired" | "revoked";
+  created_by: string;
+  created_at: string;
+  expires_at: string | null;
+  claimed_by: string | null;
+  claimed_at: string | null;
+}

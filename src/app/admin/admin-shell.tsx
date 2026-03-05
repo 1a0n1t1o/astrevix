@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, BarChart3, Settings } from "lucide-react";
+import { Users, BarChart3, Settings, Ticket } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 interface AdminShellProps {
@@ -20,6 +20,11 @@ const ADMIN_NAV_ITEMS = [
     label: "Owners",
     icon: <Users className="h-5 w-5" />,
     exact: true,
+  },
+  {
+    href: "/admin/invite-codes",
+    label: "Invite Codes",
+    icon: <Ticket className="h-5 w-5" />,
   },
   {
     href: "/admin/analytics",
