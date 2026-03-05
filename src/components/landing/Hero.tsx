@@ -270,11 +270,21 @@ export default function Hero() {
 
               {/* Inner screen */}
               <div
-                className="relative overflow-hidden rounded-[38px] bg-[#FEFCFA] md:rounded-[41px]"
-                style={{ aspectRatio: "9/19.5" }}
+                className="relative overflow-hidden rounded-[38px] md:rounded-[41px]"
+                style={{
+                  aspectRatio: "9/19.5",
+                  background: "linear-gradient(180deg, #EDE9FE 0%, #F3F0FF 15%, #FEFCFA 40%, #FEFCFA 100%)",
+                }}
               >
+                {/* Subtle screen reflection overlay */}
+                <div
+                  className="pointer-events-none absolute inset-0 z-10"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 30%, transparent 70%, rgba(255,255,255,0.08) 100%)",
+                  }}
+                />
                 {/* Phone content mockup */}
-                <div className="p-5 pt-14 md:p-6 md:pt-16">
+                <div className="relative z-0 p-5 pt-14 md:p-6 md:pt-16">
                   {/* Powered by badge */}
                   <div className="flex justify-center">
                     <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500 md:text-[11px]">
