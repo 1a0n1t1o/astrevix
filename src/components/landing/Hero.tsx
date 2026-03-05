@@ -74,10 +74,12 @@ export default function Hero() {
           "linear-gradient(180deg, #EDE9FE 0%, #E0E7FF 25%, #EEE8FC 50%, #F5F3FF 75%, #FFFFFF 100%)",
       }}
     >
-      {/* Background color orbs for depth */}
-      <div className="pointer-events-none absolute inset-0">
+      {/* Background color orbs for depth — slow drifting animation */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* Purple orb - left */}
-        <div
+        <motion.div
+          animate={{ x: [0, 30, -10, 0], y: [0, -20, 15, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -left-20 top-10 h-[500px] w-[500px] rounded-full"
           style={{
             background:
@@ -86,7 +88,9 @@ export default function Hero() {
           }}
         />
         {/* Blue orb - right */}
-        <div
+        <motion.div
+          animate={{ x: [0, -25, 15, 0], y: [0, 20, -10, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -right-20 top-32 h-[450px] w-[450px] rounded-full"
           style={{
             background:
@@ -95,7 +99,9 @@ export default function Hero() {
           }}
         />
         {/* Pink orb - center behind phone */}
-        <div
+        <motion.div
+          animate={{ x: [0, 15, -15, 0], y: [0, -15, 10, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
           className="absolute left-1/2 top-[55%] h-[400px] w-[400px] -translate-x-1/2 rounded-full"
           style={{
             background:
@@ -104,7 +110,9 @@ export default function Hero() {
           }}
         />
         {/* Soft ambient wash */}
-        <div
+        <motion.div
+          animate={{ x: [0, -20, 20, 0], y: [0, 10, -10, 0] }}
+          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
           className="absolute left-1/2 top-[60%] h-[600px] w-[800px] -translate-x-1/2 rounded-full"
           style={{
             background:
