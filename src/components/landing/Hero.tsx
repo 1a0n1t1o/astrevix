@@ -135,9 +135,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 md:text-xl"
           >
-            Collect authentic social media content from your customers with QR
-            codes. Reward them automatically. Grow your business with real social
-            proof.
+            Stop paying for ads. Start getting customers to sell for you.
           </motion.p>
 
           {/* CTA buttons */}
