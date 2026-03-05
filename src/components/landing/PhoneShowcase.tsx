@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard,
@@ -16,58 +16,10 @@ import {
 
 /* ───── stat badges at bottom ───── */
 const STATS = [
-  { numValue: 98, suffix: "%", label: "Reward delivery rate", delay: 0.6 },
-  { numValue: 2, suffix: " min", label: "Average setup time", delay: 0.9 },
-  { numValue: 500, suffix: "+", label: "Submissions processed", delay: 1.2 },
+  { value: "98%", label: "Reward delivery rate", delay: 0.6 },
+  { value: "2 min", label: "Average setup time", delay: 0.9 },
+  { value: "500+", label: "Submissions processed", delay: 1.2 },
 ];
-
-/* ───── animated number counter ───── */
-function AnimatedCounter({
-  value,
-  suffix,
-  duration = 2000,
-}: Readonly<{ value: number; suffix: string; duration?: number }>) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const hasAnimated = useRef(false);
-
-  const animate = useCallback(() => {
-    const startTime = performance.now();
-
-    function step(currentTime: number) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - (1 - progress) * (1 - progress);
-      setCount(Math.round(eased * value));
-      if (progress < 1) requestAnimationFrame(step);
-    }
-
-    requestAnimationFrame(step);
-  }, [value, duration]);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          animate();
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [animate]);
-
-  return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
-  );
-}
 
 /* ───── animated SVG area chart ───── */
 function AnimatedChart() {
@@ -90,7 +42,6 @@ function AnimatedChart() {
     return () => observer.disconnect();
   }, []);
 
-  // Chart data points (x out of 200, y out of 80)
   const points = [
     [0, 58],
     [25, 48],
@@ -103,7 +54,9 @@ function AnimatedChart() {
     [200, 20],
   ];
 
-  const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"}${p[0]},${p[1]}`).join(" ");
+  const linePath = points
+    .map((p, i) => `${i === 0 ? "M" : "L"}${p[0]},${p[1]}`)
+    .join(" ");
   const areaPath = `${linePath} L200,80 L0,80 Z`;
 
   return (
@@ -119,7 +72,6 @@ function AnimatedChart() {
             <stop offset="100%" stopColor="#2563EB" stopOpacity={0} />
           </linearGradient>
         </defs>
-        {/* Grid lines */}
         {[20, 40, 60].map((y) => (
           <line
             key={y}
@@ -131,14 +83,12 @@ function AnimatedChart() {
             strokeDasharray="3 3"
           />
         ))}
-        {/* Filled area */}
         <path
           d={areaPath}
           fill="url(#chartGrad)"
           className="transition-opacity duration-1000"
           style={{ opacity: visible ? 1 : 0 }}
         />
-        {/* Line */}
         <path
           d={linePath}
           fill="none"
@@ -152,7 +102,6 @@ function AnimatedChart() {
             transition: "stroke-dashoffset 1.8s ease-out",
           }}
         />
-        {/* Dots */}
         {points.map((p, i) => (
           <circle
             key={i}
@@ -174,24 +123,24 @@ function AnimatedChart() {
   );
 }
 
-/* ───── dashboard stat card (inside mockup) ───── */
+/* ───── dashboard stat cards ───── */
 const DASH_STATS = [
   {
-    numValue: 247,
+    value: "247",
     label: "Total Submissions",
     icon: BarChart3,
     color: "#2563EB",
     bg: "#EFF6FF",
   },
   {
-    numValue: 12,
+    value: "12",
     label: "Pending Review",
     icon: Clock,
     color: "#D97706",
     bg: "#FFFBEB",
   },
   {
-    numValue: 198,
+    value: "198",
     label: "Approved",
     icon: CheckCircle2,
     color: "#059669",
@@ -199,12 +148,32 @@ const DASH_STATS = [
   },
 ];
 
-/* ───── recent submissions for mockup ───── */
+/* ───── recent submissions ───── */
 const RECENT = [
-  { name: "Sarah M.", platform: "Instagram", status: "approved", time: "2m ago" },
-  { name: "Alex T.", platform: "TikTok", status: "pending", time: "15m ago" },
-  { name: "Jordan K.", platform: "Instagram", status: "approved", time: "1h ago" },
-  { name: "Maria L.", platform: "TikTok", status: "approved", time: "2h ago" },
+  {
+    name: "Sarah M.",
+    platform: "Instagram",
+    status: "approved",
+    time: "2m ago",
+  },
+  {
+    name: "Alex T.",
+    platform: "TikTok",
+    status: "pending",
+    time: "15m ago",
+  },
+  {
+    name: "Jordan K.",
+    platform: "Instagram",
+    status: "approved",
+    time: "1h ago",
+  },
+  {
+    name: "Maria L.",
+    platform: "TikTok",
+    status: "approved",
+    time: "2h ago",
+  },
 ];
 
 /* ───── sidebar nav items ───── */
@@ -214,6 +183,14 @@ const NAV_ITEMS = [
   { icon: MessageSquare, label: "SMS", active: false },
   { icon: Palette, label: "Customize", active: false },
   { icon: Settings, label: "Settings", active: false },
+];
+
+/* ───── customer page steps ───── */
+const PHONE_STEPS = [
+  { num: "1", label: "Create your content" },
+  { num: "2", label: "Post it publicly" },
+  { num: "3", label: "Submit your link" },
+  { num: "4", label: "Get rewarded" },
 ];
 
 export default function PhoneShowcase() {
@@ -265,7 +242,7 @@ export default function PhoneShowcase() {
 
         {/* Customer phone + Desktop dashboard */}
         <div className="relative mt-16 flex flex-col items-center gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-12">
-          {/* Customer phone */}
+          {/* ─── Customer phone ─── */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -274,46 +251,134 @@ export default function PhoneShowcase() {
             className="relative shrink-0"
           >
             <div
-              className="w-[240px] overflow-hidden rounded-[36px] bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] p-[8px] md:w-[260px]"
+              className="w-[260px] overflow-hidden rounded-[40px] bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] p-[7px] md:w-[280px]"
               style={{
                 boxShadow:
-                  "0 20px 50px -10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08) inset",
+                  "0 25px 60px -10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08) inset",
               }}
             >
+              {/* Frame shine */}
               <div
-                className="pointer-events-none absolute inset-0 rounded-[36px]"
+                className="pointer-events-none absolute inset-0 rounded-[40px]"
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 40%)",
                 }}
               />
-              <div className="absolute left-1/2 top-[12px] z-20 h-[18px] w-[72px] -translate-x-1/2 rounded-full bg-black" />
-              <div className="overflow-hidden rounded-[28px] bg-[#FEFCFA]">
-                <div className="p-4 pt-10">
+              {/* Dynamic Island */}
+              <div className="absolute left-1/2 top-[10px] z-20 h-[20px] w-[80px] -translate-x-1/2 rounded-full bg-black" />
+
+              {/* Screen */}
+              <div className="overflow-hidden rounded-[33px] bg-[#FEFCFA]">
+                <div className="p-4 pt-12">
+                  {/* Powered by badge */}
                   <div className="flex justify-center">
-                    <div className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[8px] text-gray-400">
-                      Powered by Astrevix
+                    <div
+                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5"
+                      style={{
+                        backgroundColor: "rgba(0,0,0,0.04)",
+                        fontSize: "8px",
+                        color: "#8B8B9B",
+                      }}
+                    >
+                      Powered by{" "}
+                      <span
+                        className="font-semibold"
+                        style={{ color: "#6B6B7B" }}
+                      >
+                        Astrevix
+                      </span>
                     </div>
                   </div>
+
+                  {/* Business logo */}
                   <div className="mt-3 flex justify-center">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-400 to-red-500 text-sm font-bold text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-sm font-bold text-white shadow-md">
                       B
                     </div>
                   </div>
+
+                  {/* Business name + tagline */}
                   <p className="mt-2 text-center text-sm font-bold text-gray-900">
                     Bella&apos;s Kitchen
                   </p>
-                  <div className="mt-3 rounded-xl bg-white/80 p-3 text-center shadow-sm">
-                    <p className="text-[8px] font-semibold uppercase tracking-widest text-orange-500">
-                      Your Reward
-                    </p>
-                    <p className="mt-1 text-xs font-bold text-gray-900">
-                      Free appetizer
-                    </p>
+                  <p className="mt-0.5 text-center text-[9px] text-gray-500">
+                    The best food in town
+                  </p>
+
+                  {/* Reward card — glassmorphic with brand glow */}
+                  <div className="relative mt-4">
+                    <div
+                      className="absolute inset-0 rounded-[16px] opacity-20 blur-lg"
+                      style={{ backgroundColor: "#EA580C" }}
+                    />
+                    <div
+                      className="relative overflow-hidden rounded-[16px] px-4 py-5 text-center"
+                      style={{
+                        background: "rgba(255,255,255,0.6)",
+                        backdropFilter: "blur(20px)",
+                        WebkitBackdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255,255,255,0.4)",
+                        boxShadow:
+                          "0 6px 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
+                      }}
+                    >
+                      <p
+                        className="text-[8px] font-semibold uppercase tracking-widest"
+                        style={{ color: "#EA580C" }}
+                      >
+                        Your Reward
+                      </p>
+                      <p className="mt-1.5 text-base font-bold text-gray-900">
+                        Free appetizer
+                      </p>
+                      <p className="mt-1 text-[9px] text-gray-500">
+                        Create an Instagram Reel or TikTok
+                      </p>
+                    </div>
                   </div>
-                  <div className="mt-3 rounded-xl bg-gradient-to-r from-orange-400 to-red-500 py-2 text-center text-[10px] font-semibold text-white">
+
+                  {/* How it works */}
+                  <div className="mt-4">
+                    <p className="text-[10px] font-bold text-gray-900">
+                      How it works
+                    </p>
+                    <div className="mt-2 space-y-1.5">
+                      {PHONE_STEPS.map((step) => (
+                        <div
+                          key={step.num}
+                          className="flex items-center gap-2.5 rounded-xl bg-white p-2 shadow-sm"
+                        >
+                          <div
+                            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-gray-700"
+                            style={{ backgroundColor: "rgba(0,0,0,0.04)" }}
+                          >
+                            {step.num}
+                          </div>
+                          <span className="text-[9px] font-medium text-gray-800">
+                            {step.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CTA button */}
+                  <div
+                    className="mt-4 rounded-xl py-2.5 text-center text-[10px] font-semibold text-white"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #EA580C, #DC2626)",
+                      boxShadow: "0 4px 12px rgba(234,88,12,0.3)",
+                    }}
+                  >
                     Submit Your Post &rarr;
                   </div>
+
+                  {/* Footer note */}
+                  <p className="mt-2 text-center text-[7px] text-gray-400">
+                    Rewards issued after review. Usually within 24 hours.
+                  </p>
                 </div>
               </div>
             </div>
@@ -322,7 +387,7 @@ export default function PhoneShowcase() {
             </p>
           </motion.div>
 
-          {/* Desktop dashboard mockup */}
+          {/* ─── Desktop dashboard mockup ─── */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -340,16 +405,24 @@ export default function PhoneShowcase() {
             >
               {/* Browser chrome */}
               <div className="flex items-center gap-2 border-b border-gray-100 bg-gray-50/80 px-4 py-2.5">
-                {/* Traffic lights */}
                 <div className="flex items-center gap-1.5">
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
                   <div className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
                 </div>
-                {/* URL bar */}
                 <div className="ml-3 flex flex-1 items-center gap-2 rounded-lg bg-white/80 px-3 py-1 text-[10px] text-gray-400 ring-1 ring-gray-200/60">
-                  <svg className="h-2.5 w-2.5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <svg
+                    className="h-2.5 w-2.5 text-gray-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
                   </svg>
                   <span>astrevix.com/dashboard</span>
                 </div>
@@ -359,15 +432,16 @@ export default function PhoneShowcase() {
               <div className="flex" style={{ minHeight: "380px" }}>
                 {/* Sidebar */}
                 <div className="hidden w-[140px] shrink-0 border-r border-gray-100 bg-gray-50/40 p-3 sm:block">
-                  {/* Logo */}
                   <div className="mb-4 flex items-center gap-2 px-1">
                     <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
-                      <span className="text-[8px] font-bold text-white">A</span>
+                      <span className="text-[8px] font-bold text-white">
+                        A
+                      </span>
                     </div>
-                    <span className="text-[10px] font-bold text-gray-800">Astrevix</span>
+                    <span className="text-[10px] font-bold text-gray-800">
+                      Astrevix
+                    </span>
                   </div>
-
-                  {/* Nav items */}
                   <div className="space-y-0.5">
                     {NAV_ITEMS.map((item) => {
                       const Icon = item.icon;
@@ -386,15 +460,15 @@ export default function PhoneShowcase() {
                       );
                     })}
                   </div>
-
-                  {/* User info at bottom */}
                   <div className="mt-auto pt-4">
                     <div className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-2 py-1.5">
                       <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-red-500 text-[7px] font-bold text-white">
                         B
                       </div>
                       <div>
-                        <p className="text-[8px] font-semibold text-gray-800">Bella&apos;s Kitchen</p>
+                        <p className="text-[8px] font-semibold text-gray-800">
+                          Bella&apos;s Kitchen
+                        </p>
                         <p className="text-[7px] text-gray-400">Owner</p>
                       </div>
                     </div>
@@ -403,7 +477,6 @@ export default function PhoneShowcase() {
 
                 {/* Main content */}
                 <div className="flex-1 p-4 sm:p-5">
-                  {/* Welcome */}
                   <p className="text-xs font-bold text-gray-900 sm:text-sm">
                     Welcome, Bella&apos;s Kitchen
                   </p>
@@ -439,11 +512,7 @@ export default function PhoneShowcase() {
                             className="mt-1.5 text-base font-bold sm:text-lg"
                             style={{ color: stat.color }}
                           >
-                            <AnimatedCounter
-                              value={stat.numValue}
-                              suffix=""
-                              duration={1800}
-                            />
+                            {stat.value}
                           </p>
                         </div>
                       );
@@ -452,11 +521,13 @@ export default function PhoneShowcase() {
 
                   {/* Chart + Recent side by side */}
                   <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-5">
-                    {/* Activity chart */}
                     <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-sm sm:col-span-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
-                          <TrendingUp className="h-3 w-3 text-blue-500" strokeWidth={2} />
+                          <TrendingUp
+                            className="h-3 w-3 text-blue-500"
+                            strokeWidth={2}
+                          />
                           <span className="text-[9px] font-semibold text-gray-700 sm:text-[10px]">
                             Activity
                           </span>
@@ -472,7 +543,7 @@ export default function PhoneShowcase() {
                       </div>
                       <div className="mt-1 flex items-baseline gap-1.5">
                         <span className="text-sm font-bold text-gray-900 sm:text-base">
-                          <AnimatedCounter value={47} suffix="" duration={1600} />
+                          47
                         </span>
                         <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[7px] font-semibold text-emerald-600">
                           +23%
@@ -483,7 +554,6 @@ export default function PhoneShowcase() {
                       </div>
                     </div>
 
-                    {/* Recent submissions */}
                     <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-sm sm:col-span-2">
                       <p className="text-[9px] font-semibold text-gray-700 sm:text-[10px]">
                         Recent Submissions
@@ -496,7 +566,7 @@ export default function PhoneShowcase() {
                           >
                             <div className="flex items-center gap-1.5">
                               <div
-                                className={`h-4 w-4 rounded-md flex items-center justify-center text-[6px] font-bold text-white ${
+                                className={`flex h-4 w-4 items-center justify-center rounded-md text-[6px] font-bold text-white ${
                                   sub.platform === "Instagram"
                                     ? "bg-gradient-to-br from-purple-500 to-pink-500"
                                     : "bg-gray-900"
@@ -508,7 +578,9 @@ export default function PhoneShowcase() {
                                 <p className="text-[8px] font-semibold text-gray-800 sm:text-[9px]">
                                   {sub.name}
                                 </p>
-                                <p className="text-[7px] text-gray-400">{sub.time}</p>
+                                <p className="text-[7px] text-gray-400">
+                                  {sub.time}
+                                </p>
                               </div>
                             </div>
                             <span
@@ -518,7 +590,9 @@ export default function PhoneShowcase() {
                                   : "bg-amber-100 text-amber-700"
                               }`}
                             >
-                              {sub.status === "approved" ? "Approved" : "Pending"}
+                              {sub.status === "approved"
+                                ? "Approved"
+                                : "Pending"}
                             </span>
                           </div>
                         ))}
@@ -541,7 +615,8 @@ export default function PhoneShowcase() {
             <div
               className="mx-auto h-1 w-[80%] rounded-b-lg"
               style={{
-                background: "linear-gradient(180deg, #D1D5DB 0%, #C0C4CA 100%)",
+                background:
+                  "linear-gradient(180deg, #D1D5DB 0%, #C0C4CA 100%)",
               }}
             />
 
@@ -566,7 +641,7 @@ export default function PhoneShowcase() {
               }}
             >
               <span className="text-xl font-bold bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">
-                <AnimatedCounter value={stat.numValue} suffix={stat.suffix} />
+                {stat.value}
               </span>
               <span className="text-sm text-gray-600">{stat.label}</span>
             </motion.div>

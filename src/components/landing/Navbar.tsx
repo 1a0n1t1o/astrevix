@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,15 +18,6 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    function handleScroll() {
-      setScrolled(window.scrollY > 50);
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   function handleNavClick(href: string) {
     setMobileOpen(false);
@@ -40,13 +31,7 @@ export default function Navbar() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="fixed left-0 right-0 top-0 z-50 transition-all duration-300"
-        style={{
-          backgroundColor: scrolled ? "rgba(255,255,255,0.85)" : "transparent",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(0,0,0,0.06)" : "1px solid transparent",
-        }}
+        className="fixed left-0 right-0 top-0 z-50"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           {/* Logo */}
@@ -57,10 +42,7 @@ export default function Navbar() {
               width={130}
               height={26}
               priority
-              style={{
-                opacity: scrolled ? 0.7 : 1,
-                transition: "opacity 0.3s ease",
-              }}
+              style={{ opacity: 1 }}
             />
           </Link>
 
