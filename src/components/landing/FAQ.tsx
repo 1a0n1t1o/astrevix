@@ -103,8 +103,8 @@ export default function FAQ() {
                     {faq.q}
                   </span>
                   <ChevronDown
-                    className={`h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200 ${
-                      isOpen ? "rotate-180" : ""
+                    className={`h-4 w-4 shrink-0 transition-all duration-300 ease-out ${
+                      isOpen ? "rotate-180 text-purple-500" : "text-gray-400"
                     }`}
                   />
                 </button>
@@ -114,7 +114,7 @@ export default function FAQ() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                     >
                       <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
                         {faq.a}

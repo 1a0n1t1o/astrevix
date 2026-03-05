@@ -123,7 +123,7 @@ export default function Features() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group rounded-2xl border p-8 backdrop-blur-sm transition-all hover:-translate-y-1 hover:shadow-xl"
+                className="group feature-card rounded-2xl border p-8 backdrop-blur-sm"
                 style={{
                   borderColor: feature.borderColor,
                   background: feature.cardBg,
@@ -134,7 +134,7 @@ export default function Features() {
                   style={{ backgroundColor: feature.bgColor }}
                 >
                   <Icon
-                    className="h-6 w-6"
+                    className="h-6 w-6 feature-card-icon"
                     style={{ color: feature.color }}
                     strokeWidth={1.5}
                   />

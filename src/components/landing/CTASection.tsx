@@ -60,7 +60,7 @@ export default function CTASection() {
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-semibold text-purple-700 shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-semibold text-purple-700 shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl animate-pulse-glow"
           >
             Start Free Today
             <svg

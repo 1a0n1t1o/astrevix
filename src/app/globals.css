@@ -108,3 +108,63 @@ body {
 .dash-card-hover:hover {
   transform: translateY(-2px) scale(1.01);
 }
+
+/* ===== Landing Page Animations ===== */
+
+/* Phone floating / bobbing */
+@keyframes phone-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.animate-phone-float {
+  animation: phone-float 4s ease-in-out infinite;
+}
+
+/* CTA button pulse glow */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 20px 50px -12px rgba(124,58,237,0.25), 0 0 0 0 rgba(124,58,237,0.3); }
+  50% { box-shadow: 0 20px 50px -12px rgba(124,58,237,0.25), 0 0 24px 8px rgba(124,58,237,0.15); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* Infinite marquee scroll */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 25s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Step number bounce in (used with IntersectionObserver) */
+@keyframes step-bounce-in {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  80% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-step-bounce {
+  animation: step-bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Feature card icon scale on hover */
+.feature-card-icon {
+  transition: transform 0.3s ease;
+}
+.group:hover .feature-card-icon {
+  transform: scale(1.15);
+}
+
+/* Feature card enhanced hover */
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12), 0 8px 16px -6px rgba(0,0,0,0.06);
+}

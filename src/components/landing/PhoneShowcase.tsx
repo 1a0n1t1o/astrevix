@@ -1,12 +1,66 @@
 "use client";
 
+import { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 
 const STATS = [
-  { value: "98%", label: "Reward delivery rate", delay: 0.6 },
-  { value: "2 min", label: "Average setup time", delay: 0.9 },
-  { value: "500+", label: "Submissions processed", delay: 1.2 },
+  { numValue: 98, suffix: "%", label: "Reward delivery rate", delay: 0.6 },
+  { numValue: 2, suffix: " min", label: "Average setup time", delay: 0.9 },
+  { numValue: 500, suffix: "+", label: "Submissions processed", delay: 1.2 },
 ];
+
+function AnimatedCounter({
+  value,
+  suffix,
+  duration = 2000,
+}: Readonly<{ value: number; suffix: string; duration?: number }>) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const hasAnimated = useRef(false);
+
+  const animate = useCallback(() => {
+    const startTime = performance.now();
+
+    function step(currentTime: number) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutQuad
+      const eased = 1 - (1 - progress) * (1 - progress);
+      setCount(Math.round(eased * value));
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    }
+
+    requestAnimationFrame(step);
+  }, [value, duration]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          animate();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [animate]);
+
+  return (
+    <span ref={ref}>
+      {count}
+      {suffix}
+    </span>
+  );
+}
 
 export default function PhoneShowcase() {
   return (
@@ -212,7 +266,7 @@ export default function PhoneShowcase() {
               }}
             >
               <span className="text-xl font-bold bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">
-                {stat.value}
+                <AnimatedCounter value={stat.numValue} suffix={stat.suffix} />
               </span>
               <span className="text-sm text-gray-600">{stat.label}</span>
             </motion.div>

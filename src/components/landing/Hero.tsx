@@ -157,7 +157,7 @@ export default function Hero() {
               href={CALENDLY_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:shadow-2xl hover:shadow-purple-500/30"
+              className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:shadow-2xl hover:shadow-purple-500/30 animate-pulse-glow"
             >
               Get Started Free
               <svg
@@ -205,7 +205,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="relative mx-auto w-[300px] md:w-[380px]"
+            className="relative mx-auto w-[300px] md:w-[380px] animate-phone-float"
           >
             {/* Deep drop shadow beneath phone */}
             <div

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Palette, QrCode, Gift } from "lucide-react";
 
@@ -32,6 +33,48 @@ const STEPS = [
     bgColor: "rgba(5, 150, 105, 0.1)",
   },
 ];
+
+function StepNumber({
+  num,
+  color,
+  gradient,
+  delay,
+}: Readonly<{ num: string; color: string; gradient: string; delay: number }>) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setTimeout(() => setVisible(true), delay * 1000);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <div
+      ref={ref}
+      className={`mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white shadow-md ${
+        visible ? "animate-step-bounce" : "opacity-0"
+      }`}
+      style={{
+        background: `linear-gradient(135deg, ${color}, ${gradient})`,
+      }}
+    >
+      {num}
+    </div>
+  );
+}
 
 export default function HowItWorks() {
   return (
@@ -103,21 +146,19 @@ export default function HowItWorks() {
                 transition={{ duration: 0.6, delay: i * 0.2, ease: "easeOut" }}
                 className="relative text-center"
               >
-                {/* Number badge */}
-                <div
-                  className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white shadow-md"
-                  style={{
-                    background: `linear-gradient(135deg, ${step.color}, ${
-                      i === 0
-                        ? "#3B82F6"
-                        : i === 1
-                        ? "#A855F7"
-                        : "#10B981"
-                    })`,
-                  }}
-                >
-                  {step.num}
-                </div>
+                {/* Number badge with bounce-in */}
+                <StepNumber
+                  num={step.num}
+                  color={step.color}
+                  gradient={
+                    i === 0
+                      ? "#3B82F6"
+                      : i === 1
+                      ? "#A855F7"
+                      : "#10B981"
+                  }
+                  delay={i * 0.2}
+                />
 
                 {/* Icon */}
                 <div
