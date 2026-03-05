@@ -59,8 +59,8 @@ export default function AccountProfile({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      onToast("Failed: File too large. Maximum size is 2MB.");
+    if (file.size > 5 * 1024 * 1024) {
+      onToast("Failed: File too large. Maximum size is 5MB.");
       return;
     }
 
@@ -179,7 +179,7 @@ export default function AccountProfile({
           Profile Photo
         </h2>
         <p className="mt-1 text-sm text-gray-500">
-          Upload a profile photo (max 2MB)
+          Upload a profile photo (max 5MB)
         </p>
 
         <div className="mt-5 flex items-center gap-5">
