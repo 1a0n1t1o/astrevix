@@ -9,23 +9,39 @@ import {
   ShoppingBag,
   Sparkles,
   Heart,
-  Music,
+  Cake,
+  Dog,
+  Paintbrush,
+  Car,
+  Flower2,
+  Pizza,
+  Wine,
 } from "lucide-react";
 
 const BUSINESS_TYPES = [
   { icon: UtensilsCrossed, label: "Restaurants" },
   { icon: Scissors, label: "Salons" },
-  { icon: Coffee, label: "Coffee Shops" },
+  { icon: Coffee, label: "Cafes" },
   { icon: Dumbbell, label: "Gyms" },
   { icon: ShoppingBag, label: "Boutiques" },
   { icon: Sparkles, label: "Spas" },
   { icon: Heart, label: "Wellness" },
-  { icon: Music, label: "Studios" },
+  { icon: Cake, label: "Bakeries" },
+  { icon: Dog, label: "Pet Shops" },
+  { icon: Paintbrush, label: "Nail Studios" },
+  { icon: Car, label: "Auto Detailing" },
+  { icon: Flower2, label: "Florists" },
+  { icon: Pizza, label: "Pizzerias" },
+  { icon: Wine, label: "Bars & Lounges" },
 ];
 
 export default function TrustBar() {
-  // Double the items for seamless infinite loop
-  const doubled = [...BUSINESS_TYPES, ...BUSINESS_TYPES];
+  // Triple the items for truly seamless infinite loop
+  const tripled = [
+    ...BUSINESS_TYPES,
+    ...BUSINESS_TYPES,
+    ...BUSINESS_TYPES,
+  ];
 
   return (
     <section
@@ -53,23 +69,28 @@ export default function TrustBar() {
       <div className="relative mt-8">
         {/* Fade edges */}
         <div
-          className="pointer-events-none absolute left-0 top-0 z-10 h-full w-20"
+          className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24"
           style={{
             background:
               "linear-gradient(to right, #F8F7FF 0%, transparent 100%)",
           }}
         />
         <div
-          className="pointer-events-none absolute right-0 top-0 z-10 h-full w-20"
+          className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24"
           style={{
             background:
               "linear-gradient(to left, #F8F7FF 0%, transparent 100%)",
           }}
         />
 
-        {/* Scrolling track */}
-        <div className="animate-marquee flex w-max items-center gap-10 px-4">
-          {doubled.map((biz, i) => {
+        {/* Scrolling track — uses translateX(-33.333%) to loop 1/3 of tripled list */}
+        <div
+          className="flex w-max items-center gap-8"
+          style={{
+            animation: "marquee-scroll 40s linear infinite",
+          }}
+        >
+          {tripled.map((biz, i) => {
             const Icon = biz.icon;
             return (
               <div
