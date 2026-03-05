@@ -49,6 +49,21 @@ export default function Footer() {
           className="mt-8 pt-8 text-center"
           style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
         >
+          <div className="flex justify-center gap-4 mb-4">
+            <Link
+              href="/privacy"
+              className="text-xs text-purple-300 transition-colors hover:text-white"
+            >
+              Privacy Policy
+            </Link>
+            <span className="text-xs text-purple-300/50">&middot;</span>
+            <Link
+              href="/terms"
+              className="text-xs text-purple-300 transition-colors hover:text-white"
+            >
+              Terms &amp; Conditions
+            </Link>
+          </div>
           <p className="text-xs text-purple-300">
             &copy; {new Date().getFullYear()} Astrevix. All rights reserved.
           </p>
