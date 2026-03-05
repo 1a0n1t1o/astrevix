@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   // Check if business is suspended
   const { data: business } = await supabase
     .from("businesses")
-    .select("id, status, name, sms_confirmation_template, sms_confirmation_enabled")
+    .select("id, status, name")
     .eq("id", business_id)
     .single();
 
@@ -86,10 +86,17 @@ export async function POST(request: Request) {
   }
 
   // Fire-and-forget confirmation SMS
-  if (business.sms_confirmation_enabled !== false) {
-    try {
+  try {
+    const admin = getSupabaseAdmin();
+    const { data: smsSettings } = await admin
+      .from("businesses")
+      .select("sms_confirmation_template, sms_confirmation_enabled")
+      .eq("id", business_id)
+      .single();
+
+    if (smsSettings?.sms_confirmation_enabled !== false) {
       const template =
-        business.sms_confirmation_template ||
+        smsSettings?.sms_confirmation_template ||
         DEFAULT_SMS_TEMPLATES.confirmation;
       const rendered = renderSmsTemplate(template, {
         businessName: business.name,
@@ -98,8 +105,7 @@ export async function POST(request: Request) {
 
       const result = await sendSms(normalizedPhone, rendered);
 
-      // Log to sms_log using admin client
-      await getSupabaseAdmin().from("sms_log").insert({
+      await admin.from("sms_log").insert({
         business_id,
         customer_phone: normalizedPhone,
         message_type: "confirmation",
@@ -107,10 +113,10 @@ export async function POST(request: Request) {
         twilio_sid: result.sid,
         status: result.status,
       });
-    } catch (smsErr) {
-      // Don't block submission if SMS fails
-      console.error("[submissions/create] Confirmation SMS failed:", smsErr);
     }
+  } catch (smsErr) {
+    // Don't block submission if SMS fails
+    console.error("[submissions/create] Confirmation SMS failed:", smsErr);
   }
 
   return NextResponse.json({ success: true });
