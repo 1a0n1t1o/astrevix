@@ -11,23 +11,19 @@ const FAQS = [
   },
   {
     q: "How do customers submit content?",
-    a: "Customers scan your QR code (placed on tables, receipts, or storefronts) which takes them to your branded landing page. They post content on TikTok or Instagram, then paste their post link into a simple 3-field form. No app download required.",
+    a: "One tap or scan is all it takes. Customers tap your NFC stand or scan your QR code, land on your branded page, post on TikTok or Instagram, and submit their link. Reward gets sent automatically. The whole thing takes under 2 minutes — for them and for you.",
   },
   {
     q: "What kind of rewards can I offer?",
     a: "You can offer anything your business provides — discounts, free items, coupons, or digital rewards. Rewards are delivered automatically via email after you approve the submission.",
   },
   {
-    q: "How does the QR code work?",
-    a: "When you sign up, Astrevix creates a unique branded page for your business. The QR code links directly to that page. You can print it and place it anywhere in your store.",
+    q: "How does the QR code/tap work?",
+    a: "When you sign up, Astrevix creates a unique branded page for your business. Your QR code and NFC tag link directly to that page. Print the QR code or place the NFC stand anywhere in your store — customers just scan or tap to get started.",
   },
   {
     q: "Can I customize the look of my page?",
     a: "Yes! You can customize your brand colors, logo, tagline, reward description, content requirements, and more. Everything matches your brand identity.",
-  },
-  {
-    q: "Is there a free plan?",
-    a: "Yes. Our free plan includes everything you need to get started — a custom branded page, QR code generation, up to 50 submissions per month, and email rewards. Upgrade anytime for unlimited submissions and advanced features.",
   },
 ];
 
