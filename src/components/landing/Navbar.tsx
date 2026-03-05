@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,6 +18,23 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoVisible, setLogoVisible] = useState(true);
+
+  useEffect(() => {
+    function handleScroll() {
+      const hero = document.getElementById("hero");
+      if (hero) {
+        const heroBottom = hero.getBoundingClientRect().bottom;
+        setLogoVisible(heroBottom > 80);
+      } else {
+        setLogoVisible(window.scrollY < 400);
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   function handleNavClick(href: string) {
     setMobileOpen(false);
@@ -42,7 +59,11 @@ export default function Navbar() {
               width={130}
               height={26}
               priority
-              style={{ opacity: 1 }}
+              style={{
+                opacity: logoVisible ? 1 : 0,
+                transition: "opacity 0.3s ease",
+                pointerEvents: logoVisible ? "auto" : "none",
+              }}
             />
           </Link>
 
