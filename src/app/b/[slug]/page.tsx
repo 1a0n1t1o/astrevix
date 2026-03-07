@@ -120,15 +120,11 @@ export default async function BusinessPage({
               <div
                 className="relative overflow-hidden rounded-[20px] px-5 py-5"
                 style={{
-                  background: i === 0 ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.6)",
+                  background: "rgba(255,255,255,0.8)",
                   backdropFilter: "blur(20px)",
                   WebkitBackdropFilter: "blur(20px)",
-                  border: i === 0
-                    ? `2px solid ${business.brandColor}40`
-                    : "1px solid rgba(255,255,255,0.4)",
-                  boxShadow: i === 0
-                    ? `0 8px 24px ${business.brandColor}15`
-                    : "0 4px 16px rgba(0,0,0,0.04)",
+                  border: `2px solid ${business.brandColor}40`,
+                  boxShadow: `0 8px 24px ${business.brandColor}15`,
                 }}
               >
                 <div className="flex items-center gap-4">
@@ -197,10 +193,6 @@ export default async function BusinessPage({
       {/* How it works */}
       <div className="mt-8">
         <h2 className="text-lg font-bold text-gray-900">How it works</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          Create a {business.contentType.toLowerCase()} about your experience
-          and earn your reward.
-        </p>
         <div className="mt-5 space-y-3">
           {STEPS.map((step) => (
             <div

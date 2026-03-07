@@ -552,8 +552,6 @@ function TierForm({
           >
             <option value="instagram">Instagram</option>
             <option value="tiktok">TikTok</option>
-            <option value="facebook">Facebook</option>
-            <option value="google">Google</option>
           </select>
         </div>
         <div>
