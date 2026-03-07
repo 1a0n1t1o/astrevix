@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Submission, RewardTier } from "@/types/database";
+import type { Submission, RewardTier, CouponCode } from "@/types/database";
 import { formatPhoneForDisplay } from "@/lib/phone-utils";
 import {
   Instagram,
@@ -25,6 +25,7 @@ import {
   ShieldX,
   Star,
   AlertTriangle,
+  Ticket,
 } from "lucide-react";
 
 type FilterTab = "all" | "pending" | "approved" | "rejected";
@@ -136,6 +137,7 @@ interface SubmissionsListProps {
   readonly businessId: string;
   readonly rewardDescription: string;
   readonly rewardTiers: RewardTier[];
+  readonly couponCodes: CouponCode[];
   readonly hasSmsTemplate: boolean;
   readonly smsTemplateData: SmsTemplateData;
 }
@@ -151,7 +153,8 @@ function renderSmsPreview(
     .replace(/\[Business Name\]/g, businessName)
     .replace(/\[Customer Name\]/g, customerName)
     .replace(/\[Reward Details\]/g, reward)
-    .replace(/\[Reward Link\]/g, "");
+    .replace(/\[Reward Link\]/g, "")
+    .replace(/\[Coupon Code\]/g, "AX7K2M");
   if (note) {
     result += `\n\n${note}`;
   }
@@ -163,6 +166,7 @@ export default function SubmissionsList({
   businessId,
   rewardDescription,
   rewardTiers,
+  couponCodes,
   hasSmsTemplate,
   smsTemplateData,
 }: SubmissionsListProps) {
@@ -183,6 +187,9 @@ export default function SubmissionsList({
 
   // Build a lookup map for reward tiers
   const tierMap = new Map(rewardTiers.map((t) => [t.id, t]));
+
+  // Build a lookup map for coupon codes by submission_id
+  const couponMap = new Map(couponCodes.map((c) => [c.submission_id, c]));
 
   const query = searchQuery.toLowerCase().trim();
 
@@ -689,6 +696,49 @@ export default function SubmissionsList({
                                   </p>
                                 </div>
                               )}
+
+                              {/* Coupon code display for approved submissions */}
+                              {sub.status === "approved" && couponMap.has(sub.id) && (() => {
+                                const coupon = couponMap.get(sub.id)!;
+                                return (
+                                  <div className="mt-3 rounded-lg border border-purple-100 bg-purple-50/50 p-3">
+                                    <div className="flex items-center gap-3">
+                                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100">
+                                        <Ticket className="h-4 w-4 text-purple-600" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-xs text-gray-500">Coupon Code</p>
+                                        <p className="mt-0.5 font-mono text-sm font-bold tracking-wider text-purple-700">
+                                          {coupon.code}
+                                        </p>
+                                      </div>
+                                      <div className="flex flex-col items-end gap-1">
+                                        <span
+                                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                                            coupon.status === "active"
+                                              ? "bg-emerald-100 text-emerald-700"
+                                              : coupon.status === "used"
+                                                ? "bg-gray-100 text-gray-600"
+                                                : "bg-amber-100 text-amber-700"
+                                          }`}
+                                        >
+                                          {coupon.status}
+                                        </span>
+                                        {coupon.sms_sent && (
+                                          <span className="text-[10px] text-emerald-600 font-medium">
+                                            SMS sent
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    {coupon.expires_at && (
+                                      <p className="mt-2 text-[11px] text-gray-500">
+                                        Expires {formatDate(coupon.expires_at)}
+                                      </p>
+                                    )}
+                                  </div>
+                                );
+                              })()}
                             </div>
                           )}
 

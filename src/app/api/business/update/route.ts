@@ -37,6 +37,7 @@ export async function PATCH(request: Request) {
     sms_approval_enabled,
     sms_rejection_template,
     sms_rejection_enabled,
+    default_coupon_expiry_days,
   } = body;
 
   // Validate required fields
@@ -90,6 +91,7 @@ export async function PATCH(request: Request) {
       ...(sms_approval_enabled !== undefined && { sms_approval_enabled }),
       ...(sms_rejection_template !== undefined && { sms_rejection_template: sms_rejection_template || null }),
       ...(sms_rejection_enabled !== undefined && { sms_rejection_enabled }),
+      ...(default_coupon_expiry_days !== undefined && { default_coupon_expiry_days }),
       updated_at: new Date().toISOString(),
     })
     .eq("owner_id", user.id);

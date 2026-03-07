@@ -42,6 +42,8 @@ export interface Business {
   sms_approval_enabled: boolean | null;
   sms_rejection_template: string | null;
   sms_rejection_enabled: boolean | null;
+  // Coupon settings
+  default_coupon_expiry_days: number | null;
   // Terms & Conditions
   terms_conditions: string | null;
   // Admin fields
@@ -129,6 +131,23 @@ export interface SmsLog {
   message_body: string;
   twilio_sid: string | null;
   status: string;
+  created_at: string;
+}
+
+export interface CouponCode {
+  id: string;
+  business_id: string;
+  submission_id: string;
+  reward_tier_id: string | null;
+  code: string;
+  customer_name: string;
+  customer_phone: string;
+  reward_description: string;
+  status: "active" | "used" | "expired";
+  sms_sent: boolean;
+  sms_sent_at: string | null;
+  used_at: string | null;
+  expires_at: string | null;
   created_at: string;
 }
 

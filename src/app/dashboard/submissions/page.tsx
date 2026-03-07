@@ -1,13 +1,13 @@
 import { getAuthenticatedBusiness } from "@/lib/get-business";
 import SubmissionsList from "./submissions-list";
-import type { Submission, RewardTier } from "@/types/database";
+import type { Submission, RewardTier, CouponCode } from "@/types/database";
 
 export default async function SubmissionsPage() {
   const { user, business, supabase } = await getAuthenticatedBusiness();
   if (!user || !business) return null;
 
-  // Fetch submissions and reward tiers in parallel
-  const [{ data: submissions }, { data: rewardTiers }] = await Promise.all([
+  // Fetch submissions, reward tiers, and coupon codes in parallel
+  const [{ data: submissions }, { data: rewardTiers }, { data: couponCodes }] = await Promise.all([
     supabase
       .from("submissions")
       .select("*")
@@ -19,6 +19,10 @@ export default async function SubmissionsPage() {
       .select("*")
       .eq("business_id", business.id)
       .order("sort_order", { ascending: true }),
+    supabase
+      .from("coupon_codes")
+      .select("*")
+      .eq("business_id", business.id),
   ]);
 
   const hasSmsTemplate = Boolean(
@@ -41,6 +45,7 @@ export default async function SubmissionsPage() {
         businessId={business.id}
         rewardDescription={business.reward_description}
         rewardTiers={(rewardTiers as RewardTier[]) || []}
+        couponCodes={(couponCodes as CouponCode[]) || []}
         hasSmsTemplate={hasSmsTemplate}
         smsTemplateData={{
           approvalTemplate: business.sms_approval_template ?? null,

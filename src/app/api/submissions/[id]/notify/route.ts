@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { sendSms, renderSmsTemplate, DEFAULT_SMS_TEMPLATES } from "@/lib/twilio";
+import { generateUniqueCouponCode } from "@/lib/coupon";
 
 export async function POST(
   request: Request,
@@ -44,7 +45,7 @@ export async function POST(
   const { data: business } = await supabase
     .from("businesses")
     .select(
-      "name, sms_approval_template, sms_approval_enabled, sms_rejection_template, sms_rejection_enabled"
+      "name, sms_approval_template, sms_approval_enabled, sms_rejection_template, sms_rejection_enabled, default_coupon_expiry_days"
     )
     .eq("id", submission.business_id)
     .single();
@@ -67,6 +68,54 @@ export async function POST(
         sent: false,
         reason: "Reward already sent for this submission",
       });
+    }
+  }
+
+  // Generate coupon code for approvals
+  let couponCode: string | null = null;
+
+  if (status === "approved") {
+    try {
+      // Determine reward description snapshot
+      let rewardDesc = reward || "Reward";
+      if (submission.reward_tier_id) {
+        const { data: tier } = await supabase
+          .from("reward_tiers")
+          .select("reward_description")
+          .eq("id", submission.reward_tier_id)
+          .maybeSingle();
+        if (tier?.reward_description) {
+          rewardDesc = tier.reward_description;
+        }
+      }
+
+      // Generate unique coupon code
+      couponCode = await generateUniqueCouponCode(supabase);
+
+      // Calculate expiry
+      const expiryDays = business?.default_coupon_expiry_days ?? 30;
+      let expiresAt: string | null = null;
+      if (expiryDays > 0) {
+        const expiry = new Date();
+        expiry.setDate(expiry.getDate() + expiryDays);
+        expiresAt = expiry.toISOString();
+      }
+
+      // Insert coupon code record
+      await supabase.from("coupon_codes").insert({
+        business_id: submission.business_id,
+        submission_id: id,
+        reward_tier_id: submission.reward_tier_id || null,
+        code: couponCode,
+        customer_name: submission.customer_name,
+        customer_phone: submission.customer_phone,
+        reward_description: rewardDesc,
+        expires_at: expiresAt,
+      });
+    } catch (couponErr) {
+      console.error("Failed to generate coupon code:", couponErr);
+      // Continue without coupon — SMS will still be sent, just without a code
+      couponCode = null;
     }
   }
 
@@ -112,6 +161,7 @@ export async function POST(
     customerName: submission.customer_name,
     rewardDetails: reward || undefined,
     personalNote: personalNote || undefined,
+    couponCode: couponCode || undefined,
   });
 
   try {
@@ -146,7 +196,19 @@ export async function POST(
       }
     }
 
-    return NextResponse.json({ success: true, sent: true });
+    // Mark coupon as SMS sent
+    if (couponCode) {
+      try {
+        await supabase
+          .from("coupon_codes")
+          .update({ sms_sent: true, sms_sent_at: new Date().toISOString() })
+          .eq("submission_id", id);
+      } catch (couponUpdateErr) {
+        console.error("Failed to update coupon sms_sent:", couponUpdateErr);
+      }
+    }
+
+    return NextResponse.json({ success: true, sent: true, couponCode });
   } catch (err) {
     console.error("SMS send failed:", err);
 

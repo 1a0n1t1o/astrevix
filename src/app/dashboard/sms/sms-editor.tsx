@@ -21,7 +21,7 @@ const DEFAULT_TEMPLATES = {
   confirmation:
     "Thanks for submitting your post to [Business Name]! We'll review it and get back to you shortly.",
   approval:
-    "Great news! Your post for [Business Name] has been approved! Here's your reward: [Reward Details]. Thank you for your support!",
+    "Great news! Your post for [Business Name] has been approved! Your coupon code is: [Coupon Code]. Here's your reward: [Reward Details]. Thank you for your support!",
   rejection:
     "Thanks for your submission to [Business Name]. Unfortunately, we weren't able to approve this one. Feel free to try again with a new post!",
 };
@@ -60,6 +60,7 @@ function VariableChips({
     ...(showReward
       ? [
           { label: "Reward Details", variable: "[Reward Details]" },
+          { label: "Coupon Code", variable: "[Coupon Code]" },
           { label: "Reward Link", variable: "[Reward Link]" },
         ]
       : []),
@@ -105,6 +106,7 @@ function renderPreview(template: string, businessName: string, rewardDescription
     .replace(/\[Business Name\]/g, businessName)
     .replace(/\[Customer Name\]/g, "Sarah")
     .replace(/\[Reward Details\]/g, rewardDescription)
+    .replace(/\[Coupon Code\]/g, "AX7K2M")
     .replace(/\[Reward Link\]/g, "https://example.com/reward");
 }
 
@@ -129,6 +131,11 @@ export default function SmsEditor({ business }: SmsEditorProps) {
   );
   const [rejectionEnabled, setRejectionEnabled] = useState(
     business.sms_rejection_enabled ?? false
+  );
+
+  // Coupon settings
+  const [couponExpiryDays, setCouponExpiryDays] = useState<number | null>(
+    business.default_coupon_expiry_days ?? 30
   );
 
   // Active preview
@@ -163,6 +170,7 @@ export default function SmsEditor({ business }: SmsEditorProps) {
           sms_approval_enabled: approvalEnabled,
           sms_rejection_template: rejectionTemplate,
           sms_rejection_enabled: rejectionEnabled,
+          default_coupon_expiry_days: couponExpiryDays,
         }),
       });
 
@@ -302,6 +310,61 @@ export default function SmsEditor({ business }: SmsEditorProps) {
             </div>
           </motion.section>
         ))}
+
+        {/* Coupon Settings */}
+        <motion.section
+          custom={templates.length}
+          initial="hidden"
+          animate="visible"
+          variants={sectionVariants}
+          className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+          style={{
+            backdropFilter: "blur(12px)",
+            boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+          }}
+        >
+          <h2
+            className="text-base font-semibold text-gray-900"
+            style={{
+              paddingLeft: "12px",
+              borderLeft: "3px solid #8b5cf6",
+            }}
+          >
+            Coupon Settings
+          </h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Auto-generated coupon codes are included in approval messages
+          </p>
+
+          <div className="mt-4">
+            <label
+              htmlFor="coupon-expiry"
+              className="mb-1.5 block text-xs font-medium text-gray-500"
+            >
+              Default coupon expiry
+            </label>
+            <select
+              id="coupon-expiry"
+              value={couponExpiryDays ?? 0}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                setCouponExpiryDays(val === 0 ? null : val);
+              }}
+              className={inputClasses}
+              style={{ resize: "none" }}
+            >
+              <option value={7}>7 days</option>
+              <option value={14}>14 days</option>
+              <option value={30}>30 days</option>
+              <option value={60}>60 days</option>
+              <option value={90}>90 days</option>
+              <option value={0}>No expiry</option>
+            </select>
+            <p className="mt-1.5 text-xs text-gray-400">
+              Coupon codes will automatically expire after this period
+            </p>
+          </div>
+        </motion.section>
 
         {/* Save button */}
         <motion.button

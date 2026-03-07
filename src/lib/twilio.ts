@@ -16,7 +16,7 @@ export const DEFAULT_SMS_TEMPLATES = {
   confirmation:
     "Thanks for submitting your post to [Business Name]! We'll review it and get back to you shortly.",
   approval:
-    "Great news! Your post for [Business Name] has been approved! Here's your reward: [Reward Details]. Thank you for your support!",
+    "Great news! Your post for [Business Name] has been approved! Your coupon code is: [Coupon Code]. Here's your reward: [Reward Details]. Thank you for your support!",
   rejection:
     "Thanks for your submission to [Business Name]. Unfortunately, we weren't able to approve this one. Feel free to try again with a new post!",
 };
@@ -30,6 +30,7 @@ export function renderSmsTemplate(
     rewardDetails?: string;
     rewardLink?: string;
     personalNote?: string;
+    couponCode?: string;
   }
 ): string {
   let result = template
@@ -41,6 +42,9 @@ export function renderSmsTemplate(
   }
   if (variables.rewardLink) {
     result = result.replace(/\[Reward Link\]/g, variables.rewardLink);
+  }
+  if (variables.couponCode) {
+    result = result.replace(/\[Coupon Code\]/g, variables.couponCode);
   }
 
   // Append personal note if provided
