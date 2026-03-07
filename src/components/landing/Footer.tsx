@@ -1,72 +1,74 @@
 import Image from "next/image";
-import Link from "next/link";
 
-const FOOTER_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Features", href: "/#features" },
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "FAQ", href: "/#faq" },
+const CALENDLY_URL = "https://calendly.com/contact-astrevix/new-meeting";
+
+const NAV_LINKS = [
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Results", href: "#results" },
+  { label: "FAQ", href: "#faq" },
+];
+
+const LEGAL_LINKS = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms & Conditions", href: "/terms" },
 ];
 
 export default function Footer() {
   return (
-    <footer
-      style={{
-        background:
-          "linear-gradient(180deg, #6D28D9 0%, #5B21B6 50%, #4C1D95 100%)",
-      }}
-    >
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+    <footer className="border-t border-slate-800 bg-[#0B1120] py-12">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <a href="/">
             <Image
               src="/logo-text.png"
               alt="Astrevix"
               width={120}
-              height={24}
+              height={30}
             />
-          </div>
+          </a>
 
-          {/* Links */}
-          <nav className="flex flex-wrap items-center justify-center gap-6">
-            {FOOTER_LINKS.map((link) => (
-              <Link
-                key={link.label}
+          {/* Nav links */}
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
                 href={link.href}
-                className="text-sm text-purple-200 transition-colors hover:text-white"
+                className="text-sm text-slate-500 transition-colors hover:text-slate-300"
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
-          </nav>
+          </div>
 
-          {/* Empty spacer for layout balance */}
-          <div className="hidden w-[120px] md:block" />
+          {/* CTA */}
+          <a
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg bg-[#2563EB] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#3B82F6]"
+          >
+            Book a Demo
+          </a>
         </div>
 
-        <div
-          className="mt-8 pt-8 text-center"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
-        >
-          <div className="flex justify-center gap-4 mb-4">
-            <Link
-              href="/privacy"
-              className="text-xs text-purple-300 transition-colors hover:text-white"
-            >
-              Privacy Policy
-            </Link>
-            <span className="text-xs text-purple-300/50">&middot;</span>
-            <Link
-              href="/terms"
-              className="text-xs text-purple-300 transition-colors hover:text-white"
-            >
-              Terms &amp; Conditions
-            </Link>
-          </div>
-          <p className="text-xs text-purple-300">
+        {/* Bottom row */}
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-slate-800/50 pt-8 sm:flex-row">
+          <p className="text-xs text-slate-600">
             &copy; {new Date().getFullYear()} Astrevix. All rights reserved.
           </p>
+          <div className="flex gap-5">
+            {LEGAL_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-xs text-slate-600 transition-colors hover:text-slate-400"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

@@ -5,7 +5,6 @@ import {
   detectPlatform,
   createSubmission,
   PLATFORM_INFO,
-  TIER_PLATFORM_EMOJIS,
   type Platform,
   type BusinessData,
   type RewardTierPublic,
@@ -22,6 +21,8 @@ import {
   Lock,
   Clock,
   ArrowRight,
+  Camera,
+  Video,
 } from "lucide-react";
 
 const PLATFORM_ICON_MAP: Record<string, React.ReactNode> = {
@@ -30,6 +31,11 @@ const PLATFORM_ICON_MAP: Record<string, React.ReactNode> = {
   youtube: <Youtube className="h-3.5 w-3.5" />,
   twitter: <Twitter className="h-3.5 w-3.5" />,
   facebook: <Facebook className="h-3.5 w-3.5" />,
+};
+
+const TIER_ICONS: Record<string, React.ReactNode> = {
+  instagram: <Camera className="h-5 w-5" />,
+  tiktok: <Video className="h-5 w-5" />,
 };
 
 function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
@@ -242,8 +248,10 @@ export default function SubmitForm({
             Your Reward
           </p>
           {selectedTier && (
-            <p className="mt-1 text-xs text-gray-500">
-              {TIER_PLATFORM_EMOJIS[selectedTier.platform] || "🎁"}{" "}
+            <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-gray-500">
+              <span style={{ color: business.brandColor }}>
+                {TIER_ICONS[selectedTier.platform] || <Gift className="h-3.5 w-3.5" />}
+              </span>
               {selectedTier.tier_name}
             </p>
           )}
@@ -338,8 +346,11 @@ export default function SubmitForm({
           style={{ backgroundColor: `${business.brandColor}0D` }}
         >
           <div className="flex items-center gap-3">
-            <span className="text-xl">
-              {TIER_PLATFORM_EMOJIS[selectedTier.platform] || "🎁"}
+            <span
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+              style={{ backgroundColor: `${business.brandColor}12`, color: business.brandColor }}
+            >
+              {TIER_ICONS[selectedTier.platform] || <Gift className="h-4 w-4" />}
             </span>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-medium text-gray-500">
@@ -387,8 +398,11 @@ export default function SubmitForm({
                       : "hover:bg-white/50"
                   }`}
                 >
-                  <span className="text-lg">
-                    {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
+                  <span
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: `${business.brandColor}12`, color: business.brandColor }}
+                  >
+                    {TIER_ICONS[tier.platform] || <Gift className="h-4 w-4" />}
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-gray-500">
@@ -425,8 +439,11 @@ export default function SubmitForm({
               className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
               style={{ border: "1px solid rgba(0,0,0,0.06)" }}
             >
-              <span className="text-xl">
-                {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                style={{ backgroundColor: `${business.brandColor}12`, color: business.brandColor }}
+              >
+                {TIER_ICONS[tier.platform] || <Gift className="h-5 w-5" />}
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-gray-500">
@@ -590,12 +607,26 @@ export default function SubmitForm({
 
       {/* SMS consent checkbox */}
       <label className="mt-5 flex items-start gap-3 cursor-pointer">
-        <input
-          type="checkbox"
-          checked={smsConsent}
-          onChange={(e) => setSmsConsent(e.target.checked)}
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 accent-[var(--brand-color)]"
-        />
+        <span className="relative mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+          <input
+            type="checkbox"
+            checked={smsConsent}
+            onChange={(e) => setSmsConsent(e.target.checked)}
+            className="sr-only"
+          />
+          <span
+            className="absolute inset-0 rounded-md transition-colors"
+            style={{
+              border: smsConsent ? "none" : "1.5px solid #D0CCC6",
+              backgroundColor: smsConsent ? business.brandColor : "transparent",
+            }}
+          />
+          {smsConsent && (
+            <svg className="relative h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          )}
+        </span>
         <span className="text-xs leading-relaxed text-gray-500">
           By submitting, I agree to receive SMS messages from {business.name} via Astrevix about my submission
           and reward. Up to 3 msgs per submission. Msg &amp; data rates may apply. Reply STOP to opt-out.{" "}
@@ -609,7 +640,7 @@ export default function SubmitForm({
       <button
         disabled={!isValid || submitting}
         onClick={handleSubmit}
-        className="mt-6 w-full rounded-2xl py-4 text-base font-semibold transition-all active:enabled:scale-[0.98]"
+        className="mt-6 w-full rounded-2xl py-4 text-base font-semibold transition-all hover:enabled:brightness-110 active:enabled:scale-[0.98]"
         style={
           isValid
             ? {

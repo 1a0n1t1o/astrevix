@@ -2,69 +2,52 @@
 
 import { motion } from "framer-motion";
 
-const CALENDLY_URL =
-  "https://calendly.com/contact-astrevix/new-meeting";
+const CALENDLY_URL = "https://calendly.com/contact-astrevix/new-meeting";
 
 export default function CTASection() {
   return (
-    <section
-      className="relative overflow-hidden px-0 py-24 md:py-32"
-      style={{
-        background:
-          "linear-gradient(180deg, #4F46E5 0%, #7C3AED 40%, #6D28D9 100%)",
-      }}
-    >
-      {/* Decorative blobs */}
-      <div
-        className="pointer-events-none absolute -left-20 -top-20 h-80 w-80 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%)",
-          filter: "blur(40px)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-20 -right-20 h-80 w-80 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 60%)",
-          filter: "blur(40px)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute left-1/2 top-0 h-40 w-[600px] -translate-x-1/2 rounded-full"
-        style={{
-          background:
-            "radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%)",
-          filter: "blur(30px)",
-        }}
-      />
+    <section className="relative overflow-hidden bg-[#0F172A] py-20 md:py-28">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2563EB]/8 blur-[120px]" />
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="relative mx-auto max-w-4xl text-center"
-      >
-        <h2 className="text-3xl font-bold text-white sm:text-4xl">
-          Ready to turn your customers
-          <br className="hidden sm:block" /> into content creators?
-        </h2>
-        <p className="mt-4 text-lg text-purple-100">
-          Get started free. No credit card required.
-        </p>
+      <div className="relative mx-auto max-w-3xl px-5 text-center">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-3xl font-extrabold text-white sm:text-4xl md:text-5xl"
+        >
+          Ready to turn every customer into free marketing?
+        </motion.h2>
 
-        <div className="mt-10">
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="mx-auto mt-5 max-w-xl text-lg text-slate-400"
+        >
+          Book a free setup call. We&apos;ll build your page for you.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="mt-8"
+        >
           <a
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-semibold text-purple-700 shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl animate-pulse-glow"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-[#3B82F6] hover:shadow-xl hover:shadow-blue-500/30 active:scale-[0.98]"
           >
-            Start Free Today
+            Book Your Free Demo
             <svg
-              className="h-4 w-4"
+              className="h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -77,8 +60,8 @@ export default function CTASection() {
               />
             </svg>
           </a>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </section>
   );
 }

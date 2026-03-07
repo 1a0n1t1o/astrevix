@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getBusinessBySlug, TIER_PLATFORM_EMOJIS } from "@/lib/data";
+import { getBusinessBySlug } from "@/lib/data";
+import { Camera, Video, Gift, ChevronRight } from "lucide-react";
 
 const DEFAULT_TERMS = `By submitting content through this page, you agree to the following terms:
 
@@ -35,6 +36,11 @@ const STEPS = [
   },
 ];
 
+const TIER_ICONS: Record<string, React.ReactNode> = {
+  instagram: <Camera className="h-5 w-5" />,
+  tiktok: <Video className="h-5 w-5" />,
+};
+
 export default async function BusinessPage({
   params,
 }: {
@@ -68,14 +74,14 @@ export default async function BusinessPage({
       {/* Powered by badge */}
       <div className="flex justify-center">
         <div
-          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1"
-          style={{ backgroundColor: "rgba(0,0,0,0.04)", fontSize: "11px", color: "#8B8B9B" }}
+          className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5"
+          style={{ fontSize: "10px", color: "#B0B0BA", letterSpacing: "0.01em" }}
         >
-          Powered by <span className="font-semibold" style={{ color: "#6B6B7B" }}>Astrevix</span>
+          Powered by <span className="font-medium" style={{ color: "#9090A0" }}>Astrevix</span>
         </div>
       </div>
 
-      {/* Business logo (only if logo_url exists) */}
+      {/* Business logo */}
       {hasLogo && (
         <div className="mt-6 flex justify-center">
           <Image
@@ -104,45 +110,48 @@ export default async function BusinessPage({
 
       {/* Reward section — tiers or single card */}
       {business.rewardTiers.length > 0 ? (
-        <div className="mt-6 space-y-3">
+        <div className="mt-6 space-y-2.5">
           <p
-            className="text-center text-xs font-semibold uppercase tracking-widest"
+            className="text-center text-[11px] font-semibold uppercase tracking-widest"
             style={{ color: business.brandColor }}
           >
             Choose Your Reward
           </p>
-          {business.rewardTiers.map((tier, i) => (
+          {business.rewardTiers.map((tier) => (
             <a
               key={tier.id}
               href={`/b/${business.slug}/submit?tier=${tier.id}`}
-              className="block transition-transform active:scale-[0.98]"
+              className="group block transition-all active:scale-[0.98]"
             >
               <div
-                className="relative overflow-hidden rounded-[20px] px-5 py-5"
+                className="overflow-hidden rounded-2xl px-4 py-4 transition-shadow group-hover:shadow-md"
                 style={{
-                  background: "rgba(255,255,255,0.8)",
-                  backdropFilter: "blur(20px)",
-                  WebkitBackdropFilter: "blur(20px)",
-                  border: `2px solid ${business.brandColor}40`,
-                  boxShadow: `0 8px 24px ${business.brandColor}15`,
+                  background: "rgba(255,255,255,0.85)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
+                  border: "1px solid rgba(0,0,0,0.06)",
+                  borderLeft: `3px solid ${business.brandColor}`,
                 }}
               >
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl">
-                    {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
-                  </span>
+                <div className="flex items-center gap-3.5">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: `${business.brandColor}12`, color: business.brandColor }}
+                  >
+                    {TIER_ICONS[tier.platform] || <Gift className="h-5 w-5" />}
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-gray-500">
+                    <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
                       {tier.tier_name}
                     </p>
-                    <p className="text-lg font-bold text-gray-900">
+                    <p className="mt-0.5 text-base font-bold text-gray-900">
                       {tier.reward_description}
                     </p>
                     {tier.reward_value && (
                       <span
-                        className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                        className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
                         style={{
-                          backgroundColor: `${business.brandColor}15`,
+                          backgroundColor: `${business.brandColor}12`,
                           color: business.brandColor,
                         }}
                       >
@@ -150,9 +159,7 @@ export default async function BusinessPage({
                       </span>
                     )}
                   </div>
-                  <svg className="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                  </svg>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5" />
                 </div>
               </div>
             </a>
@@ -193,23 +200,26 @@ export default async function BusinessPage({
       {/* How it works */}
       <div className="mt-8">
         <h2 className="text-lg font-bold text-gray-900">How it works</h2>
-        <div className="mt-5 space-y-3">
-          {STEPS.map((step) => (
-            <div
-              key={step.num}
-              className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm"
-            >
-              <div
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-bold"
-                style={{ backgroundColor: "rgba(0,0,0,0.04)", color: "#1a1a1a", fontSize: "14px" }}
-              >
-                {step.num}
+        <div className="mt-5">
+          {STEPS.map((step, i) => (
+            <div key={step.num} className="flex gap-3.5">
+              <div className="flex flex-col items-center">
+                <div
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                  style={{ backgroundColor: business.brandColor }}
+                >
+                  {step.num}
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div
+                    className="my-1 flex-1 w-0.5 rounded-full"
+                    style={{ backgroundColor: `${business.brandColor}20` }}
+                  />
+                )}
               </div>
-              <div>
-                <p className="text-sm font-medium">{step.label}</p>
-                <p style={{ fontSize: "13px", color: "#8B8B9B" }} className="mt-0.5">
-                  {step.desc}
-                </p>
+              <div className={i < STEPS.length - 1 ? "pb-5 pt-1" : "pt-1"}>
+                <p className="text-sm font-semibold text-gray-900">{step.label}</p>
+                <p className="mt-0.5 text-[13px] text-gray-400">{step.desc}</p>
               </div>
             </div>
           ))}
@@ -231,7 +241,21 @@ export default async function BusinessPage({
           <ul className="mt-3 space-y-3">
             {business.requirements.map((req) => (
               <li key={req} className="flex items-start gap-3 text-sm">
-                <div className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-[1.5px] border-gray-300" />
+                <div
+                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md"
+                  style={{ border: `1.5px solid ${business.brandColor}40` }}
+                >
+                  <svg
+                    className="h-3 w-3"
+                    style={{ color: business.brandColor }}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                </div>
                 <span>{req}</span>
               </li>
             ))}
@@ -242,9 +266,9 @@ export default async function BusinessPage({
       {/* CTA button */}
       <a
         href={`/b/${business.slug}/submit`}
-        className="mt-8 block w-full rounded-2xl bg-brand py-4 text-center text-base font-semibold text-white transition-transform active:scale-[0.98]"
+        className="mt-8 block w-full rounded-2xl bg-brand py-4 text-center text-base font-semibold text-white transition-all hover:brightness-110 active:scale-[0.98]"
         style={{
-          boxShadow: `0 8px 24px ${business.brandColor}66`,
+          boxShadow: `0 8px 24px ${business.brandColor}40`,
         }}
       >
         Submit Your Post &rarr;
@@ -255,15 +279,8 @@ export default async function BusinessPage({
         Rewards issued after review. Usually within 24 hours.
       </p>
 
-      {/* Legal links */}
-      <div className="mt-2 flex justify-center gap-3 text-[11px] text-gray-400">
-        <a href="/privacy" target="_blank" className="underline hover:text-gray-600">Privacy Policy</a>
-        <span>&middot;</span>
-        <a href="/terms" target="_blank" className="underline hover:text-gray-600">Terms &amp; Conditions</a>
-      </div>
-
       {/* Terms & Conditions */}
-      <details className="group mt-6 mb-4">
+      <details className="group mt-4 mb-2">
         <summary className="flex cursor-pointer items-center justify-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-gray-600">
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
@@ -279,6 +296,13 @@ export default async function BusinessPage({
           ))}
         </div>
       </details>
+
+      {/* Legal links */}
+      <div className="mb-4 flex justify-center gap-3 text-[10px] text-gray-400">
+        <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Privacy Policy</a>
+        <span>&middot;</span>
+        <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms</a>
+      </div>
     </>
   );
 }
