@@ -38,6 +38,14 @@ export function formatPhoneForDisplay(e164: string | null | undefined): string {
   return e164;
 }
 
+/** Mask E.164 phone for privacy display: +15551234567 -> ***-***-4567 */
+export function maskPhoneForDisplay(e164: string | null | undefined): string {
+  if (!e164) return "";
+  const digits = e164.replace(/\D/g, "");
+  const last4 = digits.slice(-4);
+  return `***-***-${last4}`;
+}
+
 /** Count SMS segments for a message. 160 chars = 1 segment, 153 per segment for multi-part. */
 export function countSmsSegments(text: string): {
   characters: number;
