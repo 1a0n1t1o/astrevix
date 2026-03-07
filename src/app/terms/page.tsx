@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata = {
   title: "Terms & Conditions | Astrevix",
@@ -9,33 +10,48 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-[#FEFCFA]">
       <div className="mx-auto max-w-2xl px-5 py-12">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-gray-900"
-        >
-          &larr; Back to Astrevix
-        </Link>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-gray-900"
+          >
+            &larr; Back to Astrevix
+          </Link>
+          <Link href="/">
+            <Image
+              src="/logo-text.png"
+              alt="Astrevix"
+              width={100}
+              height={20}
+              className="opacity-60 hover:opacity-100 transition-opacity"
+            />
+          </Link>
+        </div>
 
         <h1 className="mt-8 text-3xl font-bold text-gray-900">Terms &amp; Conditions</h1>
-        <p className="mt-2 text-sm text-gray-500">Last updated: March 4, 2026</p>
+        <p className="mt-2 text-sm text-gray-500">Last updated: March 7, 2026</p>
 
         <div className="mt-8 space-y-8 text-sm leading-relaxed text-gray-700">
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">1. Acceptance of Terms</h2>
+            <h2 className="text-lg font-semibold text-gray-900">1. Program Name</h2>
             <p className="mt-2">
-              By using the Astrevix platform (&quot;Service&quot;), you agree to be bound by these Terms &amp;
-              Conditions. If you do not agree, do not use the Service. These terms apply to all users, including
-              business owners and customers who submit content through business landing pages.
+              <strong>Astrevix Submission Notifications</strong>
+            </p>
+            <p className="mt-2">
+              Astrevix enables local businesses to collect customer-generated social media content in exchange for
+              rewards. Customers scan a QR code or NFC tag, view the business&apos;s branded landing page, post
+              content on platforms like TikTok or Instagram, submit their post link, and receive SMS updates about
+              their submission status and reward delivery.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">2. Service Description</h2>
+            <h2 className="text-lg font-semibold text-gray-900">2. Acceptance of Terms</h2>
             <p className="mt-2">
-              Astrevix provides a platform where local businesses can create branded landing pages to incentivize
-              customers to create and share social media content in exchange for rewards. Customers scan a QR code
-              or NFC tag, view the business&apos;s page, post content on platforms like TikTok or Instagram, submit
-              their post link, and receive a reward upon approval.
+              By using the Astrevix platform (&quot;Service&quot;), you agree to be bound by these Terms &amp;
+              Conditions. If you do not agree, do not use the Service. These terms apply to all users, including
+              business owners and customers who submit content through business landing pages.
             </p>
           </section>
 
@@ -66,17 +82,57 @@ export default function TermsPage() {
             <p className="mt-2">
               By providing your phone number and consenting to receive SMS messages, you agree to the following:
             </p>
-            <ul className="mt-3 list-disc space-y-2 pl-5">
-              <li>You will receive SMS messages regarding your submission status (confirmation, approval, rejection) and reward delivery.</li>
-              <li>Message frequency is typically 1&ndash;3 messages per submission.</li>
-              <li>Message and data rates may apply depending on your mobile carrier and plan.</li>
-              <li>
-                You may opt out at any time by replying <strong>STOP</strong> to any message. Reply{" "}
-                <strong>HELP</strong> for assistance.
-              </li>
-              <li>SMS messages are sent via Twilio, a third-party communications provider.</li>
-              <li>Consent to receive SMS is not a condition of making a purchase from any business on our platform.</li>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">What messages you will receive:</h3>
+            <ul className="mt-2 list-disc space-y-2 pl-5">
+              <li>A submission confirmation message when you submit your content</li>
+              <li>An approval notification with your reward details and coupon code when your submission is approved</li>
+              <li>Optionally, a rejection notification if your submission is not approved</li>
             </ul>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Message frequency:</h3>
+            <p className="mt-2">
+              You may receive up to 3 SMS messages per submission (confirmation, status update, and reward delivery).
+            </p>
+
+            <p className="mt-4 font-semibold text-gray-900">
+              Message and data rates may apply.
+            </p>
+
+            <p className="mt-4">
+              <strong>
+                Text STOP to opt out of all future messages from this number. You will receive a confirmation
+                message upon opting out.
+              </strong>
+            </p>
+
+            <p className="mt-2">
+              <strong>
+                Text HELP for support or contact us at{" "}
+                <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
+                  contact@astrevix.com
+                </a>.
+              </strong>
+            </p>
+
+            <p className="mt-4">
+              Support contact:{" "}
+              <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
+                contact@astrevix.com
+              </a>
+            </p>
+
+            <p className="mt-2">
+              SMS messages are sent via Twilio, a third-party communications provider.
+            </p>
+
+            <p className="mt-2">
+              Consent to receive SMS is not a condition of making a purchase from any business on our platform.
+            </p>
+
+            <p className="mt-2 font-semibold text-gray-900">
+              Carriers are not liable for delayed or undelivered messages.
+            </p>
           </section>
 
           <section>
@@ -96,8 +152,9 @@ export default function TermsPage() {
               <Link href="/privacy" className="underline hover:text-gray-900">
                 Privacy Policy
               </Link>
-              . We use third-party services including Twilio (SMS delivery), Supabase (data storage), and
-              Vercel (hosting).
+              . We do not share, sell, or rent your personal information to third parties for marketing purposes.
+              We use third-party services including Twilio (SMS delivery), Supabase (data storage), Stripe
+              (payment processing), and Vercel (hosting).
             </p>
           </section>
 

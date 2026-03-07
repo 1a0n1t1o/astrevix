@@ -597,10 +597,11 @@ export default function SubmitForm({
           className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 accent-[var(--brand-color)]"
         />
         <span className="text-xs leading-relaxed text-gray-500">
-          I agree to receive SMS messages about my submission and reward. Message &amp; data rates may apply. Reply STOP to opt-out.{" "}
-          <a href="/privacy" target="_blank" className="underline hover:text-gray-700">Privacy Policy</a>
-          {" & "}
-          <a href="/terms" target="_blank" className="underline hover:text-gray-700">Terms</a>.
+          By submitting, I agree to receive SMS messages from {business.name} via Astrevix about my submission
+          and reward. Up to 3 msgs per submission. Msg &amp; data rates may apply. Reply STOP to opt-out.{" "}
+          <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms &amp; Conditions</a>
+          {" | "}
+          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Privacy Policy</a>.
         </span>
       </label>
 
