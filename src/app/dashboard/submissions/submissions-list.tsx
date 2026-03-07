@@ -180,6 +180,7 @@ export default function SubmissionsList({
   const [personalNoteOpen, setPersonalNoteOpen] = useState(false);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [previewSub, setPreviewSub] = useState<Submission | null>(null);
+  const [earlyApprovalSub, setEarlyApprovalSub] = useState<Submission | null>(null);
   const router = useRouter();
 
   // Suppress unused variable warning
@@ -265,6 +266,40 @@ export default function SubmissionsList({
     } finally {
       setUpdatingId(null);
     }
+  }
+
+  function handleApproveClick(sub: Submission) {
+    // Check if this submission has a verification deadline that hasn't passed
+    const vInfo = getVerificationInfo(sub);
+    if (vInfo && vInfo.status === "pending" && !vInfo.isPast) {
+      // Show early approval confirmation modal
+      setEarlyApprovalSub(sub);
+    } else {
+      // Approve normally
+      handleReview(sub.id, "approved");
+    }
+  }
+
+  function getEarlyApprovalTimeInfo(sub: Submission) {
+    const created = new Date(sub.created_at);
+    const now = new Date();
+    const elapsedMs = now.getTime() - created.getTime();
+    const elapsedHours = Math.floor(elapsedMs / (1000 * 60 * 60));
+    const elapsedMinutes = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    const vInfo = getVerificationInfo(sub);
+    const remainingHours = vInfo ? Math.floor(vInfo.diffHours) : 0;
+    const remainingMs = vInfo ? new Date(sub.verification_deadline!).getTime() - now.getTime() : 0;
+    const remainingMinutes = Math.max(0, Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60)));
+
+    return {
+      elapsed: elapsedHours > 0
+        ? `${elapsedHours} hour${elapsedHours !== 1 ? "s" : ""}${elapsedMinutes > 0 ? `, ${elapsedMinutes} minute${elapsedMinutes !== 1 ? "s" : ""}` : ""}`
+        : `${elapsedMinutes} minute${elapsedMinutes !== 1 ? "s" : ""}`,
+      remaining: remainingHours > 0
+        ? `${remainingHours} hour${remainingHours !== 1 ? "s" : ""}${remainingMinutes > 0 ? `, ${remainingMinutes} minute${remainingMinutes !== 1 ? "s" : ""}` : ""}`
+        : `${remainingMinutes} minute${remainingMinutes !== 1 ? "s" : ""}`,
+    };
   }
 
   const st = smsTemplateData;
@@ -595,28 +630,42 @@ export default function SubmissionsList({
                                           <ShieldX className="h-4 w-4 text-red-500" />
                                         ) : vInfo.status === "expired" ? (
                                           <AlertTriangle className="h-4 w-4 text-amber-500" />
+                                        ) : vInfo.isPast ? (
+                                          <CheckCircle className="h-4 w-4 text-emerald-500" />
                                         ) : (
                                           <Shield className="h-4 w-4 text-blue-500" />
                                         )}
                                         <span className="text-xs font-medium text-gray-600">
-                                          Verification:{" "}
-                                          <span
-                                            className={`font-semibold capitalize ${
-                                              vInfo.status === "verified"
-                                                ? "text-emerald-600"
-                                                : vInfo.status === "failed"
-                                                  ? "text-red-600"
-                                                  : vInfo.status === "expired"
-                                                    ? "text-amber-600"
-                                                    : "text-blue-600"
-                                            }`}
-                                          >
-                                            {vInfo.status}
-                                          </span>
+                                          {vInfo.status === "pending" && vInfo.isPast ? (
+                                            <span className="font-semibold text-emerald-600">
+                                              Verification period complete
+                                            </span>
+                                          ) : (
+                                            <>
+                                              Verification:{" "}
+                                              <span
+                                                className={`font-semibold capitalize ${
+                                                  vInfo.status === "verified"
+                                                    ? "text-emerald-600"
+                                                    : vInfo.status === "failed"
+                                                      ? "text-red-600"
+                                                      : vInfo.status === "expired"
+                                                        ? "text-amber-600"
+                                                        : "text-blue-600"
+                                                }`}
+                                              >
+                                                {vInfo.status}
+                                              </span>
+                                            </>
+                                          )}
                                         </span>
                                       </div>
                                       <span className="text-xs text-gray-500">
-                                        {vInfo.status === "pending" ? vInfo.timeLabel : `Deadline: ${vInfo.deadline}`}
+                                        {vInfo.status === "pending" && vInfo.isPast
+                                          ? ""
+                                          : vInfo.status === "pending"
+                                            ? vInfo.timeLabel
+                                            : `Deadline: ${vInfo.deadline}`}
                                       </span>
                                     </div>
 
@@ -844,25 +893,11 @@ export default function SubmissionsList({
                                 </AnimatePresence>
                               </div>
 
-                              {/* Action buttons — approval gated by verification for tiered submissions */}
+                              {/* Action buttons */}
                               <div className="flex gap-2">
                                 <button
-                                  onClick={() =>
-                                    handleReview(sub.id, "approved")
-                                  }
-                                  disabled={
-                                    isUpdating ||
-                                    (!!sub.reward_tier_id &&
-                                      !!sub.verification_status &&
-                                      sub.verification_status !== "verified")
-                                  }
-                                  title={
-                                    sub.reward_tier_id &&
-                                    sub.verification_status &&
-                                    sub.verification_status !== "verified"
-                                      ? "Post must be verified before approval"
-                                      : undefined
-                                  }
+                                  onClick={() => handleApproveClick(sub)}
+                                  disabled={isUpdating}
                                   className="flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   {isUpdating ? (
@@ -923,6 +958,89 @@ export default function SubmissionsList({
           </AnimatePresence>
         </div>
       )}
+
+      {/* Early Approval Confirmation Modal */}
+      <AnimatePresence>
+        {earlyApprovalSub && (() => {
+          const timeInfo = getEarlyApprovalTimeInfo(earlyApprovalSub);
+          return (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            >
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+                onClick={() => setEarlyApprovalSub(null)}
+              />
+              {/* Modal content */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ duration: 0.2 }}
+                className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl"
+              >
+                <div className="p-6">
+                  {/* Warning icon */}
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
+                    <AlertTriangle className="h-6 w-6 text-amber-500" />
+                  </div>
+
+                  <h3 className="text-center text-base font-semibold text-gray-900">
+                    Early Approval
+                  </h3>
+
+                  <p className="mt-3 text-center text-sm text-gray-600">
+                    This submission was submitted {timeInfo.elapsed} ago and hasn&apos;t completed the verification period. The post may still be removed by the customer after receiving their reward.
+                  </p>
+
+                  <div className="mt-4 rounded-lg bg-amber-50 border border-amber-100 px-3 py-2.5 text-center">
+                    <p className="text-xs font-medium text-amber-700">
+                      Time remaining: {timeInfo.remaining}
+                    </p>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="mt-5 flex gap-3">
+                    <button
+                      onClick={() => setEarlyApprovalSub(null)}
+                      className="flex-1 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      Wait
+                    </button>
+                    <button
+                      onClick={() => {
+                        const subId = earlyApprovalSub.id;
+                        setEarlyApprovalSub(null);
+                        handleReview(subId, "approved");
+                      }}
+                      disabled={updatingId === earlyApprovalSub.id}
+                      className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-amber-600 disabled:opacity-50"
+                    >
+                      {updatingId === earlyApprovalSub.id ? (
+                        <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      ) : (
+                        <>
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg>
+                          Approve Anyway
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
 
       {/* SMS Preview Modal */}
       <AnimatePresence>
