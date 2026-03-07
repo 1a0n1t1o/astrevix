@@ -1,128 +1,183 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { QrCode, Gift, Share2, Zap } from "lucide-react";
+import { Palette, QrCode, Gift } from "lucide-react";
 
 const STEPS = [
   {
-    num: "1",
+    num: "01",
+    icon: Palette,
+    title: "Set Up Your Page",
+    description:
+      "Customize your landing page with your branding, rewards, and content requirements in minutes.",
+    color: "#2563EB",
+    bgColor: "rgba(37, 99, 235, 0.1)",
+  },
+  {
+    num: "02",
     icon: QrCode,
-    title: "Customer scans your QR code",
-    desc: "They tap your NFC stand or scan the QR code at your counter",
-    color: "#3B82F6",
+    title: "Share Your QR Code",
+    description:
+      "Print it on receipts, place it on tables, or add it to your storefront. Customers scan and go.",
+    color: "#7C3AED",
+    bgColor: "rgba(124, 58, 237, 0.1)",
   },
   {
-    num: "2",
+    num: "03",
     icon: Gift,
-    title: "They pick their reward",
-    desc: "Story for a discount, Reel for a freebie — you set the tiers",
-    color: "#8B5CF6",
-  },
-  {
-    num: "3",
-    icon: Share2,
-    title: "They post and submit",
-    desc: "They create content, post it, and drop the link — takes 60 seconds",
-    color: "#EC4899",
-  },
-  {
-    num: "4",
-    icon: Zap,
-    title: "System handles the rest",
-    desc: "Auto-verifies the post and texts them their coupon code. You don't lift a finger.",
-    color: "#10B981",
+    title: "Collect & Reward",
+    description:
+      "Review submissions, approve the ones you love, and rewards are delivered automatically.",
+    color: "#059669",
+    bgColor: "rgba(5, 150, 105, 0.1)",
   },
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.4, ease: "easeOut" as const },
-  }),
-};
+function StepNumber({
+  num,
+  color,
+  gradient,
+  delay,
+}: Readonly<{ num: string; color: string; gradient: string; delay: number }>) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setTimeout(() => setVisible(true), delay * 1000);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <div
+      ref={ref}
+      className={`mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white shadow-md ${
+        visible ? "animate-step-bounce" : "opacity-0"
+      }`}
+      style={{
+        background: `linear-gradient(135deg, ${color}, ${gradient})`,
+      }}
+    >
+      {num}
+    </div>
+  );
+}
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-white py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-5">
+    <section
+      id="how-it-works"
+      className="relative overflow-hidden py-24 md:py-32"
+      style={{
+        background:
+          "linear-gradient(180deg, #FFFFFF 0%, #EEF2FF 25%, #E0E7FF 50%, #EEF2FF 75%, #FFFFFF 100%)",
+      }}
+    >
+      {/* Decorative blobs */}
+      <div className="pointer-events-none absolute inset-0">
+        <div
+          className="absolute left-1/4 top-10 h-[350px] w-[350px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+        <div
+          className="absolute bottom-10 right-1/4 h-[300px] w-[300px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}
-        <div className="text-center">
+        <div className="mx-auto max-w-2xl text-center">
           <motion.span
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block rounded-full bg-[#2563EB]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#2563EB]"
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center rounded-full border border-indigo-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-indigo-700 shadow-sm backdrop-blur-sm"
           >
-            How It Works
+            3 Simple Steps
           </motion.span>
           <motion.h2
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.05 }}
-            className="mt-4 text-3xl font-extrabold text-gray-900 sm:text-4xl"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
           >
-            Four steps. Zero effort on your part.
+            How{" "}
+            <span className="bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">
+              Astrevix
+            </span>{" "}
+            Works
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="mx-auto mt-4 max-w-2xl text-lg text-gray-500"
-          >
-            Your customers do all the work. You just pick your rewards and watch the content roll in.
-          </motion.p>
         </div>
 
-        {/* Steps grid */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Steps */}
+        <div className="relative mt-16 grid gap-8 md:grid-cols-3">
           {STEPS.map((step, i) => {
             const Icon = step.icon;
             return (
               <motion.div
                 key={step.num}
-                custom={i}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="relative"
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.2, ease: "easeOut" }}
+                className="relative text-center"
               >
-                {/* Connecting line (desktop) */}
-                {i < STEPS.length - 1 && (
-                  <div className="absolute right-0 top-12 hidden h-[2px] w-6 translate-x-full bg-gray-200 lg:block" />
-                )}
+                {/* Number badge with bounce-in */}
+                <StepNumber
+                  num={step.num}
+                  color={step.color}
+                  gradient={
+                    i === 0
+                      ? "#3B82F6"
+                      : i === 1
+                      ? "#A855F7"
+                      : "#10B981"
+                  }
+                  delay={i * 0.2}
+                />
 
-                <div className="flex h-full flex-col rounded-2xl border border-gray-100 bg-gray-50/50 p-6 transition-shadow hover:shadow-lg">
-                  {/* Number + Icon */}
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"
-                      style={{ backgroundColor: step.color }}
-                    >
-                      {step.num}
-                    </span>
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl"
-                      style={{ backgroundColor: `${step.color}12` }}
-                    >
-                      <Icon
-                        className="h-5 w-5"
-                        style={{ color: step.color }}
-                      />
-                    </div>
-                  </div>
-
-                  <h3 className="mt-4 text-lg font-bold text-gray-900">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-gray-500">
-                    {step.desc}
-                  </p>
+                {/* Icon */}
+                <div
+                  className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl"
+                  style={{ backgroundColor: step.bgColor }}
+                >
+                  <Icon
+                    className="h-7 w-7"
+                    style={{ color: step.color }}
+                    strokeWidth={1.5}
+                  />
                 </div>
+
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {step.title}
+                </h3>
+                <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-gray-600">
+                  {step.description}
+                </p>
               </motion.div>
             );
           })}
