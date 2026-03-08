@@ -94,7 +94,7 @@ export default function Navbar() {
               rel="noopener noreferrer"
               className="rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30"
             >
-              Get Started Free
+              Book a Demo
             </a>
           </div>
 
@@ -142,7 +142,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-4 py-3 text-center text-sm font-semibold text-white"
               >
-                Get Started Free
+                Book a Demo
               </a>
             </div>
           </motion.div>
