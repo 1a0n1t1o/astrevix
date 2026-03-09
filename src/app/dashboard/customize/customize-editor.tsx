@@ -5,7 +5,32 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Business, RewardTier } from "@/types/database";
-import { TIER_PLATFORM_EMOJIS } from "@/lib/data";
+// Camera icon SVG for Instagram tiers
+const CameraIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+  </svg>
+);
+
+// Video icon SVG for TikTok tiers
+const VideoIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+  </svg>
+);
+
+// Gift icon SVG fallback
+const GiftIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+  </svg>
+);
+
+const TIER_ICON_MAP: Record<string, () => React.JSX.Element> = {
+  instagram: CameraIcon,
+  tiktok: VideoIcon,
+};
 import RewardTiersEditor from "./reward-tiers-editor";
 
 const sectionVariants = {
@@ -657,10 +682,10 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   {/* Powered by badge */}
                   <div className="flex justify-center">
                     <div
-                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1"
-                      style={{ backgroundColor: "rgba(0,0,0,0.04)", fontSize: "11px", color: "#8B8B9B" }}
+                      className="inline-flex items-center gap-1"
+                      style={{ fontSize: "10px", color: "#B0B0BA", letterSpacing: "0.01em" }}
                     >
-                      Powered by <span className="font-semibold" style={{ color: "#6B6B7B" }}>Astrevix</span>
+                      Powered by <span className="font-medium" style={{ color: "#9090A0" }}>Astrevix</span>
                     </div>
                   </div>
 
@@ -670,8 +695,8 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                       <img
                         src={logoUrl}
                         alt="Logo"
-                        className="rounded-2xl object-cover shadow-md"
-                        style={{ width: "64px", height: "64px" }}
+                        className="rounded-2xl shadow-md"
+                        style={{ height: "88px", width: "auto", objectFit: "contain" }}
                       />
                     </div>
                   )}
@@ -691,9 +716,9 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
 
                   {/* Reward section — tiers or single */}
                   {liveTiers.filter((t) => t.is_active).length > 0 ? (
-                    <div className="mt-6 space-y-3">
+                    <div className="mt-6 space-y-2.5">
                       <p
-                        className="text-center text-xs font-semibold uppercase tracking-widest"
+                        className="text-center text-[11px] font-semibold uppercase tracking-widest"
                         style={{ color: brandColor }}
                       >
                         Choose Your Reward
@@ -701,37 +726,53 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                       {liveTiers
                         .filter((t) => t.is_active)
                         .sort((a, b) => a.sort_order - b.sort_order)
-                        .map((tier, i) => (
-                          <div
-                            key={tier.id}
-                            className="relative overflow-hidden rounded-[16px] px-4 py-4 transition-all"
-                            style={{
-                              background: i === 0 ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
-                              backdropFilter: "blur(12px)",
-                              border: i === 0 ? `2px solid ${brandColor}40` : "1px solid rgba(255,255,255,0.4)",
-                              boxShadow: i === 0
-                                ? `0 4px 16px ${brandColor}15`
-                                : "0 2px 8px rgba(0,0,0,0.04)",
-                            }}
-                          >
-                            <div className="flex items-center gap-3">
-                              <span className="text-xl">
-                                {TIER_PLATFORM_EMOJIS[tier.platform] || "🎁"}
-                              </span>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium text-gray-500">
-                                  {tier.tier_name}
-                                </p>
-                                <p className="text-base font-bold text-gray-900">
-                                  {tier.reward_description}
-                                </p>
+                        .map((tier) => {
+                          const IconComponent = TIER_ICON_MAP[tier.platform] || GiftIcon;
+                          return (
+                            <div
+                              key={tier.id}
+                              className="overflow-hidden rounded-2xl px-4 py-4 transition-shadow hover:shadow-md"
+                              style={{
+                                background: "rgba(255,255,255,0.85)",
+                                backdropFilter: "blur(16px)",
+                                WebkitBackdropFilter: "blur(16px)",
+                                border: "1px solid rgba(0,0,0,0.06)",
+                                borderLeft: `3px solid ${brandColor}`,
+                              }}
+                            >
+                              <div className="flex items-center gap-3.5">
+                                <div
+                                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                                  style={{ backgroundColor: `${brandColor}12`, color: brandColor }}
+                                >
+                                  <IconComponent />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                                    {tier.tier_name}
+                                  </p>
+                                  <p className="mt-0.5 text-base font-bold text-gray-900">
+                                    {tier.reward_description}
+                                  </p>
+                                  {tier.reward_value && (
+                                    <span
+                                      className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                                      style={{
+                                        backgroundColor: `${brandColor}12`,
+                                        color: brandColor,
+                                      }}
+                                    >
+                                      {tier.reward_value}
+                                    </span>
+                                  )}
+                                </div>
+                                <svg className="h-4 w-4 shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
                               </div>
-                              <svg className="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                              </svg>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                     </div>
                   ) : (
                     <div className="relative mt-6">
@@ -768,24 +809,26 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   {/* How it works */}
                   <div className="mt-8">
                     <h3 className="text-lg font-bold text-gray-900">How it works</h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      Create a {contentType.toLowerCase()} about your experience and earn your reward.
-                    </p>
-                    <div className="mt-5 space-y-3">
-                      {PREVIEW_STEPS.map((step) => (
-                        <div
-                          key={step.num}
-                          className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm"
-                        >
-                          <div
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-bold"
-                            style={{ backgroundColor: "rgba(0,0,0,0.04)", color: "#1a1a1a", fontSize: "14px" }}
-                          >
-                            {step.num}
+                    <div className="mt-5">
+                      {PREVIEW_STEPS.map((step, i) => (
+                        <div key={step.num} className="flex gap-3.5">
+                          <div className="flex flex-col items-center">
+                            <div
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                              style={{ backgroundColor: brandColor }}
+                            >
+                              {step.num}
+                            </div>
+                            {i < PREVIEW_STEPS.length - 1 && (
+                              <div
+                                className="my-1 flex-1 w-0.5 rounded-full"
+                                style={{ backgroundColor: `${brandColor}20` }}
+                              />
+                            )}
                           </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">{step.label}</p>
-                            <p className="mt-0.5" style={{ fontSize: "13px", color: "#8B8B9B" }}>{step.desc}</p>
+                          <div className={i < PREVIEW_STEPS.length - 1 ? "pb-5 pt-1" : "pt-1"}>
+                            <p className="text-sm font-semibold text-gray-900">{step.label}</p>
+                            <p className="mt-0.5 text-[13px] text-gray-400">{step.desc}</p>
                           </div>
                         </div>
                       ))}
@@ -809,7 +852,21 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                           .filter((r) => r.trim())
                           .map((req, i) => (
                             <li key={i} className="flex items-start gap-3 text-sm">
-                              <div className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-[1.5px] border-gray-300" />
+                              <div
+                                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md"
+                                style={{ border: `1.5px solid ${brandColor}40` }}
+                              >
+                                <svg
+                                  className="h-3 w-3"
+                                  style={{ color: brandColor }}
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  strokeWidth={3}
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                              </div>
                               <span className="text-gray-700">{req}</span>
                             </li>
                           ))}
@@ -822,10 +879,10 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                     className="mt-8 rounded-2xl py-4 text-center text-base font-semibold text-white"
                     style={{
                       backgroundColor: brandColor,
-                      boxShadow: `0 8px 24px ${brandColor}66`,
+                      boxShadow: `0 8px 24px ${brandColor}40`,
                     }}
                   >
-                    Submit Your Post →
+                    Submit Your Post &rarr;
                   </div>
 
                   {/* Footer */}
@@ -834,16 +891,23 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   </p>
 
                   {/* Terms & Conditions preview */}
-                  <div className="mt-4 pb-4">
-                    <p className="flex items-center justify-center gap-1 text-center text-[10px] font-medium text-gray-400">
-                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <div className="mt-4">
+                    <p className="flex items-center justify-center gap-1.5 text-xs font-medium text-gray-400">
+                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                       </svg>
                       Terms & Conditions
-                      <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                       </svg>
                     </p>
+                  </div>
+
+                  {/* Legal links */}
+                  <div className="mb-4 mt-2 flex justify-center gap-3 text-[10px] text-gray-400 pb-4">
+                    <span className="underline">Privacy Policy</span>
+                    <span>&middot;</span>
+                    <span className="underline">Terms</span>
                   </div>
                 </div>
               </div>

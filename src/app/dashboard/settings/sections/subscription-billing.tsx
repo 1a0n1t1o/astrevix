@@ -19,7 +19,7 @@ const sectionVariants = {
   }),
 };
 
-const SECTION_COLORS = ["#2563EB", "#7c3aed", "#d97706"];
+const SECTION_COLORS = ["#2563EB", "#7c3aed"];
 
 const glassCard = {
   className: "rounded-2xl border border-gray-100 bg-white/70 p-6",
@@ -192,78 +192,6 @@ export default function SubscriptionBilling({
         </div>
       </motion.section>
 
-      {/* Section 2: Billing History */}
-      <motion.section
-        custom={2}
-        variants={sectionVariants}
-        initial="hidden"
-        animate="visible"
-        className={glassCard.className}
-        style={glassCard.style}
-      >
-        <h3
-          className="text-base font-semibold text-gray-900"
-          style={{
-            paddingLeft: "12px",
-            borderLeft: `3px solid ${SECTION_COLORS[2]}`,
-          }}
-        >
-          Billing History
-        </h3>
-
-        <div className="mt-5 overflow-x-auto">
-          <table className="w-full min-w-[420px]">
-            <thead>
-              <tr className="border-b border-gray-100">
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Date
-                </th>
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Description
-                </th>
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Amount
-                </th>
-                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              <tr>
-                <td className="py-3 text-sm text-gray-700">Mar 1, 2026</td>
-                <td className="py-3 text-sm text-gray-700">Free plan</td>
-                <td className="py-3 text-sm text-gray-700">$0.00</td>
-                <td className="py-3">
-                  <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                    Active
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 text-sm text-gray-700">Feb 1, 2026</td>
-                <td className="py-3 text-sm text-gray-700">Free plan</td>
-                <td className="py-3 text-sm text-gray-700">$0.00</td>
-                <td className="py-3">
-                  <span className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-0.5 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                    Completed
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="py-3 text-sm text-gray-700">Jan 1, 2026</td>
-                <td className="py-3 text-sm text-gray-700">Free plan</td>
-                <td className="py-3 text-sm text-gray-700">$0.00</td>
-                <td className="py-3">
-                  <span className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-0.5 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                    Completed
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </motion.section>
     </div>
   );
 }
