@@ -661,7 +661,7 @@ export default function SubmitForm({
       {/* Trust signals */}
       <div className="mt-4 flex justify-center gap-6 text-xs text-gray-400">
         <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> Info stays private</span>
-        <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> Usually approved in 24h</span>
+        <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> Usually approved in {selectedTier ? (selectedTier.verification_hours >= 24 ? `${Math.round(selectedTier.verification_hours / 24)}d` : `${selectedTier.verification_hours}h`) : "24h"}</span>
       </div>
     </>
   );

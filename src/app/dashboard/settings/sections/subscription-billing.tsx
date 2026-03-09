@@ -8,6 +8,7 @@ interface SubscriptionBillingProps {
   readonly onToast: (message: string) => void;
   readonly userEmail: string;
   readonly approvedThisMonth: number;
+  readonly autoApproveRequested: boolean;
 }
 
 const sectionVariants = {
@@ -19,7 +20,7 @@ const sectionVariants = {
   }),
 };
 
-const SECTION_COLORS = ["#2563EB", "#7c3aed"];
+const SECTION_COLORS = ["#2563EB", "#7c3aed", "#d97706"];
 
 const glassCard = {
   className: "rounded-2xl border border-gray-100 bg-white/70 p-6",
@@ -30,9 +31,10 @@ const glassCard = {
 };
 
 export default function SubscriptionBilling({
-  onToast: _onToast,
+  onToast,
   userEmail,
   approvedThisMonth,
+  autoApproveRequested,
 }: SubscriptionBillingProps) {
   const approvedLimit = 100;
   const approvedPercent = Math.min(
@@ -40,6 +42,8 @@ export default function SubscriptionBilling({
     100
   );
   const [showCheckout, setShowCheckout] = useState(false);
+  const [autoApprove, setAutoApprove] = useState(autoApproveRequested);
+  const [togglingAutoApprove, setTogglingAutoApprove] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -189,6 +193,75 @@ export default function SubscriptionBilling({
               />
             </div>
           </div>
+        </div>
+      </motion.section>
+
+      {/* Section 2: Team Review */}
+      <motion.section
+        custom={2}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+        className={glassCard.className}
+        style={glassCard.style}
+      >
+        <h3
+          className="text-base font-semibold text-gray-900"
+          style={{
+            paddingLeft: "12px",
+            borderLeft: `3px solid ${SECTION_COLORS[2]}`,
+          }}
+        >
+          Team Review
+        </h3>
+
+        <div className="mt-5 flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-700">
+              Let the Astrevix team review and approve submissions on your behalf
+            </p>
+            <p className="mt-1 text-xs text-gray-400">
+              You can still approve or reject submissions yourself at any time.
+            </p>
+          </div>
+
+          {/* Toggle switch */}
+          <button
+            type="button"
+            role="switch"
+            aria-checked={autoApprove}
+            disabled={togglingAutoApprove}
+            onClick={async () => {
+              const newValue = !autoApprove;
+              setTogglingAutoApprove(true);
+              try {
+                const res = await fetch("/api/business/update", {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ auto_approve_requested: newValue }),
+                });
+                if (res.ok) {
+                  setAutoApprove(newValue);
+                  onToast(newValue ? "Team review enabled" : "Team review disabled");
+                } else {
+                  onToast("Failed to update. Please try again.");
+                }
+              } catch {
+                onToast("Failed to update. Please try again.");
+              } finally {
+                setTogglingAutoApprove(false);
+              }
+            }}
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:ring-offset-2 disabled:opacity-50 ${
+              autoApprove ? "bg-amber-500" : "bg-gray-200"
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out ${
+                autoApprove ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
         </div>
       </motion.section>
 

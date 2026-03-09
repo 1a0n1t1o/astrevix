@@ -49,6 +49,7 @@ export interface Business {
   // Admin fields
   plan: "free" | "pro";
   status: "active" | "suspended";
+  auto_approve_requested: boolean;
   deleted_at: string | null;
 }
 

@@ -35,6 +35,7 @@ interface SettingsClientProps {
 }
 
 export default function SettingsClient({
+  business,
   userEmail,
   userProfile,
   approvedThisMonth,
@@ -221,7 +222,7 @@ export default function SettingsClient({
                 />
               )}
               {activeTab === "subscription" && (
-                <SubscriptionBilling onToast={showToast} userEmail={userEmail} approvedThisMonth={approvedThisMonth} />
+                <SubscriptionBilling onToast={showToast} userEmail={userEmail} approvedThisMonth={approvedThisMonth} autoApproveRequested={business.auto_approve_requested ?? false} />
               )}
             </motion.div>
           </AnimatePresence>

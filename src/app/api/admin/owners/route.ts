@@ -98,6 +98,7 @@ export async function GET(request: Request) {
     owner_name: ownerMap[b.owner_id]?.name || "Unknown",
     owner_avatar: ownerMap[b.owner_id]?.avatar_url || null,
     submission_count: countMap[b.id] || 0,
+    auto_approve_requested: b.auto_approve_requested || false,
   }));
 
   return NextResponse.json({ owners, total: count || 0, page, limit });

@@ -20,6 +20,7 @@ interface Owner {
   owner_name: string;
   owner_avatar: string | null;
   submission_count: number;
+  auto_approve_requested: boolean;
 }
 
 interface OwnersResponse {
@@ -370,11 +371,18 @@ export default function OwnersList() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ${statusClass}`}
-                        >
-                          {owner.status}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ${statusClass}`}
+                          >
+                            {owner.status}
+                          </span>
+                          {owner.auto_approve_requested && (
+                            <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                              Team Review
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-700">
                         {owner.submission_count}

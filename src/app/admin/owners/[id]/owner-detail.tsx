@@ -15,6 +15,7 @@ interface Business {
   brand_color: string;
   plan: string;
   status: string;
+  auto_approve_requested: boolean;
   created_at: string;
 }
 
@@ -428,6 +429,14 @@ export default function OwnerDetail({
             <div className="flex flex-wrap items-center gap-3">
               <PlanBadge plan={business.plan} />
               <StatusBadge status={business.status} />
+              {business.auto_approve_requested && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Team Review
+                </span>
+              )}
               <span className="text-xs text-gray-400">
                 Member since {formatDate(business.created_at)}
               </span>
