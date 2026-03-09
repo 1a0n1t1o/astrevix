@@ -100,20 +100,6 @@ const STATS = [
     bgColor: "#eff6ff",
     borderColor: "#bfdbfe",
   },
-  {
-    key: "expired",
-    label: "Expired",
-    color: "#D97706",
-    bgColor: "#fffbeb",
-    borderColor: "#fde68a",
-  },
-  {
-    key: "rate",
-    label: "Redemption Rate",
-    color: "#7c3aed",
-    bgColor: "#f5f3ff",
-    borderColor: "#ddd6fe",
-  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -209,18 +195,11 @@ export default function CustomersList({
   const totalCustomers = uniquePhones.size;
   const activeCoupons = coupons.filter((c) => c.status === "active").length;
   const redeemedCoupons = coupons.filter((c) => c.status === "used").length;
-  const expiredCoupons = coupons.filter((c) => c.status === "expired").length;
-  const redemptionRate =
-    coupons.length > 0
-      ? Math.round((redeemedCoupons / coupons.length) * 100)
-      : 0;
 
   const statValues: Record<string, string> = {
     customers: String(totalCustomers),
     active: String(activeCoupons),
     redeemed: String(redeemedCoupons),
-    expired: String(expiredCoupons),
-    rate: `${redemptionRate}%`,
   };
 
   // ---- Search & Filter ----
@@ -785,7 +764,7 @@ export default function CustomersList({
   return (
     <div>
       {/* Stats Bar */}
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {STATS.map((stat, i) => (
           <div
             key={stat.key}
