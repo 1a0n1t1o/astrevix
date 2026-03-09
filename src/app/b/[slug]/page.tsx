@@ -87,10 +87,12 @@ export default async function BusinessPage({
           <Image
             src={business.logoUrl!}
             alt={business.name}
-            width={64}
-            height={64}
-            className="rounded-2xl object-cover shadow-md"
-            style={{ width: "64px", height: "64px" }}
+            width={176}
+            height={88}
+            quality={100}
+            unoptimized
+            className="rounded-2xl shadow-md"
+            style={{ height: "88px", width: "auto", objectFit: "contain" }}
           />
         </div>
       )}
