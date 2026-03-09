@@ -503,7 +503,7 @@ export default function SubmissionsList({
                               color: TIER_PLATFORM_COLORS[tierMap.get(sub.reward_tier_id)!.platform]?.text || "#6b7280",
                             }}
                           >
-                            {tierMap.get(sub.reward_tier_id)!.tier_name}
+                            {tierMap.get(sub.reward_tier_id)!.reward_value || tierMap.get(sub.reward_tier_id)!.reward_description}
                           </span>
                         )}
                       </div>
