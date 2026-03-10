@@ -628,13 +628,17 @@ export default function SubmitForm({
           )}
         </span>
         <span className="text-xs leading-relaxed text-gray-500">
-          By submitting, I agree to receive SMS messages from {business.name} via Astrevix about my submission
-          and reward. Up to 3 msgs per submission. Msg &amp; data rates may apply. Reply STOP to opt-out.{" "}
-          <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms &amp; Conditions</a>
-          {" | "}
-          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Privacy Policy</a>.
+          I consent to receive SMS notifications about my submission status and reward code delivery
+          from Astrevix. Message frequency varies, up to 4 messages per submission. Msg &amp; data
+          rates may apply. Reply HELP for help, STOP to opt out.
         </span>
       </label>
+
+      <p className="mt-2 text-center text-[11px] text-gray-400">
+        <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Privacy Policy</a>
+        {" · "}
+        <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms of Service</a>
+      </p>
 
       {/* Submit button */}
       <button

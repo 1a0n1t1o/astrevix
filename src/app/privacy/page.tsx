@@ -30,194 +30,186 @@ export default function PrivacyPage() {
         </div>
 
         <h1 className="mt-8 text-3xl font-bold text-gray-900">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-gray-500">Last updated: March 7, 2026</p>
+        <p className="mt-2 text-sm text-gray-500">Effective date: March 10, 2026</p>
 
         <div className="mt-8 space-y-8 text-sm leading-relaxed text-gray-700">
-          <section>
-            <h2 className="text-lg font-semibold text-gray-900">1. Introduction</h2>
-            <p className="mt-2">
-              Astrevix (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates a platform that helps local businesses
-              incentivize customers to create and share content in exchange for rewards. This Privacy Policy explains
-              how we collect, use, disclose, and protect your information when you use our website and services.
+          {/* Bold notice */}
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <p className="font-bold text-gray-900">
+              IMPORTANT NOTICE REGARDING TEXT MESSAGING DATA: Astrevix does NOT share customer opt-in
+              information, including phone numbers and consent records, with any affiliates or third
+              parties for marketing, promotional, or any other purposes unrelated to providing our
+              direct services. All text messaging originator opt-in data is kept strictly confidential.
             </p>
-            <p className="mt-2">
-              For questions about this policy, contact us at:{" "}
-              <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
-                contact@astrevix.com
-              </a>
-            </p>
-          </section>
+          </div>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">2. Information We Collect</h2>
-            <p className="mt-2">We collect the following types of information:</p>
+            <h2 className="text-lg font-semibold text-gray-900">1. Information We Collect</h2>
 
-            <h3 className="mt-4 text-sm font-semibold text-gray-800">From Customers (content submitters):</h3>
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Personal Information:</h3>
             <ul className="mt-2 list-disc space-y-2 pl-5">
-              <li>
-                <strong>Customer name</strong> &mdash; Used to personalize reward messages and identify submissions.
-              </li>
-              <li>
-                <strong>Phone number</strong> &mdash; Used solely to send SMS notifications about submission status
-                (confirmation, approval with reward details, rejection). Phone numbers are used exclusively for
-                transactional communication related to the customer&apos;s submission.
-              </li>
-              <li>
-                <strong>Social media post links</strong> &mdash; The URLs you submit (e.g., Instagram, TikTok)
-                are stored so the business can review your content.
-              </li>
-              <li>
-                <strong>Platform detection data</strong> &mdash; We automatically detect which social media platform
-                your link belongs to for display purposes.
-              </li>
+              <li>Name</li>
+              <li>Email address</li>
+              <li>Phone number</li>
+              <li>Social media post links</li>
+              <li>Opt-in records and timestamps for SMS consent</li>
             </ul>
 
-            <h3 className="mt-4 text-sm font-semibold text-gray-800">From Business Owners:</h3>
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Non-Personal Information:</h3>
             <ul className="mt-2 list-disc space-y-2 pl-5">
-              <li>
-                <strong>Name and email address</strong> &mdash; Used for account authentication and communication.
-              </li>
-              <li>
-                <strong>Business information</strong> &mdash; Business name, description, logo, brand colors, and
-                reward details used to create branded landing pages.
-              </li>
-              <li>
-                <strong>Payment information</strong> &mdash; Processed securely by Stripe; we do not store credit
-                card numbers.
-              </li>
+              <li>IP address</li>
+              <li>Browser type</li>
+              <li>Device information</li>
+              <li>Website usage patterns</li>
+              <li>Cookies</li>
             </ul>
 
-            <p className="mt-3">
-              Customer submissions are anonymous aside from the information listed above. No account creation
-              is required for customers.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold text-gray-900">3. How We Use Your Information</h2>
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Customer Communication:</h3>
             <ul className="mt-2 list-disc space-y-2 pl-5">
-              <li>To process and track content submissions</li>
-              <li>To send SMS messages about submission status and reward delivery</li>
-              <li>To enforce submission limits (one reward per person per business, based on phone number)</li>
-              <li>To enable businesses to review submissions and issue rewards</li>
-              <li>To generate and deliver coupon codes for approved submissions</li>
-              <li>To improve our services and prevent fraud or abuse</li>
+              <li>Records of submissions</li>
+              <li>Reward history</li>
+              <li>Support requests</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">4. SMS Messaging</h2>
-            <p className="mt-2">
-              By providing your phone number and checking the consent box, you agree to receive SMS messages from
-              Astrevix on behalf of the business. These messages may include:
-            </p>
-            <ul className="mt-3 list-disc space-y-2 pl-5">
-              <li>A confirmation message when you submit your content</li>
-              <li>An approval message with your reward details and coupon code when your submission is approved</li>
-              <li>A rejection notice if your submission is not approved</li>
+            <h2 className="text-lg font-semibold text-gray-900">2. How We Use Your Information</h2>
+            <ul className="mt-2 list-disc space-y-2 pl-5">
+              <li>Providing and improving our services</li>
+              <li>Processing submissions and delivering reward codes</li>
+              <li>Sending transactional SMS notifications about submission status</li>
+              <li>Enhancing website functionality and user experience</li>
+              <li>Ensuring security and fraud prevention</li>
+              <li>Maintaining records of communication preferences and consent</li>
             </ul>
-            <p className="mt-3">
-              <strong>Message frequency:</strong> You may receive up to 3 SMS messages per submission
-              (confirmation, status update, and reward delivery).
-            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-gray-900">3. SMS Messaging &amp; Compliance</h2>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Opt-In &amp; Consent</h3>
             <p className="mt-2">
-              <strong>Message and data rates may apply.</strong>
+              SMS messages are only sent to users who have explicitly opted in via the submission form
+              checkbox. We maintain timestamped records of all opt-in actions. We comply with the
+              Telephone Consumer Protection Act (TCPA) and all applicable federal and state laws
+              governing text messaging.
             </p>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Opt-Out</h3>
             <p className="mt-2">
-              <strong>Opt-out:</strong> Reply <strong>STOP</strong> to any message to opt out of all future SMS
-              communications from this number. You will receive a confirmation message upon opting out.
+              You may opt out of SMS messages at any time by replying <strong>STOP</strong> to any
+              message. Upon opting out, you will receive a single confirmation message acknowledging
+              your request. No further messages will be sent unless you re-opt in through a new
+              submission. All opt-out requests are processed immediately.
             </p>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Message Frequency &amp; Content</h3>
             <p className="mt-2">
-              <strong>Help:</strong> Reply <strong>HELP</strong> for support or contact us at{" "}
+              Message frequency varies based on your submission activity, typically 1&ndash;3 messages
+              per submission. All messages are transactional only and may include:
+            </p>
+            <ul className="mt-2 list-disc space-y-2 pl-5">
+              <li>Submission confirmation</li>
+              <li>Approval notification with reward code</li>
+              <li>Rejection notification</li>
+            </ul>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Help &amp; Support</h3>
+            <p className="mt-2">
+              Reply <strong>HELP</strong> to any message for assistance, or contact us at{" "}
               <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
                 contact@astrevix.com
               </a>.
             </p>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Carrier Information</h3>
+            <p className="mt-2">
+              Standard message and data rates may apply. Carriers are not liable for delayed or
+              undelivered messages.
+            </p>
+
+            <div className="mt-4 rounded-xl border border-gray-200 bg-white p-5">
+              <p className="font-bold text-gray-900">
+                SMS Data Protection Statement: No mobile information will be shared with third
+                parties/affiliates for marketing/promotional purposes. Information sharing to
+                subcontractors in support services, such as customer service, is permitted. All other
+                use case categories exclude text messaging originator opt-in data and consent; this
+                information will not be shared with any third parties.
+              </p>
+            </div>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">5. Information Sharing</h2>
+            <h2 className="text-lg font-semibold text-gray-900">4. Information Sharing &amp; Disclosure</h2>
             <p className="mt-2">
               <strong>
-                We do not share, sell, or rent your phone number or personal information to third parties for
-                marketing purposes.
+                We do not sell, rent, or trade your personal information to any third party.
               </strong>
             </p>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Service Providers</h3>
             <p className="mt-2">
-              We only share your information with the specific business you submitted content to (so they can
-              review your submission and issue your reward) and with the third-party service providers listed
-              below, solely to operate the Service.
+              We share information with third-party vendors who assist in operating our services,
+              including SMS delivery via Twilio. All service providers are contractually obligated to
+              maintain the confidentiality of your information and may only use it to perform services
+              on our behalf.
+            </p>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Legal Compliance</h3>
+            <p className="mt-2">
+              We may disclose your information if required by law, regulation, legal process, or
+              governmental request, or to protect the rights, property, or safety of Astrevix, our
+              users, or the public.
+            </p>
+
+            <h3 className="mt-4 text-sm font-semibold text-gray-800">Business Transfers</h3>
+            <p className="mt-2">
+              In the event of a merger, acquisition, or sale of all or a portion of our assets, your
+              information may be transferred as part of that transaction. Your data will remain
+              protected under the terms of this Privacy Policy.
+            </p>
+
+            <p className="mt-4 font-semibold text-gray-900">
+              All above categories exclude text messaging originator opt-in data and consent; this
+              information will not be shared with any third parties, excluding aggregators and
+              providers of the text message services.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">6. Third-Party Services</h2>
-            <p className="mt-2">We use the following third-party services to operate our platform:</p>
-            <ul className="mt-3 list-disc space-y-2 pl-5">
+            <h2 className="text-lg font-semibold text-gray-900">5. Data Security</h2>
+            <ul className="mt-2 list-disc space-y-2 pl-5">
+              <li>Encryption of sensitive data in transit and at rest</li>
+              <li>Secure access controls and authentication</li>
+              <li>Regular security assessments</li>
               <li>
-                <strong>Twilio</strong> &mdash; For sending SMS messages. Your phone number and message content are
-                shared with Twilio to deliver text messages. See{" "}
-                <a
-                  href="https://www.twilio.com/en-us/legal/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-gray-900"
-                >
-                  Twilio&apos;s Privacy Policy
-                </a>.
-              </li>
-              <li>
-                <strong>Supabase</strong> &mdash; For secure data storage and authentication. Your submission data
-                is stored in Supabase&apos;s cloud infrastructure.
-              </li>
-              <li>
-                <strong>Stripe</strong> &mdash; For payment processing. Business owner payment information is
-                handled by Stripe. See{" "}
-                <a
-                  href="https://stripe.com/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-gray-900"
-                >
-                  Stripe&apos;s Privacy Policy
-                </a>.
-              </li>
-              <li>
-                <strong>Vercel</strong> &mdash; For hosting our website. Standard web server logs may be collected.
+                Breach notification protocols in accordance with applicable laws
               </li>
             </ul>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold text-gray-900">7. Data Retention</h2>
-            <p className="mt-2">
-              We retain customer submission data (name, phone number, post link, coupon codes) for as long as the
-              associated business account is active or for up to 2 years after account deletion, whichever is shorter.
-              SMS logs are retained for up to 1 year for operational and compliance purposes. If you wish to have
-              your data deleted sooner, please contact us at{" "}
-              <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
-                contact@astrevix.com
-              </a>.
+            <p className="mt-3">
+              While we implement industry-standard security measures, no method of transmission over
+              the internet or method of electronic storage is 100% secure.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">8. Data Security</h2>
+            <h2 className="text-lg font-semibold text-gray-900">6. Cookies &amp; Tracking</h2>
             <p className="mt-2">
-              We implement industry-standard security measures to protect your data, including encrypted
-              connections (HTTPS), secure database access controls, and row-level security policies. However,
-              no method of transmission over the internet is 100% secure.
+              We use cookies and similar tracking technologies to enhance your experience on our
+              website. Cookies help us understand usage patterns and improve website functionality.
+              You can control cookie preferences through your browser settings. Disabling cookies may
+              affect certain features of the website.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">9. Your Rights</h2>
+            <h2 className="text-lg font-semibold text-gray-900">7. Your Rights &amp; Choices</h2>
             <p className="mt-2">You have the right to:</p>
-            <ul className="mt-3 list-disc space-y-2 pl-5">
-              <li>Opt out of SMS messages at any time by replying STOP to any message</li>
-              <li>Request access to the personal data we hold about you</li>
-              <li>Request deletion of your personal data</li>
-              <li>Withdraw consent for data processing</li>
+            <ul className="mt-2 list-disc space-y-2 pl-5">
+              <li>Access, update, or delete your personal information</li>
+              <li>Opt out of SMS messages at any time by replying STOP</li>
+              <li>Request information about how your data is processed</li>
+              <li>Withdraw consent for data processing at any time</li>
             </ul>
             <p className="mt-3">
               To exercise any of these rights, contact us at{" "}
@@ -228,18 +220,29 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">10. Changes to This Policy</h2>
+            <h2 className="text-lg font-semibold text-gray-900">8. Third-Party Links</h2>
             <p className="mt-2">
-              We may update this Privacy Policy from time to time. Changes will be posted on this page with an
-              updated revision date. Continued use of our services after changes constitutes acceptance of the
-              revised policy.
+              Our website may contain links to third-party websites or services. We are not
+              responsible for the privacy practices or content of those third-party sites. We
+              encourage you to review the privacy policies of any third-party websites you visit.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">11. Contact Us</h2>
+            <h2 className="text-lg font-semibold text-gray-900">9. Changes to This Privacy Policy</h2>
             <p className="mt-2">
-              If you have questions about this Privacy Policy or wish to exercise your rights, contact us at:{" "}
+              We may update this Privacy Policy from time to time. Changes will be posted on this page
+              with a new effective date. Continued use of our services after changes constitutes
+              acceptance of the revised policy.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-gray-900">10. Contact Us</h2>
+            <p className="mt-2">
+              Astrevix
+              <br />
+              Email:{" "}
               <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
                 contact@astrevix.com
               </a>
@@ -248,9 +251,9 @@ export default function PrivacyPage() {
         </div>
 
         <div className="mt-12 border-t border-gray-200 pt-6 text-center text-xs text-gray-400">
-          <Link href="/terms" className="underline hover:text-gray-600">Terms &amp; Conditions</Link>
-          {" | "}
-          <Link href="/privacy" className="underline hover:text-gray-600">Privacy Policy</Link>
+          <Link href="/sms" className="underline hover:text-gray-600">SMS Program</Link>
+          <span className="mx-2">&middot;</span>
+          <Link href="/terms" className="underline hover:text-gray-600">Terms of Service</Link>
         </div>
       </div>
     </div>

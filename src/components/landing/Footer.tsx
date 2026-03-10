@@ -61,7 +61,14 @@ export default function Footer() {
               href="/terms"
               className="text-xs text-purple-300 transition-colors hover:text-white"
             >
-              Terms &amp; Conditions
+              Terms of Service
+            </Link>
+            <span className="text-xs text-purple-300/50">&middot;</span>
+            <Link
+              href="/sms"
+              className="text-xs text-purple-300 transition-colors hover:text-white"
+            >
+              SMS Program
             </Link>
           </div>
           <p className="text-xs text-purple-300">

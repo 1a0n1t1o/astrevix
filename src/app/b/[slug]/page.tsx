@@ -303,7 +303,9 @@ export default async function BusinessPage({
       <div className="mb-4 flex justify-center gap-3 text-[10px] text-gray-400">
         <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Privacy Policy</a>
         <span>&middot;</span>
-        <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms</a>
+        <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms of Service</a>
+        <span>&middot;</span>
+        <a href="/sms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">SMS Program</a>
       </div>
     </>
   );
