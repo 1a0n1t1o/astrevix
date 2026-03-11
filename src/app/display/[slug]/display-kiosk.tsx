@@ -3,6 +3,30 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 
+/** Parse the reward text to extract the highlight value and determine if trailing text is needed */
+function parseReward(raw: string): { prefix: string; highlight: string; suffix: string } {
+  const upper = raw.toUpperCase().trim();
+
+  // If reward already contains "YOUR NEXT VISIT" or "NEXT VISIT", strip it and don't re-add
+  const trailingPatterns = [/\s+YOUR\s+NEXT\s+VISIT$/i, /\s+NEXT\s+VISIT$/i];
+  let cleaned = upper;
+  let hasSuffix = true;
+  for (const pattern of trailingPatterns) {
+    if (pattern.test(cleaned)) {
+      cleaned = cleaned.replace(pattern, "");
+      hasSuffix = true;
+      break;
+    }
+  }
+
+  // The highlight is the numeric/discount portion, e.g. "10% OFF" or "$5 OFF" or "FREE DRINK"
+  return {
+    prefix: "GET ",
+    highlight: cleaned,
+    suffix: hasSuffix ? " YOUR NEXT VISIT" : "",
+  };
+}
+
 export function DisplayKiosk({
   businessName,
   rewardText,
@@ -13,6 +37,7 @@ export function DisplayKiosk({
   submitUrl: string;
 }>) {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const reward = parseReward(rewardText);
 
   useEffect(() => {
     QRCode.toDataURL(submitUrl, {
@@ -51,24 +76,24 @@ export function DisplayKiosk({
           pointer-events: none;
         }
         .orb-1 {
-          width: 600px;
-          height: 600px;
+          width: 750px;
+          height: 750px;
           background: #2563EB;
           top: -15%;
           left: -10%;
           animation: float1 20s ease-in-out infinite;
         }
         .orb-2 {
-          width: 500px;
-          height: 500px;
+          width: 650px;
+          height: 650px;
           background: #0ea5e9;
           bottom: -10%;
           right: -10%;
           animation: float2 25s ease-in-out infinite;
         }
         .orb-3 {
-          width: 400px;
-          height: 400px;
+          width: 520px;
+          height: 520px;
           background: #6366f1;
           top: 40%;
           left: 50%;
@@ -78,18 +103,18 @@ export function DisplayKiosk({
 
         @keyframes float1 {
           0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(80px, 60px); }
-          66% { transform: translate(-40px, 30px); }
+          33% { transform: translate(120px, 90px); }
+          66% { transform: translate(-60px, 45px); }
         }
         @keyframes float2 {
           0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(-60px, -40px); }
-          66% { transform: translate(40px, -80px); }
+          33% { transform: translate(-90px, -60px); }
+          66% { transform: translate(60px, -120px); }
         }
         @keyframes float3 {
           0%, 100% { transform: translateX(-50%) translate(0, 0); }
-          33% { transform: translateX(-50%) translate(60px, -50px); }
-          66% { transform: translateX(-50%) translate(-80px, 40px); }
+          33% { transform: translateX(-50%) translate(90px, -75px); }
+          66% { transform: translateX(-50%) translate(-120px, 60px); }
         }
 
         /* Grid overlay */
@@ -147,7 +172,7 @@ export function DisplayKiosk({
           margin-bottom: 1rem;
         }
         .headline .reward-value {
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+          background: linear-gradient(135deg, #38bdf8, #2563EB, #818cf8);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -234,8 +259,8 @@ export function DisplayKiosk({
         }
         .nfc-icon-wrapper {
           position: relative;
-          width: 64px;
-          height: 64px;
+          width: 72px;
+          height: 72px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -244,26 +269,60 @@ export function DisplayKiosk({
           position: absolute;
           inset: 0;
           border-radius: 50%;
-          border: 1.5px solid rgba(56, 189, 248, 0.3);
-          animation: ripple 2.5s ease-out infinite;
+          border: 1.5px solid rgba(56, 189, 248, 0.2);
+          animation: ripple 6s ease-out infinite;
         }
         .nfc-ripple:nth-child(2) {
-          animation-delay: 0.8s;
+          animation-delay: 2s;
         }
         .nfc-ripple:nth-child(3) {
-          animation-delay: 1.6s;
+          animation-delay: 4s;
         }
         @keyframes ripple {
-          0% { transform: scale(0.8); opacity: 1; }
-          100% { transform: scale(2); opacity: 0; }
+          0% { transform: scale(0.8); opacity: 0.3; }
+          100% { transform: scale(2.2); opacity: 0; }
         }
-        .nfc-icon {
+
+        /* CSS contactless arcs */
+        .nfc-arcs {
           position: relative;
           z-index: 1;
-          width: 32px;
-          height: 32px;
-          color: #38bdf8;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
         }
+        .nfc-arc {
+          position: absolute;
+          border: 3px solid transparent;
+          border-right-color: #38bdf8;
+          border-top-color: #38bdf8;
+          border-radius: 0 50% 0 0;
+          left: 8px;
+          top: 50%;
+        }
+        .nfc-arc:nth-child(1) {
+          width: 10px;
+          height: 10px;
+          margin-top: -5px;
+        }
+        .nfc-arc:nth-child(2) {
+          width: 18px;
+          height: 18px;
+          margin-top: -9px;
+        }
+        .nfc-arc:nth-child(3) {
+          width: 26px;
+          height: 26px;
+          margin-top: -13px;
+        }
+        .nfc-arc:nth-child(4) {
+          width: 34px;
+          height: 34px;
+          margin-top: -17px;
+        }
+
         .nfc-label {
           font-size: 0.85rem;
           font-weight: 500;
@@ -305,8 +364,7 @@ export function DisplayKiosk({
         <div className="reward-label">YOUR REWARD IS WAITING</div>
 
         <h1 className="headline">
-          GET <span className="reward-value">{rewardText.toUpperCase()}</span>{" "}
-          YOUR NEXT VISIT
+          {reward.prefix}<span className="reward-value">{reward.highlight}</span>{reward.suffix}
         </h1>
 
         <p className="subtext">
@@ -339,13 +397,13 @@ export function DisplayKiosk({
             <div className="nfc-ripple" />
             <div className="nfc-ripple" />
             <div className="nfc-ripple" />
-            {/* NFC contactless symbol */}
-            <svg className="nfc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 8.5a7.5 7.5 0 0 1 12 0" />
-              <path d="M8.5 11a4.5 4.5 0 0 1 7 0" />
-              <path d="M11 13.5a1.5 1.5 0 0 1 2 0" />
-              <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none" />
-            </svg>
+            {/* NFC contactless arcs (CSS) */}
+            <div className="nfc-arcs">
+              <div className="nfc-arc" />
+              <div className="nfc-arc" />
+              <div className="nfc-arc" />
+              <div className="nfc-arc" />
+            </div>
           </div>
           <div className="nfc-label">Tap your phone here</div>
         </div>
