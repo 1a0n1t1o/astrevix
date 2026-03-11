@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
+import { Nfc } from "lucide-react";
 
 /** Parse the reward text to extract the highlight value and determine if trailing text is needed */
 function parseReward(raw: string): { prefix: string; highlight: string; suffix: string } {
@@ -283,44 +284,10 @@ export function DisplayKiosk({
           100% { transform: scale(2.2); opacity: 0; }
         }
 
-        /* CSS contactless arcs */
-        .nfc-arcs {
+        .nfc-icon {
           position: relative;
           z-index: 1;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-        }
-        .nfc-arc {
-          position: absolute;
-          border: 3px solid transparent;
-          border-right-color: #38bdf8;
-          border-top-color: #38bdf8;
-          border-radius: 0 50% 0 0;
-          left: 8px;
-          top: 50%;
-        }
-        .nfc-arc:nth-child(1) {
-          width: 10px;
-          height: 10px;
-          margin-top: -5px;
-        }
-        .nfc-arc:nth-child(2) {
-          width: 18px;
-          height: 18px;
-          margin-top: -9px;
-        }
-        .nfc-arc:nth-child(3) {
-          width: 26px;
-          height: 26px;
-          margin-top: -13px;
-        }
-        .nfc-arc:nth-child(4) {
-          width: 34px;
-          height: 34px;
-          margin-top: -17px;
+          color: #38bdf8;
         }
 
         .nfc-label {
@@ -397,13 +364,7 @@ export function DisplayKiosk({
             <div className="nfc-ripple" />
             <div className="nfc-ripple" />
             <div className="nfc-ripple" />
-            {/* NFC contactless arcs (CSS) */}
-            <div className="nfc-arcs">
-              <div className="nfc-arc" />
-              <div className="nfc-arc" />
-              <div className="nfc-arc" />
-              <div className="nfc-arc" />
-            </div>
+            <Nfc className="nfc-icon" size={32} strokeWidth={1.5} />
           </div>
           <div className="nfc-label">Tap your phone here</div>
         </div>
