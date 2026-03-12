@@ -15,6 +15,7 @@ interface Business {
   brand_color: string;
   plan: string;
   status: string;
+  subscription_status: string;
   auto_approve_requested: boolean;
   created_at: string;
 }
@@ -121,6 +122,25 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
   );
 }
 
+function SubscriptionBadge({ status }: Readonly<{ status: string }>) {
+  const colors: Record<string, string> = {
+    active: "bg-emerald-100 text-emerald-700",
+    inactive: "bg-gray-100 text-gray-600",
+    cancelled: "bg-red-100 text-red-700",
+    past_due: "bg-amber-100 text-amber-700",
+  };
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold capitalize ${colors[status] ?? colors.inactive}`}
+    >
+      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+      </svg>
+      Sub: {status === "past_due" ? "Past Due" : status}
+    </span>
+  );
+}
+
 function SubmissionStatusBadge({ status }: Readonly<{ status: string }>) {
   const colors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700",
@@ -186,6 +206,7 @@ export default function OwnerDetail({
 
   // Form states
   const [selectedPlan, setSelectedPlan] = useState("");
+  const [selectedSubStatus, setSelectedSubStatus] = useState("");
   const [emailSubject, setEmailSubject] = useState("");
   const [emailBody, setEmailBody] = useState("");
   const [deleteConfirmName, setDeleteConfirmName] = useState("");
@@ -235,6 +256,7 @@ export default function OwnerDetail({
         const json = await res.json();
         setData(json);
         setSelectedPlan(json.business.plan);
+        setSelectedSubStatus(json.business.subscription_status || "inactive");
         setSubmissions(json.submissions);
         setSubTotal(json.submissions_total);
       } catch (err) {
@@ -270,12 +292,12 @@ export default function OwnerDetail({
       const res = await fetch(`/api/admin/owners/${businessId}/plan`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: selectedPlan }),
+        body: JSON.stringify({ plan: selectedPlan, subscription_status: selectedSubStatus }),
       });
       if (!res.ok) throw new Error("Failed to update plan");
       setData((prev) =>
         prev
-          ? { ...prev, business: { ...prev.business, plan: selectedPlan } }
+          ? { ...prev, business: { ...prev.business, plan: selectedPlan, subscription_status: selectedSubStatus } }
           : prev,
       );
       setShowPlanModal(false);
@@ -429,6 +451,7 @@ export default function OwnerDetail({
             <div className="flex flex-wrap items-center gap-3">
               <PlanBadge plan={business.plan} />
               <StatusBadge status={business.status} />
+              <SubscriptionBadge status={business.subscription_status || "inactive"} />
               {business.auto_approve_requested && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -713,6 +736,7 @@ export default function OwnerDetail({
             </button>
           </div>
           <div className="space-y-3">
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-400">Plan</p>
             {["free", "pro"].map((plan) => (
               <label
                 key={plan}
@@ -732,6 +756,31 @@ export default function OwnerDetail({
                 />
                 <span className="text-sm font-medium capitalize text-gray-900">
                   {plan}
+                </span>
+              </label>
+            ))}
+          </div>
+          <div className="mt-4 space-y-3">
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-400">Subscription Status</p>
+            {["inactive", "active", "cancelled", "past_due"].map((s) => (
+              <label
+                key={s}
+                className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors ${
+                  selectedSubStatus === s
+                    ? "border-blue-300 bg-blue-50"
+                    : "border-gray-100 hover:bg-gray-50"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="subscription_status"
+                  value={s}
+                  checked={selectedSubStatus === s}
+                  onChange={() => setSelectedSubStatus(s)}
+                  className="accent-blue-600"
+                />
+                <span className="text-sm font-medium capitalize text-gray-900">
+                  {s === "past_due" ? "Past Due" : s}
                 </span>
               </label>
             ))}

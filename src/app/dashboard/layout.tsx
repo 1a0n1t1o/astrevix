@@ -28,6 +28,7 @@ export default async function DashboardLayout({
     <DashboardShell
       business={business as Business}
       userEmail={user.email || ""}
+      subscriptionStatus={(business as Business).subscription_status || "inactive"}
       userMetadata={userMetadata}
     >
       {children}

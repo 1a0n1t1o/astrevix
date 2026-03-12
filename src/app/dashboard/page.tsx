@@ -2,6 +2,7 @@ import { getAuthenticatedBusiness } from "@/lib/get-business";
 import Link from "next/link";
 import type { Submission } from "@/types/database";
 import ActivityChart from "./activity-chart";
+import ActivationPaywall from "./activation-paywall";
 
 function PlatformIcon({ platform, className = "h-5 w-5" }: { platform: string; className?: string }) {
   switch (platform) {
@@ -105,6 +106,16 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
 export default async function DashboardPage() {
   const { user, business, supabase } = await getAuthenticatedBusiness();
   if (!user || !business) return null;
+
+  // Show paywall if subscription is not active
+  if (business.subscription_status !== "active") {
+    return (
+      <ActivationPaywall
+        userEmail={user.email || ""}
+        businessName={business.name}
+      />
+    );
+  }
 
   // Fetch all submission data in parallel
   const thirtyDaysAgo = new Date();

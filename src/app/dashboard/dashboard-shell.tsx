@@ -11,6 +11,7 @@ import type { Business } from "@/types/database";
 interface DashboardShellProps {
   readonly business: Business;
   readonly userEmail: string;
+  readonly subscriptionStatus: string;
   readonly userMetadata?: {
     first_name: string;
     last_name: string;
@@ -18,6 +19,15 @@ interface DashboardShellProps {
   };
   readonly children: React.ReactNode;
 }
+
+const LockIcon = () => (
+  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+  </svg>
+);
+
+// Items that require an active subscription (everything except Settings)
+const LOCKED_PATHS = ["/dashboard/submissions", "/dashboard/customers", "/dashboard/sms", "/dashboard/customize"];
 
 const NAV_ITEMS = [
   {
@@ -81,12 +91,14 @@ const NAV_ITEMS = [
 export default function DashboardShell({
   business,
   userEmail,
+  subscriptionStatus,
   userMetadata,
   children,
 }: DashboardShellProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+  const isSubscribed = subscriptionStatus === "active";
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -117,6 +129,22 @@ export default function DashboardShell({
       <nav className="space-y-1 px-3">
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href, item.exact);
+          const isLocked = !isSubscribed && LOCKED_PATHS.includes(item.href);
+
+          if (isLocked) {
+            return (
+              <div
+                key={item.href}
+                className="relative flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-400"
+                style={{ opacity: 0.4 }}
+              >
+                {item.icon}
+                {item.label}
+                <LockIcon />
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.href}

@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { WhopCheckoutEmbed } from "@whop/checkout/react";
+import { motion } from "framer-motion";
+
+const WHOP_CHECKOUT_BASE = "https://whop.com/astrevix-io/access2";
+const WHOP_MANAGE_URL = "https://whop.com/astrevix-io/access2";
 
 interface SubscriptionBillingProps {
   readonly onToast: (message: string) => void;
   readonly userEmail: string;
   readonly approvedThisMonth: number;
   readonly autoApproveRequested: boolean;
+  readonly subscriptionStatus: string;
+  readonly subscriptionActivatedAt: string | null;
 }
 
 const sectionVariants = {
@@ -35,85 +39,22 @@ export default function SubscriptionBilling({
   userEmail,
   approvedThisMonth,
   autoApproveRequested,
+  subscriptionStatus,
+  subscriptionActivatedAt,
 }: SubscriptionBillingProps) {
   const approvedLimit = 100;
   const approvedPercent = Math.min(
     Math.round((approvedThisMonth / approvedLimit) * 100),
     100
   );
-  const [showCheckout, setShowCheckout] = useState(false);
   const [autoApprove, setAutoApprove] = useState(autoApproveRequested);
   const [togglingAutoApprove, setTogglingAutoApprove] = useState(false);
 
+  const isActive = subscriptionStatus === "active";
+  const checkoutUrl = `${WHOP_CHECKOUT_BASE}?email=${encodeURIComponent(userEmail)}`;
+
   return (
     <div className="space-y-6">
-      {/* Whop Checkout Modal Overlay */}
-      <AnimatePresence>
-        {showCheckout && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowCheckout(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative mx-4 w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Upgrade Plan
-                </h3>
-                <button
-                  onClick={() => setShowCheckout(false)}
-                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
-                >
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Whop Checkout Embed */}
-              <div className="p-6">
-                <WhopCheckoutEmbed
-                  planId="plan_hiFPI4u5kBSZD"
-                  theme="light"
-                  prefill={{ email: userEmail }}
-                  disableEmail={true}
-                  returnUrl="https://astrevix.com/dashboard/settings?status=success"
-                  onComplete={() => {
-                    setShowCheckout(false);
-                  }}
-                  fallback={
-                    <div className="flex items-center justify-center py-12">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-[#2563EB]" />
-                    </div>
-                  }
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Section 0: Current Plan */}
       <motion.section
         custom={0}
@@ -133,30 +74,72 @@ export default function SubscriptionBilling({
           Current Plan
         </h3>
 
-        <div className="mt-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-semibold text-gray-900">
-              Free Plan
-            </span>
-            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-              Active
-            </span>
-          </div>
-        </div>
-
-        <p className="mt-2 text-sm text-gray-500">
-          You&apos;re on the free plan with basic features.
-        </p>
-
-        <div className="mt-4">
-          <button
-            type="button"
-            onClick={() => setShowCheckout(true)}
-            className="rounded-xl border-[1.5px] border-[#2563EB] bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-[#1d4ed8] hover:border-[#1d4ed8] active:scale-[0.98]"
-          >
-            Upgrade Plan
-          </button>
-        </div>
+        {isActive ? (
+          <>
+            <div className="mt-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-semibold text-gray-900">
+                  Pro Plan
+                </span>
+                <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+                  Active
+                </span>
+              </div>
+            </div>
+            {subscriptionActivatedAt && (
+              <p className="mt-2 text-sm text-gray-500">
+                Activated on{" "}
+                {new Date(subscriptionActivatedAt).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+            )}
+            <div className="mt-4">
+              <a
+                href={WHOP_MANAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border-[1.5px] border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98]"
+              >
+                Manage Subscription
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </a>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mt-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-semibold text-gray-900">
+                  No Active Plan
+                </span>
+                <span className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-0.5 text-xs font-medium text-gray-500 ring-1 ring-inset ring-gray-300/50">
+                  Inactive
+                </span>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">
+              Activate your account to unlock all dashboard features.
+            </p>
+            <div className="mt-4">
+              <a
+                href={checkoutUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border-[1.5px] border-[#2563EB] bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-[#1d4ed8] hover:border-[#1d4ed8] active:scale-[0.98]"
+              >
+                Activate Now
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </a>
+            </div>
+          </>
+        )}
       </motion.section>
 
       {/* Section 1: Usage */}

@@ -37,6 +37,8 @@ export default async function SettingsPage() {
         userEmail={user.email || ""}
         userProfile={userProfile}
         approvedThisMonth={approvedThisMonth ?? 0}
+        subscriptionStatus={(business as Business).subscription_status || "inactive"}
+        subscriptionActivatedAt={(business as Business).subscription_activated_at || null}
       />
     </div>
   );

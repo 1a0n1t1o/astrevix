@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const VALID_PLANS = ["free", "pro"] as const;
+const VALID_SUB_STATUSES = ["inactive", "active", "cancelled", "past_due"] as const;
 
 export async function PATCH(
   request: Request,
@@ -18,22 +19,37 @@ export async function PATCH(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { plan } = await request.json();
+  const body = await request.json();
+  const { plan, subscription_status } = body;
 
-  if (!VALID_PLANS.includes(plan)) {
+  if (plan && !VALID_PLANS.includes(plan)) {
     return NextResponse.json(
-      {
-        error: `Invalid plan. Must be one of: ${VALID_PLANS.join(", ")}`,
-      },
+      { error: `Invalid plan. Must be one of: ${VALID_PLANS.join(", ")}` },
+      { status: 400 }
+    );
+  }
+
+  if (subscription_status && !VALID_SUB_STATUSES.includes(subscription_status)) {
+    return NextResponse.json(
+      { error: `Invalid subscription status. Must be one of: ${VALID_SUB_STATUSES.join(", ")}` },
       { status: 400 }
     );
   }
 
   const admin = getSupabaseAdmin();
 
+  const updateData: Record<string, string> = {};
+  if (plan) updateData.plan = plan;
+  if (subscription_status) {
+    updateData.subscription_status = subscription_status;
+    if (subscription_status === "active" && !body.subscription_activated_at) {
+      updateData.subscription_activated_at = new Date().toISOString();
+    }
+  }
+
   const { error } = await admin
     .from("businesses")
-    .update({ plan })
+    .update(updateData)
     .eq("id", id);
 
   if (error) {

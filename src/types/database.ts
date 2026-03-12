@@ -51,6 +51,10 @@ export interface Business {
   status: "active" | "suspended";
   auto_approve_requested: boolean;
   deleted_at: string | null;
+  // Subscription tracking
+  subscription_status: "inactive" | "active" | "cancelled" | "past_due";
+  whop_membership_id: string | null;
+  subscription_activated_at: string | null;
 }
 
 export interface Submission {

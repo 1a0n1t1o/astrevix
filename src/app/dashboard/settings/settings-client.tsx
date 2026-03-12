@@ -32,6 +32,8 @@ interface SettingsClientProps {
   readonly userEmail: string;
   readonly userProfile: UserProfile;
   readonly approvedThisMonth: number;
+  readonly subscriptionStatus: string;
+  readonly subscriptionActivatedAt: string | null;
 }
 
 export default function SettingsClient({
@@ -39,6 +41,8 @@ export default function SettingsClient({
   userEmail,
   userProfile,
   approvedThisMonth,
+  subscriptionStatus,
+  subscriptionActivatedAt,
 }: SettingsClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -222,7 +226,7 @@ export default function SettingsClient({
                 />
               )}
               {activeTab === "subscription" && (
-                <SubscriptionBilling onToast={showToast} userEmail={userEmail} approvedThisMonth={approvedThisMonth} autoApproveRequested={business.auto_approve_requested ?? false} />
+                <SubscriptionBilling onToast={showToast} userEmail={userEmail} approvedThisMonth={approvedThisMonth} autoApproveRequested={business.auto_approve_requested ?? false} subscriptionStatus={subscriptionStatus} subscriptionActivatedAt={subscriptionActivatedAt} />
               )}
             </motion.div>
           </AnimatePresence>
