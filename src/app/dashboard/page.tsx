@@ -87,15 +87,34 @@ function formatDate(dateStr: string): string {
 }
 
 function StatusBadge({ status }: Readonly<{ status: string }>) {
-  const styles: Record<string, string> = {
-    pending: "bg-amber-50 text-amber-700 border-amber-200",
-    approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    rejected: "bg-red-50 text-red-700 border-red-200",
+  const varMap: Record<string, { bg: string; text: string; border: string }> = {
+    pending: {
+      bg: "var(--dash-badge-amber-bg)",
+      text: "var(--dash-badge-amber-text)",
+      border: "var(--dash-badge-amber-border)",
+    },
+    approved: {
+      bg: "var(--dash-badge-green-bg)",
+      text: "var(--dash-badge-green-text)",
+      border: "var(--dash-badge-green-border)",
+    },
+    rejected: {
+      bg: "var(--dash-badge-red-bg)",
+      text: "var(--dash-badge-red-text)",
+      border: "var(--dash-badge-red-border)",
+    },
   };
+
+  const v = varMap[status] || varMap.pending;
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize ${styles[status] || styles.pending}`}
+      className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize"
+      style={{
+        backgroundColor: v.bg,
+        color: v.text,
+        borderColor: v.border,
+      }}
     >
       {status}
     </span>
@@ -179,29 +198,29 @@ export default async function DashboardPage() {
       label: "Total Submissions",
       value: totalCount,
       iconType: "total",
-      iconColor: "#2563EB",
-      bgColor: "#eff6ff",
-      borderColor: "#bfdbfe",
-      shadowColor: "rgba(37, 99, 235, 0.08)",
+      iconColor: "var(--dash-blue)",
+      bgColor: "var(--dash-blue-soft)",
+      borderColor: "var(--dash-blue-border)",
+      shadowColor: "var(--dash-blue-shadow)",
     },
     {
       label: "Pending Review",
       value: pendingCount,
       iconType: "pending",
-      iconColor: "#D97706",
-      bgColor: "#fffbeb",
-      borderColor: "#fde68a",
-      shadowColor: "rgba(217, 119, 6, 0.08)",
+      iconColor: "var(--dash-amber)",
+      bgColor: "var(--dash-amber-soft)",
+      borderColor: "var(--dash-amber-border)",
+      shadowColor: "var(--dash-amber-shadow)",
       highlight: pendingCount > 0,
     },
     {
       label: "Approved",
       value: approvedCount,
       iconType: "approved",
-      iconColor: "#059669",
-      bgColor: "#ecfdf5",
-      borderColor: "#a7f3d0",
-      shadowColor: "rgba(5, 150, 105, 0.08)",
+      iconColor: "var(--dash-green)",
+      bgColor: "var(--dash-green-soft)",
+      borderColor: "var(--dash-green-border)",
+      shadowColor: "var(--dash-green-shadow)",
     },
   ];
 
@@ -209,10 +228,10 @@ export default async function DashboardPage() {
     <div>
       {/* Header */}
       <div className="dash-animate-fade-in-up mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--dash-text)" }}>
           Welcome, {business.name}
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Here&apos;s what&apos;s happening with your submissions
         </p>
       </div>
@@ -245,16 +264,16 @@ export default async function DashboardPage() {
               <StatIcon type={stat.iconType} />
             </div>
             <p
-              className="dash-animate-number text-4xl font-bold tracking-tight text-gray-900"
-              style={{ animationDelay: `${index * 100 + 200}ms` }}
+              className="dash-animate-number text-4xl font-bold tracking-tight"
+              style={{ animationDelay: `${index * 100 + 200}ms`, color: "var(--dash-text)" }}
             >
               {stat.value}
             </p>
-            <p className="mt-1 text-sm font-medium text-gray-500">
+            <p className="mt-1 text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
               {stat.label}
             </p>
             {stat.highlight && (
-              <p className="mt-2 text-xs font-medium text-amber-600">
+              <p className="mt-2 text-xs font-medium" style={{ color: "var(--dash-amber)" }}>
                 Needs attention
               </p>
             )}
@@ -276,13 +295,14 @@ export default async function DashboardPage() {
         style={{ animationDelay: "400ms" }}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2 className="text-lg font-bold" style={{ color: "var(--dash-text)" }}>
             Recent Submissions
           </h2>
           {recentSubmissions.length > 0 && (
             <Link
               href="/dashboard/submissions"
-              className="text-sm font-medium text-[#2563EB] hover:underline"
+              className="text-sm font-medium hover:underline"
+              style={{ color: "var(--dash-blue)" }}
             >
               View all
             </Link>
@@ -291,40 +311,45 @@ export default async function DashboardPage() {
 
         {recentSubmissions.length === 0 ? (
           <div
-            className="dash-animate-scale-in mt-6 rounded-2xl border border-gray-100 p-12 text-center"
+            className="dash-animate-scale-in mt-6 rounded-2xl border p-12 text-center"
             style={{
               animationDelay: "300ms",
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              backgroundColor: "var(--dash-card-bg)",
+              borderColor: "var(--dash-card-border)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+              boxShadow: `0 4px 24px -4px var(--dash-card-shadow)`,
             }}
           >
-            <div className="mx-auto mb-4 text-gray-300">
+            <div className="mx-auto mb-4" style={{ color: "var(--dash-text-muted)" }}>
               <svg className="mx-auto h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 12h-6l-2 3h-4l-2-3H2" />
                 <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
               </svg>
             </div>
-            <p className="font-medium text-gray-900">No submissions yet</p>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="font-medium" style={{ color: "var(--dash-text)" }}>No submissions yet</p>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
               Share your QR code to start getting customer content!
             </p>
           </div>
         ) : (
           <div
-            className="dash-animate-fade-in-up mt-4 overflow-hidden rounded-2xl border border-gray-100"
+            className="dash-animate-fade-in-up mt-4 overflow-hidden rounded-2xl border"
             style={{
               animationDelay: "400ms",
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              backgroundColor: "var(--dash-card-bg)",
+              borderColor: "var(--dash-card-border)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+              boxShadow: `0 4px 24px -4px var(--dash-card-shadow)`,
             }}
           >
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                <tr
+                  className="border-b text-left text-xs font-semibold uppercase tracking-wider"
+                  style={{ borderColor: "var(--dash-card-border)", color: "var(--dash-text-muted)" }}
+                >
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Platform</th>
                   <th className="hidden px-6 py-4 md:table-cell">Post</th>
@@ -332,20 +357,23 @@ export default async function DashboardPage() {
                   <th className="hidden px-6 py-4 sm:table-cell">Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody>
                 {recentSubmissions.map((sub, index) => (
                   <tr
                     key={sub.id}
-                    className="dash-animate-fade-in-up hover:bg-blue-50/30"
-                    style={{ animationDelay: `${500 + index * 80}ms` }}
+                    className="dash-animate-fade-in-up border-t"
+                    style={{
+                      animationDelay: `${500 + index * 80}ms`,
+                      borderColor: "var(--dash-divider)",
+                    }}
                   >
                     <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium" style={{ color: "var(--dash-text)" }}>
                         {sub.customer_name}
                       </p>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="flex h-5 w-5 text-gray-500">
+                      <span className="flex h-5 w-5" style={{ color: "var(--dash-text-secondary)" }}>
                         <PlatformIcon platform={sub.detected_platform || ""} />
                       </span>
                     </td>
@@ -354,7 +382,8 @@ export default async function DashboardPage() {
                         href={sub.post_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="max-w-[200px] truncate text-sm text-[#2563EB] hover:underline"
+                        className="max-w-[200px] truncate text-sm hover:underline"
+                        style={{ color: "var(--dash-blue)" }}
                       >
                         {sub.post_url.replace(/^https?:\/\//, "").substring(0, 40)}
                         {sub.post_url.length > 40 ? "..." : ""}
@@ -364,7 +393,7 @@ export default async function DashboardPage() {
                       <StatusBadge status={sub.status} />
                     </td>
                     <td className="hidden px-6 py-4 sm:table-cell">
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm" style={{ color: "var(--dash-text-secondary)" }}>
                         {formatDate(sub.created_at)}
                       </span>
                     </td>

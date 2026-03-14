@@ -31,9 +31,13 @@ function CustomTooltip({
 
   return (
     <div
-      className="rounded-xl border border-gray-100 bg-white px-4 py-3 text-sm shadow-lg"
+      className="rounded-xl border px-4 py-3 text-sm shadow-lg"
+      style={{
+        backgroundColor: "var(--dash-surface)",
+        borderColor: "var(--dash-card-border)",
+      }}
     >
-      <p className="mb-1.5 text-xs font-semibold text-gray-400">{label}</p>
+      <p className="mb-1.5 text-xs font-semibold" style={{ color: "var(--dash-text-muted)" }}>{label}</p>
       {payload.map((entry) => (
         <div
           key={entry.dataKey}
@@ -43,8 +47,8 @@ function CustomTooltip({
             className="h-2 w-2 rounded-full"
             style={{ backgroundColor: entry.color }}
           />
-          <span className="text-gray-500 capitalize">{entry.dataKey}:</span>
-          <span className="font-semibold text-gray-900">{entry.value}</span>
+          <span className="capitalize" style={{ color: "var(--dash-text-secondary)" }}>{entry.dataKey}:</span>
+          <span className="font-semibold" style={{ color: "var(--dash-text)" }}>{entry.value}</span>
         </div>
       ))}
     </div>
@@ -110,11 +114,13 @@ export default function ActivityChart({ chartData }: ActivityChartProps) {
 
   return (
     <div
-      className="overflow-hidden rounded-2xl border border-gray-100 bg-white/70"
+      className="overflow-hidden rounded-2xl border"
       style={{
+        backgroundColor: "var(--dash-card-bg)",
+        borderColor: "var(--dash-card-border)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+        boxShadow: `0 4px 24px -4px var(--dash-card-shadow)`,
       }}
     >
       <div className="p-6 pb-2">
@@ -122,20 +128,20 @@ export default function ActivityChart({ chartData }: ActivityChartProps) {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           {/* Stats */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--dash-text-muted)" }}>
               Submissions
             </p>
             <div className="mt-1 flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight text-gray-900">
+              <span className="text-2xl font-bold tracking-tight" style={{ color: "var(--dash-text)" }}>
                 {totalInRange}
               </span>
               {changePercent !== 0 && (
                 <span
-                  className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-semibold ${
-                    isPositiveChange
-                      ? "bg-emerald-50 text-emerald-600"
-                      : "bg-red-50 text-red-600"
-                  }`}
+                  className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-semibold"
+                  style={{
+                    backgroundColor: isPositiveChange ? "var(--dash-positive-bg)" : "var(--dash-negative-bg)",
+                    color: isPositiveChange ? "var(--dash-positive-text)" : "var(--dash-negative-text)",
+                  }}
                 >
                   <svg
                     className="h-3 w-3"
@@ -161,25 +167,27 @@ export default function ActivityChart({ chartData }: ActivityChartProps) {
           {/* Timeframe toggle */}
           <div
             className="flex items-center gap-1 rounded-xl p-1"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}
+            style={{ backgroundColor: "var(--dash-toggle-bg)" }}
           >
             <button
               onClick={() => setRange("7d")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
+              className="rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all"
+              style={
                 range === "7d"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+                  ? { backgroundColor: "var(--dash-toggle-active)", color: "var(--dash-text)", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }
+                  : { color: "var(--dash-text-secondary)" }
+              }
             >
               Last 7 days
             </button>
             <button
               onClick={() => setRange("30d")}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
+              className="rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all"
+              style={
                 range === "30d"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+                  ? { backgroundColor: "var(--dash-toggle-active)", color: "var(--dash-text)", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }
+                  : { color: "var(--dash-text-secondary)" }
+              }
             >
               Last 30 days
             </button>
@@ -202,21 +210,21 @@ export default function ActivityChart({ chartData }: ActivityChartProps) {
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="rgba(0,0,0,0.04)"
+              stroke="var(--dash-chart-grid)"
               vertical={false}
             />
             <XAxis
               dataKey="date"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: "#9CA3AF" }}
+              tick={{ fontSize: 11, fill: "var(--dash-text-muted)" }}
               dy={8}
               interval={range === "30d" ? 4 : 0}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: "#9CA3AF" }}
+              tick={{ fontSize: 11, fill: "var(--dash-text-muted)" }}
               dx={-4}
               allowDecimals={false}
             />
@@ -249,10 +257,10 @@ export default function ActivityChart({ chartData }: ActivityChartProps) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 border-t border-gray-100 px-6 py-3">
+      <div className="flex items-center justify-center gap-6 border-t px-6 py-3" style={{ borderColor: "var(--dash-card-border)" }}>
         <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-full bg-[#2563EB]" />
-          <span className="text-xs font-medium text-gray-500">Submissions</span>
+          <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "var(--dash-blue)" }} />
+          <span className="text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>Submissions</span>
         </div>
       </div>
     </div>
