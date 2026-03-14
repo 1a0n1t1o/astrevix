@@ -82,7 +82,12 @@ export default function RewardTiersEditor({
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const inputClasses =
-    "w-full rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#d97706] focus:ring-1 focus:ring-[#d97706]/20";
+    "w-full rounded-xl border-[1.5px] px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-[#d97706] focus:ring-1 focus:ring-[#d97706]/20";
+  const inputStyle: React.CSSProperties = {
+    backgroundColor: "var(--dash-surface)",
+    borderColor: "var(--dash-card-border)",
+    color: "var(--dash-text)",
+  };
 
   function autoTierName(platform: string, contentType: string): string {
     const label = TIER_PLATFORM_LABELS[platform] || platform;
@@ -288,14 +293,14 @@ export default function RewardTiersEditor({
     <div className="space-y-4">
       {/* Tier list */}
       {tiers.length === 0 && !isAdding && (
-        <div className="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 px-6 py-10 text-center">
+        <div className="rounded-xl border-2 border-dashed px-6 py-10 text-center" style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-hover)" }}>
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
             <Star className="h-6 w-6 text-amber-500" />
           </div>
-          <p className="text-sm font-medium text-gray-700">
+          <p className="text-sm font-medium" style={{ color: "var(--dash-text)" }}>
             No reward tiers yet
           </p>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs" style={{ color: "var(--dash-text-secondary)" }}>
             Create tiers to offer different rewards for different types of content.
           </p>
         </div>
@@ -309,11 +314,13 @@ export default function RewardTiersEditor({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className={`relative rounded-xl border bg-white p-4 transition-all ${
-              tier.is_active
-                ? "border-gray-200 shadow-sm"
-                : "border-gray-100 bg-gray-50/50 opacity-60"
+            className={`relative rounded-xl border p-4 transition-all ${
+              !tier.is_active ? "opacity-60" : "shadow-sm"
             }`}
+            style={{
+              backgroundColor: tier.is_active ? "var(--dash-card-bg)" : "var(--dash-hover)",
+              borderColor: "var(--dash-card-border)",
+            }}
           >
             {/* Editing this tier inline */}
             {editingId === tier.id ? (
@@ -327,6 +334,7 @@ export default function RewardTiersEditor({
                 onCancel={cancelForm}
                 saving={saving}
                 inputClasses={inputClasses}
+                inputStyle={inputStyle}
                 isEdit
               />
             ) : (
@@ -342,22 +350,22 @@ export default function RewardTiersEditor({
                 {/* Content */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold" style={{ color: "var(--dash-text)" }}>
                       {tier.tier_name}
                     </p>
-                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">
+                    <span className="rounded-full px-2 py-0.5 text-[10px] font-medium" style={{ backgroundColor: "var(--dash-hover)", color: "var(--dash-text-secondary)" }}>
                       {tier.content_type}
                     </span>
                   </div>
-                  <p className="mt-0.5 text-sm text-gray-600">
+                  <p className="mt-0.5 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
                     {tier.reward_description}
                     {tier.reward_value && (
-                      <span className="ml-1.5 font-semibold text-gray-900">
+                      <span className="ml-1.5 font-semibold" style={{ color: "var(--dash-text)" }}>
                         ({tier.reward_value})
                       </span>
                     )}
                   </p>
-                  <div className="mt-1.5 flex items-center gap-3 text-xs text-gray-400">
+                  <div className="mt-1.5 flex items-center gap-3 text-xs" style={{ color: "var(--dash-text-muted)" }}>
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {formatVerificationHours(tier.verification_hours)} verification
@@ -375,7 +383,8 @@ export default function RewardTiersEditor({
                     type="button"
                     onClick={() => handleReorder(tier.id, "up")}
                     disabled={index === 0}
-                    className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 disabled:opacity-30"
+                    className="rounded-lg p-1.5 transition-colors disabled:opacity-30"
+                    style={{ color: "var(--dash-text-muted)" }}
                     title="Move up"
                   >
                     <ChevronUp className="h-3.5 w-3.5" />
@@ -384,7 +393,8 @@ export default function RewardTiersEditor({
                     type="button"
                     onClick={() => handleReorder(tier.id, "down")}
                     disabled={index === tiers.length - 1}
-                    className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 disabled:opacity-30"
+                    className="rounded-lg p-1.5 transition-colors disabled:opacity-30"
+                    style={{ color: "var(--dash-text-muted)" }}
                     title="Move down"
                   >
                     <ChevronDown className="h-3.5 w-3.5" />
@@ -410,7 +420,8 @@ export default function RewardTiersEditor({
                   <button
                     type="button"
                     onClick={() => openEditForm(tier)}
-                    className="ml-1 rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                    className="ml-1 rounded-lg p-1.5 transition-colors"
+                    style={{ color: "var(--dash-text-muted)" }}
                     title="Edit"
                   >
                     <Pencil className="h-3.5 w-3.5" />
@@ -420,7 +431,8 @@ export default function RewardTiersEditor({
                   <button
                     type="button"
                     onClick={() => setDeletingId(tier.id)}
-                    className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                    className="rounded-lg p-1.5 transition-colors hover:bg-red-50 hover:text-red-500"
+                    style={{ color: "var(--dash-text-muted)" }}
                     title="Delete"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -452,7 +464,8 @@ export default function RewardTiersEditor({
                   <button
                     type="button"
                     onClick={() => setDeletingId(null)}
-                    className="rounded-lg bg-white px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
+                    className="rounded-lg px-3 py-1 text-xs font-medium"
+                    style={{ backgroundColor: "var(--dash-surface)", color: "var(--dash-text-secondary)" }}
                   >
                     Cancel
                   </button>
@@ -472,8 +485,8 @@ export default function RewardTiersEditor({
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="rounded-xl border border-amber-200 bg-amber-50/30 p-4">
-              <p className="mb-4 text-sm font-semibold text-gray-900">
+            <div className="rounded-xl border border-amber-200/50 p-4" style={{ backgroundColor: "var(--dash-card-bg)" }}>
+              <p className="mb-4 text-sm font-semibold" style={{ color: "var(--dash-text)" }}>
                 New Reward Tier
               </p>
               <TierForm
@@ -486,6 +499,7 @@ export default function RewardTiersEditor({
                 onCancel={cancelForm}
                 saving={saving}
                 inputClasses={inputClasses}
+                inputStyle={inputStyle}
                 isEdit={false}
               />
             </div>
@@ -500,7 +514,8 @@ export default function RewardTiersEditor({
           onClick={openAddForm}
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white py-3 text-sm font-medium text-gray-600 transition-colors hover:border-amber-300 hover:bg-amber-50/50 hover:text-amber-700"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3 text-sm font-medium transition-colors hover:border-amber-300 hover:text-amber-700"
+          style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-card-bg)", color: "var(--dash-text-secondary)" }}
         >
           <Plus className="h-4 w-4" />
           Add Reward Tier
@@ -522,6 +537,7 @@ interface TierFormProps {
   readonly onCancel: () => void;
   readonly saving: boolean;
   readonly inputClasses: string;
+  readonly inputStyle: React.CSSProperties;
   readonly isEdit: boolean;
 }
 
@@ -535,6 +551,7 @@ function TierForm({
   onCancel,
   saving,
   inputClasses,
+  inputStyle,
   isEdit,
 }: TierFormProps) {
   return (
@@ -542,26 +559,28 @@ function TierForm({
       {/* Row 1: Platform + Content Type */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="mb-1 block text-xs font-medium text-gray-600">
+          <label className="mb-1 block text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
             Platform
           </label>
           <select
             value={form.platform}
             onChange={(e) => onPlatformChange(e.target.value)}
             className={inputClasses}
+            style={inputStyle}
           >
             <option value="instagram">Instagram</option>
             <option value="tiktok">TikTok</option>
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-gray-600">
+          <label className="mb-1 block text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
             Content Type
           </label>
           <select
             value={form.content_type}
             onChange={(e) => onContentTypeChange(e.target.value)}
             className={inputClasses}
+            style={inputStyle}
           >
             {availableContentTypes.map((type) => (
               <option key={type} value={type}>
@@ -574,7 +593,7 @@ function TierForm({
 
       {/* Row 2: Tier name */}
       <div>
-        <label className="mb-1 block text-xs font-medium text-gray-600">
+        <label className="mb-1 block text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
           Tier Name
         </label>
         <input
@@ -583,13 +602,14 @@ function TierForm({
           onChange={(e) => setForm((f) => ({ ...f, tier_name: e.target.value }))}
           placeholder="e.g. Instagram Reel"
           className={inputClasses}
+          style={inputStyle}
         />
       </div>
 
       {/* Row 3: Reward description + value */}
       <div className="grid grid-cols-3 gap-3">
         <div className="col-span-2">
-          <label className="mb-1 block text-xs font-medium text-gray-600">
+          <label className="mb-1 block text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
             Reward Description
           </label>
           <input
@@ -600,10 +620,11 @@ function TierForm({
             }
             placeholder="e.g. Free coffee on your next visit"
             className={inputClasses}
+            style={inputStyle}
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-gray-600">
+          <label className="mb-1 block text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
             Value
           </label>
           <input
@@ -614,13 +635,14 @@ function TierForm({
             }
             placeholder="e.g. FREE, 20%"
             className={inputClasses}
+            style={inputStyle}
           />
         </div>
       </div>
 
       {/* Row 4: Verification window */}
       <div>
-        <label className="mb-1 block text-xs font-medium text-gray-600">
+        <label className="mb-1 block text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
           Verification Window
         </label>
         <select
@@ -629,6 +651,7 @@ function TierForm({
             setForm((f) => ({ ...f, verification_hours: parseInt(e.target.value) }))
           }
           className={inputClasses}
+          style={inputStyle}
         >
           {VERIFICATION_WINDOW_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -636,7 +659,7 @@ function TierForm({
             </option>
           ))}
         </select>
-        <p className="mt-1.5 text-[11px] text-gray-400">
+        <p className="mt-1.5 text-[11px]" style={{ color: "var(--dash-text-muted)" }}>
           The post must stay live for this duration before you can approve the reward.
           For stories, we recommend 24 hours. For reels and TikToks, 3 days.
         </p>
@@ -661,7 +684,8 @@ function TierForm({
           type="button"
           onClick={onCancel}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+          style={{ backgroundColor: "var(--dash-hover)", color: "var(--dash-text-secondary)" }}
         >
           <X className="h-3.5 w-3.5" />
           Cancel

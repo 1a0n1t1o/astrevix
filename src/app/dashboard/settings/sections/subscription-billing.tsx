@@ -23,10 +23,12 @@ const sectionVariants = {
 const SECTION_COLORS = ["#2563EB", "#7c3aed", "#d97706"];
 
 const glassCard = {
-  className: "rounded-2xl border border-gray-100 bg-white/70 p-6",
+  className: "rounded-2xl border p-6",
   style: {
     backdropFilter: "blur(12px)",
     boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+    backgroundColor: "var(--dash-card-bg)",
+    borderColor: "var(--dash-card-border)",
   },
 };
 
@@ -63,17 +65,19 @@ export default function SubscriptionBilling({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative mx-4 w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
+              className="relative mx-4 w-full max-w-lg overflow-hidden rounded-2xl shadow-2xl"
+              style={{ backgroundColor: "var(--dash-surface)" }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-                <h3 className="text-lg font-semibold text-gray-900">
+              <div className="flex items-center justify-between border-b px-6 py-4" style={{ borderColor: "var(--dash-card-border)" }}>
+                <h3 className="text-lg font-semibold" style={{ color: "var(--dash-text)" }}>
                   Upgrade Plan
                 </h3>
                 <button
                   onClick={() => setShowCheckout(false)}
-                  className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                  className="rounded-lg p-1.5 transition-colors"
+                  style={{ color: "var(--dash-text-muted)" }}
                 >
                   <svg
                     className="h-5 w-5"
@@ -124,10 +128,11 @@ export default function SubscriptionBilling({
         style={glassCard.style}
       >
         <h3
-          className="text-base font-semibold text-gray-900"
+          className="text-base font-semibold"
           style={{
             paddingLeft: "12px",
             borderLeft: `3px solid ${SECTION_COLORS[0]}`,
+            color: "var(--dash-text)",
           }}
         >
           Current Plan
@@ -135,7 +140,7 @@ export default function SubscriptionBilling({
 
         <div className="mt-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-lg font-semibold text-gray-900">
+            <span className="text-lg font-semibold" style={{ color: "var(--dash-text)" }}>
               Free Plan
             </span>
             <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
@@ -144,7 +149,7 @@ export default function SubscriptionBilling({
           </div>
         </div>
 
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           You&apos;re on the free plan with basic features.
         </p>
 
@@ -169,10 +174,11 @@ export default function SubscriptionBilling({
         style={glassCard.style}
       >
         <h3
-          className="text-base font-semibold text-gray-900"
+          className="text-base font-semibold"
           style={{
             paddingLeft: "12px",
             borderLeft: `3px solid ${SECTION_COLORS[1]}`,
+            color: "var(--dash-text)",
           }}
         >
           Usage
@@ -181,12 +187,12 @@ export default function SubscriptionBilling({
         <div className="mt-5">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
                 Approved submissions this month
               </span>
-              <span className="text-sm text-gray-500">{approvedThisMonth} / {approvedLimit}</span>
+              <span className="text-sm" style={{ color: "var(--dash-text-secondary)" }}>{approvedThisMonth} / {approvedLimit}</span>
             </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full" style={{ backgroundColor: "var(--dash-hover)" }}>
               <div
                 className="h-full rounded-full bg-blue-500 transition-all"
                 style={{ width: `${approvedPercent}%` }}
@@ -206,10 +212,11 @@ export default function SubscriptionBilling({
         style={glassCard.style}
       >
         <h3
-          className="text-base font-semibold text-gray-900"
+          className="text-base font-semibold"
           style={{
             paddingLeft: "12px",
             borderLeft: `3px solid ${SECTION_COLORS[2]}`,
+            color: "var(--dash-text)",
           }}
         >
           Team Review
@@ -217,10 +224,10 @@ export default function SubscriptionBilling({
 
         <div className="mt-5 flex items-center justify-between gap-4">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-700">
+            <p className="text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
               Let the Astrevix team review and approve submissions on your behalf
             </p>
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs" style={{ color: "var(--dash-text-muted)" }}>
               You can still approve or reject submissions yourself at any time.
             </p>
           </div>

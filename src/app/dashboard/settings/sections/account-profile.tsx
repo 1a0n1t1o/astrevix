@@ -45,8 +45,14 @@ export default function AccountProfile({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updatingPassword, setUpdatingPassword] = useState(false);
 
+  const inputStyle = {
+    backgroundColor: "var(--dash-surface)",
+    borderColor: "var(--dash-card-border)",
+    color: "var(--dash-text)",
+  };
+
   const inputClasses =
-    "w-full rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
+    "w-full rounded-xl border-[1.5px] px-4 py-3 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
 
   // Avatar initial fallback
   const avatarInitial = (
@@ -166,19 +172,21 @@ export default function AccountProfile({
         initial="hidden"
         animate="visible"
         variants={sectionVariants}
-        className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+        className="rounded-2xl border p-6"
         style={{
           backdropFilter: "blur(12px)",
           boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+          backgroundColor: "var(--dash-card-bg)",
+          borderColor: "var(--dash-card-border)",
         }}
       >
         <h2
-          className="text-base font-semibold text-gray-900"
-          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[0]}` }}
+          className="text-base font-semibold"
+          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[0]}`, color: "var(--dash-text)" }}
         >
           Profile Photo
         </h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Upload a profile photo (max 5MB)
         </p>
 
@@ -233,7 +241,8 @@ export default function AccountProfile({
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-xl border-[1.5px] px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+              style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-surface)", color: "var(--dash-text-secondary)" }}
             >
               {uploading ? (
                 <span className="flex items-center gap-2">
@@ -244,7 +253,7 @@ export default function AccountProfile({
                 "Change photo"
               )}
             </button>
-            <p className="mt-2 text-xs text-gray-400">PNG, JPG, or WebP</p>
+            <p className="mt-2 text-xs" style={{ color: "var(--dash-text-muted)" }}>PNG, JPG, or WebP</p>
           </div>
         </div>
       </motion.section>
@@ -255,19 +264,21 @@ export default function AccountProfile({
         initial="hidden"
         animate="visible"
         variants={sectionVariants}
-        className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+        className="rounded-2xl border p-6"
         style={{
           backdropFilter: "blur(12px)",
           boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+          backgroundColor: "var(--dash-card-bg)",
+          borderColor: "var(--dash-card-border)",
         }}
       >
         <h2
-          className="text-base font-semibold text-gray-900"
-          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[1]}` }}
+          className="text-base font-semibold"
+          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[1]}`, color: "var(--dash-text)" }}
         >
           Personal Information
         </h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Your name and contact details
         </p>
 
@@ -277,7 +288,8 @@ export default function AccountProfile({
             <div>
               <label
                 htmlFor="first-name"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-sm font-medium"
+                style={{ color: "var(--dash-text-secondary)" }}
               >
                 First name
               </label>
@@ -288,12 +300,14 @@ export default function AccountProfile({
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="First name"
                 className={inputClasses}
+                style={inputStyle}
               />
             </div>
             <div>
               <label
                 htmlFor="last-name"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-sm font-medium"
+                style={{ color: "var(--dash-text-secondary)" }}
               >
                 Last name
               </label>
@@ -304,6 +318,7 @@ export default function AccountProfile({
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Last name"
                 className={inputClasses}
+                style={inputStyle}
               />
             </div>
           </div>
@@ -312,7 +327,8 @@ export default function AccountProfile({
           <div>
             <label
               htmlFor="email"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-medium"
+              style={{ color: "var(--dash-text-secondary)" }}
             >
               Email
             </label>
@@ -321,9 +337,10 @@ export default function AccountProfile({
               type="email"
               value={userEmail}
               disabled
-              className="w-full rounded-xl border-[1.5px] border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none"
+              className="w-full rounded-xl border-[1.5px] px-4 py-3 text-sm outline-none"
+              style={{ backgroundColor: "var(--dash-hover)", borderColor: "var(--dash-card-border)", color: "var(--dash-text-secondary)" }}
             />
-            <p className="mt-1.5 text-xs text-gray-400">
+            <p className="mt-1.5 text-xs" style={{ color: "var(--dash-text-muted)" }}>
               To change your email, update it through your account provider
             </p>
           </div>
@@ -336,19 +353,21 @@ export default function AccountProfile({
         initial="hidden"
         animate="visible"
         variants={sectionVariants}
-        className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+        className="rounded-2xl border p-6"
         style={{
           backdropFilter: "blur(12px)",
           boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+          backgroundColor: "var(--dash-card-bg)",
+          borderColor: "var(--dash-card-border)",
         }}
       >
         <h2
-          className="text-base font-semibold text-gray-900"
-          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[2]}` }}
+          className="text-base font-semibold"
+          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[2]}`, color: "var(--dash-text)" }}
         >
           Security
         </h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Manage your password and account security
         </p>
 
@@ -357,16 +376,17 @@ export default function AccountProfile({
           <button
             type="button"
             onClick={() => setPasswordOpen(!passwordOpen)}
-            className="flex w-full items-center justify-between rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3 text-left text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
+            className="flex w-full items-center justify-between rounded-xl border-[1.5px] px-4 py-3 text-left text-sm font-medium transition-colors"
+            style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-surface)", color: "var(--dash-text-secondary)" }}
           >
             <span className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-gray-400" />
+              <Lock className="h-4 w-4" style={{ color: "var(--dash-text-muted)" }} />
               Change password
             </span>
             {passwordOpen ? (
-              <ChevronUp className="h-4 w-4 text-gray-400" />
+              <ChevronUp className="h-4 w-4" style={{ color: "var(--dash-text-muted)" }} />
             ) : (
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <ChevronDown className="h-4 w-4" style={{ color: "var(--dash-text-muted)" }} />
             )}
           </button>
 
@@ -384,7 +404,8 @@ export default function AccountProfile({
                   <div>
                     <label
                       htmlFor="current-password"
-                      className="mb-1.5 block text-sm font-medium text-gray-700"
+                      className="mb-1.5 block text-sm font-medium"
+                    style={{ color: "var(--dash-text-secondary)" }}
                     >
                       Current password
                     </label>
@@ -395,13 +416,15 @@ export default function AccountProfile({
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="Enter current password"
                       className={inputClasses}
+                      style={inputStyle}
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="new-password"
-                      className="mb-1.5 block text-sm font-medium text-gray-700"
+                      className="mb-1.5 block text-sm font-medium"
+                    style={{ color: "var(--dash-text-secondary)" }}
                     >
                       New password
                     </label>
@@ -412,13 +435,15 @@ export default function AccountProfile({
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Enter new password"
                       className={inputClasses}
+                      style={inputStyle}
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="confirm-password"
-                      className="mb-1.5 block text-sm font-medium text-gray-700"
+                      className="mb-1.5 block text-sm font-medium"
+                    style={{ color: "var(--dash-text-secondary)" }}
                     >
                       Confirm new password
                     </label>
@@ -429,6 +454,7 @@ export default function AccountProfile({
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm new password"
                       className={inputClasses}
+                      style={inputStyle}
                     />
                   </div>
 

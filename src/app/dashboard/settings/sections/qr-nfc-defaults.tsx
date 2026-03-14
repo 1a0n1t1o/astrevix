@@ -23,13 +23,21 @@ const sectionVariants = {
 const SECTION_COLOR = "#2563EB";
 
 const INPUT_CLASS =
-  "w-full rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
+  "w-full rounded-xl border-[1.5px] px-4 py-3 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
+
+const inputStyle = {
+  backgroundColor: "var(--dash-surface)",
+  borderColor: "var(--dash-card-border)",
+  color: "var(--dash-text)",
+};
 
 const glassCard = {
-  className: "rounded-2xl border border-gray-100 bg-white/70 p-6",
+  className: "rounded-2xl border p-6",
   style: {
     backdropFilter: "blur(12px)",
     boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+    backgroundColor: "var(--dash-card-bg)",
+    borderColor: "var(--dash-card-border)",
   },
 };
 
@@ -95,8 +103,8 @@ export default function QrNfcDefaults({
         style={glassCard.style}
       >
         <h3
-          className="text-base font-semibold text-gray-900"
-          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLOR}` }}
+          className="text-base font-semibold"
+          style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLOR}`, color: "var(--dash-text)" }}
         >
           QR/NFC Defaults
         </h3>
@@ -113,7 +121,7 @@ export default function QrNfcDefaults({
         <div className="mt-5 space-y-4">
           {/* Default redirect URL */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            <label className="mb-1.5 block text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
               Default Redirect URL
             </label>
             <input
@@ -122,18 +130,20 @@ export default function QrNfcDefaults({
               onChange={(e) => setRedirectUrl(e.target.value)}
               placeholder="https://yourbusiness.com/menu"
               className={INPUT_CLASS}
+              style={inputStyle}
             />
           </div>
 
           {/* Default fallback behavior */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            <label className="mb-1.5 block text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
               Default Fallback Behavior
             </label>
             <select
               value={fallback}
               onChange={(e) => setFallback(e.target.value)}
               className={INPUT_CLASS}
+              style={inputStyle}
             >
               {FALLBACK_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -146,10 +156,10 @@ export default function QrNfcDefaults({
           {/* Default branding toggle */}
           <div className="flex items-center justify-between gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
                 Auto-apply branding
               </label>
-              <p className="mt-0.5 text-sm text-gray-500">
+              <p className="mt-0.5 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
                 Automatically apply your business logo and brand colors to newly
                 created QR codes
               </p>

@@ -214,7 +214,12 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
   const nameInitial = (name || "A").charAt(0).toUpperCase();
 
   const inputClasses =
-    "w-full rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
+    "w-full rounded-xl border-[1.5px] px-4 py-3 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20";
+  const inputStyle: React.CSSProperties = {
+    backgroundColor: "var(--dash-surface)",
+    borderColor: "var(--dash-card-border)",
+    color: "var(--dash-text)",
+  };
 
   return (
     <>
@@ -253,11 +258,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
-            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+            className="rounded-2xl border p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)", backgroundColor: "var(--dash-card-bg)", borderColor: "var(--dash-card-border)" }}
           >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[0]}` }}>Business Logo</h2>
-            <p className="mt-1 text-sm text-gray-500">Upload your business logo (max 5MB)</p>
+            <h2 className="text-base font-semibold" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[0]}`, color: "var(--dash-text)" }}>Business Logo</h2>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>Upload your business logo (max 5MB)</p>
 
             <div className="mt-5 flex items-center gap-5">
               {/* Logo preview circle */}
@@ -294,7 +299,8 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                  className="rounded-xl border-[1.5px] px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+                  style={{ backgroundColor: "var(--dash-surface)", borderColor: "var(--dash-card-border)", color: "var(--dash-text)" }}
                 >
                   {uploading ? (
                     <span className="flex items-center gap-2">
@@ -309,7 +315,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   <p className="mt-2 text-xs text-red-500">{uploadError}</p>
                 )}
                 {!uploadError && (
-                  <p className="mt-2 text-xs text-gray-400">PNG, JPG, or WebP</p>
+                  <p className="mt-2 text-xs" style={{ color: "var(--dash-text-muted)" }}>PNG, JPG, or WebP</p>
                 )}
               </div>
             </div>
@@ -321,15 +327,15 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
-            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+            className="rounded-2xl border p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)", backgroundColor: "var(--dash-card-bg)", borderColor: "var(--dash-card-border)" }}
           >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[1]}` }}>Business Info</h2>
-            <p className="mt-1 text-sm text-gray-500">Basic details about your business</p>
+            <h2 className="text-base font-semibold" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[1]}`, color: "var(--dash-text)" }}>Business Info</h2>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>Basic details about your business</p>
 
             <div className="mt-5 space-y-4">
               <div>
-                <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="mb-1.5 block text-sm font-medium" style={{ color: "var(--dash-text)" }}>
                   Business name
                 </label>
                 <input
@@ -339,11 +345,12 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Sunrise Café"
                   className={inputClasses}
+                  style={inputStyle}
                 />
               </div>
 
               <div>
-                <label htmlFor="tagline" className="mb-1.5 block text-sm font-medium text-gray-700">
+                <label htmlFor="tagline" className="mb-1.5 block text-sm font-medium" style={{ color: "var(--dash-text)" }}>
                   Tagline
                 </label>
                 <input
@@ -353,6 +360,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   onChange={(e) => setTagline(e.target.value)}
                   placeholder="e.g. The best coffee in town"
                   className={inputClasses}
+                  style={inputStyle}
                 />
               </div>
             </div>
@@ -364,11 +372,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
-            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+            className="rounded-2xl border p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)", backgroundColor: "var(--dash-card-bg)", borderColor: "var(--dash-card-border)" }}
           >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[2]}` }}>Color Scheme</h2>
-            <p className="mt-1 text-sm text-gray-500">Choose your brand color for buttons and accents</p>
+            <h2 className="text-base font-semibold" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[2]}`, color: "var(--dash-text)" }}>Color Scheme</h2>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>Choose your brand color for buttons and accents</p>
 
             <div className="mt-5 flex flex-wrap items-center gap-2.5">
               {/* Preset swatches */}
@@ -465,12 +473,13 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   }
                 }}
                 maxLength={7}
-                className="ml-1 w-[90px] rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 font-mono text-xs text-gray-700 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+                className="ml-1 w-[90px] rounded-lg border px-2.5 py-1.5 font-mono text-xs outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+                style={{ backgroundColor: "var(--dash-surface)", borderColor: "var(--dash-card-border)", color: "var(--dash-text)" }}
               />
             </div>
 
             {/* Storefront Dark Mode toggle */}
-            <div className="mt-5 flex items-center justify-between rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3">
+            <div className="mt-5 flex items-center justify-between rounded-xl border-[1.5px] px-4 py-3" style={{ backgroundColor: "var(--dash-surface)", borderColor: "var(--dash-card-border)" }}>
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-900 text-white">
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -478,8 +487,8 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Dark mode storefront</p>
-                  <p className="text-xs text-gray-500">Customers see a dark-themed page</p>
+                  <p className="text-sm font-medium" style={{ color: "var(--dash-text)" }}>Dark mode storefront</p>
+                  <p className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>Customers see a dark-themed page</p>
                 </div>
               </div>
               <button
@@ -502,11 +511,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
-            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+            className="rounded-2xl border p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)", backgroundColor: "var(--dash-card-bg)", borderColor: "var(--dash-card-border)" }}
           >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[3]}` }}>Reward Tiers</h2>
-            <p className="mt-1 text-sm text-gray-500">Offer different rewards for different types of content</p>
+            <h2 className="text-base font-semibold" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[3]}`, color: "var(--dash-text)" }}>Reward Tiers</h2>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>Offer different rewards for different types of content</p>
 
             <div className="mt-5">
               {showTiersEditor ? (
@@ -528,7 +537,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   {/* Legacy single reward */}
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="reward" className="mb-1.5 block text-sm font-medium text-gray-700">
+                      <label htmlFor="reward" className="mb-1.5 block text-sm font-medium" style={{ color: "var(--dash-text)" }}>
                         Reward description
                       </label>
                       <input
@@ -538,11 +547,12 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                         onChange={(e) => setRewardDescription(e.target.value)}
                         placeholder="e.g. $10 off your next visit"
                         className={inputClasses}
+                        style={inputStyle}
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="contentType" className="mb-1.5 block text-sm font-medium text-gray-700">
+                      <label htmlFor="contentType" className="mb-1.5 block text-sm font-medium" style={{ color: "var(--dash-text)" }}>
                         Content type
                       </label>
                       <select
@@ -550,6 +560,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                         value={contentType}
                         onChange={(e) => setContentType(e.target.value)}
                         className={inputClasses}
+                        style={inputStyle}
                       >
                         {CONTENT_TYPES.map((type) => (
                           <option key={type} value={type}>
@@ -581,11 +592,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
-            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+            className="rounded-2xl border p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)", backgroundColor: "var(--dash-card-bg)", borderColor: "var(--dash-card-border)" }}
           >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[4]}` }}>Requirements</h2>
-            <p className="mt-1 text-sm text-gray-500">Rules customers must follow when posting</p>
+            <h2 className="text-base font-semibold" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[4]}`, color: "var(--dash-text)" }}>Requirements</h2>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>Rules customers must follow when posting</p>
 
             <div className="mt-5 space-y-3">
               {requirements.map((req, i) => (
@@ -596,10 +607,12 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                     onChange={(e) => updateRequirement(i, e.target.value)}
                     placeholder="e.g. Tag @yourbusiness in your post"
                     className={`${inputClasses} flex-1`}
+                    style={inputStyle}
                   />
                   <button
                     onClick={() => removeRequirement(i)}
-                    className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border-[1.5px] border-gray-200 bg-white text-gray-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                    className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border-[1.5px] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                    style={{ backgroundColor: "var(--dash-surface)", borderColor: "var(--dash-card-border)", color: "var(--dash-text-muted)" }}
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -611,7 +624,8 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
               {requirements.length < 6 && (
                 <button
                   onClick={addRequirement}
-                  className="flex items-center gap-2 rounded-xl border-[1.5px] border-dashed border-gray-300 px-4 py-3 text-sm font-medium text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-700"
+                  className="flex items-center gap-2 rounded-xl border-[1.5px] border-dashed px-4 py-3 text-sm font-medium transition-colors"
+                  style={{ borderColor: "var(--dash-card-border)", color: "var(--dash-text-secondary)" }}
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -629,11 +643,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
-            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)" }}
+            className="rounded-2xl border p-6"
+            style={{ backdropFilter: "blur(12px)", boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)", backgroundColor: "var(--dash-card-bg)", borderColor: "var(--dash-card-border)" }}
           >
-            <h2 className="text-base font-semibold text-gray-900" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[5]}` }}>Terms & Conditions</h2>
-            <p className="mt-1 text-sm text-gray-500">Legal terms displayed on your storefront. Customers see these before submitting.</p>
+            <h2 className="text-base font-semibold" style={{ paddingLeft: "12px", borderLeft: `3px solid ${SECTION_COLORS[5]}`, color: "var(--dash-text)" }}>Terms & Conditions</h2>
+            <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>Legal terms displayed on your storefront. Customers see these before submitting.</p>
 
             <div className="mt-5">
               <textarea
@@ -641,10 +655,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                 onChange={(e) => setTermsConditions(e.target.value)}
                 rows={10}
                 className={`${inputClasses} resize-y !py-3 font-mono text-xs leading-relaxed`}
+                style={inputStyle}
                 placeholder="Enter your terms and conditions..."
               />
               <div className="mt-2 flex items-center justify-between">
-                <p className="text-xs text-gray-400">
+                <p className="text-xs" style={{ color: "var(--dash-text-muted)" }}>
                   These terms appear at the bottom of your storefront page.
                 </p>
                 {termsConditions !== DEFAULT_TERMS && (

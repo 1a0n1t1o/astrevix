@@ -116,10 +116,12 @@ export default function SettingsClient({
         <div>
           {/* Desktop: vertical tabs */}
           <nav
-            className="hidden rounded-2xl border border-gray-100 bg-white/70 p-2 lg:block"
+            className="hidden rounded-2xl border p-2 lg:block"
             style={{
               backdropFilter: "blur(12px)",
               boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+              backgroundColor: "var(--dash-card-bg)",
+              borderColor: "var(--dash-card-border)",
             }}
           >
             <div className="space-y-1">
@@ -132,16 +134,16 @@ export default function SettingsClient({
                     className={`relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors ${
                       isActive
                         ? "text-[#2563EB]"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                        : ""
                     }`}
+                    style={isActive ? {} : { color: "var(--dash-text-secondary)" }}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="settings-tab-indicator"
                         className="absolute inset-0 rounded-xl"
                         style={{
-                          background:
-                            "linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%)",
+                          backgroundColor: "var(--dash-hover)",
                           zIndex: -1,
                         }}
                         transition={{
@@ -181,8 +183,9 @@ export default function SettingsClient({
                   className={`relative flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
                     isActive
                       ? "text-white"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      : ""
                   }`}
+                  style={isActive ? {} : { color: "var(--dash-text-secondary)" }}
                 >
                   {isActive && (
                     <motion.div

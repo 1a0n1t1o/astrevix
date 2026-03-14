@@ -54,10 +54,10 @@ const PLATFORM_LABELS: Record<string, string> = {
 };
 
 const EMPTY_STATE_ICONS: Record<string, React.ReactNode> = {
-  all: <Inbox className="mx-auto h-10 w-10 text-gray-300" />,
-  pending: <Clock className="mx-auto h-10 w-10 text-gray-300" />,
-  approved: <CheckCircle className="mx-auto h-10 w-10 text-gray-300" />,
-  rejected: <XCircle className="mx-auto h-10 w-10 text-gray-300" />,
+  all: <Inbox className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />,
+  pending: <Clock className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />,
+  approved: <CheckCircle className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />,
+  rejected: <XCircle className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />,
 };
 
 function formatDate(dateStr: string): string {
@@ -319,12 +319,8 @@ export default function SubmissionsList({
             <button
               key={tab.value}
               onClick={() => setActiveTab(tab.value)}
-              className={`relative rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-                isActive
-                  ? ""
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-              }`}
-              style={isActive ? { color: tab.color } : undefined}
+              className={`relative rounded-xl px-4 py-2 text-sm font-medium transition-colors`}
+              style={isActive ? { color: tab.color } : { color: "var(--dash-text-secondary)" }}
             >
               {isActive && (
                 <motion.div
@@ -336,11 +332,11 @@ export default function SubmissionsList({
               )}
               {tab.label}
               <span
-                className={`ml-1.5 rounded-full px-1.5 py-0.5 text-xs ${
-                  isActive
-                    ? "bg-white/20 text-white"
-                    : "bg-gray-100 text-gray-500"
-                }`}
+                className="ml-1.5 rounded-full px-1.5 py-0.5 text-xs"
+                style={isActive
+                  ? { backgroundColor: "rgba(255,255,255,0.2)", color: "white" }
+                  : { backgroundColor: "var(--dash-hover)", color: "var(--dash-text-secondary)" }
+                }
               >
                 {count}
               </span>
@@ -352,19 +348,20 @@ export default function SubmissionsList({
       {/* Search Bar */}
       {submissions.length > 0 && (
         <div className="relative mb-5">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: "var(--dash-text-muted)" }} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by name, phone, or link..."
-            className="w-full rounded-xl border border-gray-200 bg-white/80 py-2.5 pl-10 pr-9 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10"
-            style={{ backdropFilter: "blur(8px)" }}
+            className="w-full rounded-xl border py-2.5 pl-10 pr-9 text-sm outline-none transition-all focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10"
+            style={{ backdropFilter: "blur(8px)", backgroundColor: "var(--dash-card-bg)", borderColor: "var(--dash-card-border)", color: "var(--dash-text)" }}
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5"
+              style={{ color: "var(--dash-text-muted)" }}
             >
               <X className="h-4 w-4" />
             </button>
@@ -374,22 +371,22 @@ export default function SubmissionsList({
 
       {/* Submissions List */}
       {filtered.length === 0 ? (
-        <div className="dash-animate-scale-in rounded-2xl border border-gray-100 bg-white/70 p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]">
+        <div className="dash-animate-scale-in rounded-2xl border p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]" style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-card-bg)" }}>
           <div className="mx-auto mb-4">
             {query ? (
-              <Search className="mx-auto h-10 w-10 text-gray-300" />
+              <Search className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />
             ) : (
               EMPTY_STATE_ICONS[activeTab]
             )}
           </div>
-          <p className="font-medium text-gray-900">
+          <p className="font-medium" style={{ color: "var(--dash-text)" }}>
             {query
               ? "No results found"
               : activeTab === "all"
                 ? "No submissions yet"
                 : `No ${activeTab} submissions`}
           </p>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
             {query
               ? `No submissions match "${searchQuery}"`
               : activeTab === "all"
@@ -435,10 +432,11 @@ export default function SubmissionsList({
                   className={`rounded-2xl border transition-colors duration-200 ${
                     isExpanded
                       ? "border-[#2563EB]/20"
-                      : "border-gray-100/80 hover:border-gray-200"
+                      : ""
                   }`}
                   style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    backgroundColor: "var(--dash-card-bg)",
+                    borderColor: isExpanded ? undefined : "var(--dash-card-border)",
                     backdropFilter: "blur(12px)",
                     WebkitBackdropFilter: "blur(12px)",
                     boxShadow: isExpanded
@@ -487,11 +485,11 @@ export default function SubmissionsList({
                     {/* Customer info */}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium" style={{ color: "var(--dash-text)" }}>
                           {sub.customer_name}
                         </p>
                         {platformLabel && (
-                          <span className="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                          <span className="rounded-lg px-2 py-0.5 text-xs font-medium" style={{ backgroundColor: "var(--dash-hover)", color: "var(--dash-text-secondary)" }}>
                             {platformLabel}
                           </span>
                         )}
@@ -507,7 +505,7 @@ export default function SubmissionsList({
                           </span>
                         )}
                       </div>
-                      <p className="mt-0.5 text-sm text-gray-500">
+                      <p className="mt-0.5 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
                         {formatDate(sub.created_at)} at{" "}
                         {formatTime(sub.created_at)}
                       </p>
@@ -528,9 +526,10 @@ export default function SubmissionsList({
 
                     {/* Expand chevron */}
                     <svg
-                      className={`h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 ${
+                      className={`h-5 w-5 shrink-0 transition-transform duration-200 ${
                         isExpanded ? "rotate-180" : ""
                       }`}
+                      style={{ color: "var(--dash-text-muted)" }}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -554,19 +553,19 @@ export default function SubmissionsList({
                         transition={{ duration: 0.25, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <div className="border-t border-gray-100 px-5 pb-5 pt-4">
+                        <div className="border-t px-5 pb-5 pt-4" style={{ borderColor: "var(--dash-divider)" }}>
                           {/* Submission details */}
                           <div className="grid gap-3 sm:grid-cols-2">
                             <div>
-                              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--dash-text-muted)" }}>
                                 Phone
                               </p>
-                              <p className="mt-1 text-sm text-gray-900">
+                              <p className="mt-1 text-sm" style={{ color: "var(--dash-text)" }}>
                                 {formatPhoneForDisplay(sub.customer_phone)}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--dash-text-muted)" }}>
                                 Post URL
                               </p>
                               <a
@@ -594,7 +593,7 @@ export default function SubmissionsList({
                             if (!tier && !vInfo) return null;
 
                             return (
-                              <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
+                              <div className="mt-4 rounded-xl border p-4" style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-card-bg)" }}>
                                 {/* Tier info */}
                                 {tier && (
                                   <div className="flex items-center gap-3">
@@ -608,8 +607,8 @@ export default function SubmissionsList({
                                       {TIER_PLATFORM_ICONS[tier.platform] || <Gift className="h-4 w-4" />}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-xs font-medium text-gray-500">{tier.tier_name}</p>
-                                      <p className="text-sm font-semibold text-gray-900">{tier.reward_description}</p>
+                                      <p className="text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>{tier.tier_name}</p>
+                                      <p className="text-sm font-semibold" style={{ color: "var(--dash-text)" }}>{tier.reward_description}</p>
                                     </div>
                                     {tier.reward_value && (
                                       <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
@@ -621,7 +620,7 @@ export default function SubmissionsList({
 
                                 {/* Verification status */}
                                 {vInfo && (
-                                  <div className={`${tier ? "mt-3 border-t border-gray-100 pt-3" : ""}`}>
+                                  <div className={`${tier ? "mt-3 border-t pt-3" : ""}`} style={tier ? { borderColor: "var(--dash-divider)" } : undefined}>
                                     <div className="flex items-center justify-between">
                                       <div className="flex items-center gap-2">
                                         {vInfo.status === "verified" ? (
@@ -635,7 +634,7 @@ export default function SubmissionsList({
                                         ) : (
                                           <Shield className="h-4 w-4 text-blue-500" />
                                         )}
-                                        <span className="text-xs font-medium text-gray-600">
+                                        <span className="text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
                                           {vInfo.status === "pending" && vInfo.isPast ? (
                                             <span className="font-semibold text-emerald-600">
                                               Verification period complete
@@ -660,7 +659,7 @@ export default function SubmissionsList({
                                           )}
                                         </span>
                                       </div>
-                                      <span className="text-xs text-gray-500">
+                                      <span className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                                         {vInfo.status === "pending" && vInfo.isPast
                                           ? ""
                                           : vInfo.status === "pending"
@@ -693,7 +692,8 @@ export default function SubmissionsList({
                                         <button
                                           onClick={() => handleVerify(sub.id, "fail")}
                                           disabled={verifyingId === sub.id}
-                                          className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                          className="flex items-center gap-1.5 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                          style={{ backgroundColor: "var(--dash-card-bg)" }}
                                         >
                                           <ShieldX className="h-3.5 w-3.5" />
                                           Post Removed
@@ -708,17 +708,17 @@ export default function SubmissionsList({
 
                           {/* Reviewed submission details */}
                           {isReviewed && (
-                            <div className="mt-4 rounded-xl bg-gray-50 p-4">
-                              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                            <div className="mt-4 rounded-xl p-4" style={{ backgroundColor: "var(--dash-hover)" }}>
+                              <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--dash-text-muted)" }}>
                                 Review Details
                               </p>
                               <div className="grid gap-3 sm:grid-cols-2">
                                 {sub.reward_given && (
                                   <div>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                                       Reward given
                                     </p>
-                                    <p className="mt-0.5 flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                                    <p className="mt-0.5 flex items-center gap-1.5 text-sm font-medium" style={{ color: "var(--dash-text)" }}>
                                       <Gift className="h-4 w-4 text-emerald-500" />{" "}
                                       {sub.reward_given}
                                     </p>
@@ -726,10 +726,10 @@ export default function SubmissionsList({
                                 )}
                                 {sub.reviewed_at && (
                                   <div>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                                       Reviewed on
                                     </p>
-                                    <p className="mt-0.5 text-sm text-gray-900">
+                                    <p className="mt-0.5 text-sm" style={{ color: "var(--dash-text)" }}>
                                       {formatDate(sub.reviewed_at)}
                                     </p>
                                   </div>
@@ -737,10 +737,10 @@ export default function SubmissionsList({
                               </div>
                               {sub.review_comment && (
                                 <div className="mt-3">
-                                  <p className="text-xs text-gray-500">
+                                  <p className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                                     Personal note
                                   </p>
-                                  <p className="mt-0.5 text-sm text-gray-700">
+                                  <p className="mt-0.5 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
                                     {sub.review_comment}
                                   </p>
                                 </div>
@@ -756,7 +756,7 @@ export default function SubmissionsList({
                                         <Ticket className="h-4 w-4 text-purple-600" />
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <p className="text-xs text-gray-500">Coupon Code</p>
+                                        <p className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>Coupon Code</p>
                                         <p className="mt-0.5 font-mono text-sm font-bold tracking-wider text-purple-700">
                                           {coupon.code}
                                         </p>
@@ -767,9 +767,10 @@ export default function SubmissionsList({
                                             coupon.status === "active"
                                               ? "bg-emerald-100 text-emerald-700"
                                               : coupon.status === "used"
-                                                ? "bg-gray-100 text-gray-600"
+                                                ? ""
                                                 : "bg-amber-100 text-amber-700"
                                           }`}
+                                          style={coupon.status === "used" ? { backgroundColor: "var(--dash-hover)", color: "var(--dash-text-secondary)" } : undefined}
                                         >
                                           {coupon.status}
                                         </span>
@@ -781,7 +782,7 @@ export default function SubmissionsList({
                                       </div>
                                     </div>
                                     {coupon.expires_at && (
-                                      <p className="mt-2 text-[11px] text-gray-500">
+                                      <p className="mt-2 text-[11px]" style={{ color: "var(--dash-text-secondary)" }}>
                                         Expires {formatDate(coupon.expires_at)}
                                       </p>
                                     )}
@@ -793,8 +794,8 @@ export default function SubmissionsList({
 
                           {/* Review panel — pending only */}
                           {!isReviewed && (
-                            <div className="mt-4 rounded-xl border border-gray-100 bg-gray-50/50 p-4">
-                              <p className="text-sm font-medium text-gray-900 mb-3">
+                            <div className="mt-4 rounded-xl border p-4" style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-hover)" }}>
+                              <p className="text-sm font-medium mb-3" style={{ color: "var(--dash-text)" }}>
                                 Review this submission
                               </p>
 
@@ -802,7 +803,8 @@ export default function SubmissionsList({
                               <div className="mb-3">
                                 <label
                                   htmlFor={`reward-${sub.id}`}
-                                  className="mb-1.5 block text-xs font-medium text-gray-500"
+                                  className="mb-1.5 block text-xs font-medium"
+                                  style={{ color: "var(--dash-text-secondary)" }}
                                 >
                                   Reward to give
                                 </label>
@@ -814,7 +816,8 @@ export default function SubmissionsList({
                                     setRewardValue(e.target.value)
                                   }
                                   placeholder="e.g. 10% off your next visit"
-                                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+                                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+                                  style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-card-bg)", color: "var(--dash-text)" }}
                                 />
                               </div>
 
@@ -857,7 +860,8 @@ export default function SubmissionsList({
                                 <button
                                   type="button"
                                   onClick={() => setPersonalNoteOpen(!personalNoteOpen)}
-                                  className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-700"
+                                  className="flex items-center gap-1.5 text-xs font-medium"
+                                  style={{ color: "var(--dash-text-secondary)" }}
                                 >
                                   <ChevronDown
                                     className={`h-3.5 w-3.5 transition-transform duration-200 ${
@@ -865,7 +869,7 @@ export default function SubmissionsList({
                                     }`}
                                   />
                                   Add a personal note{" "}
-                                  <span className="font-normal text-gray-400">
+                                  <span className="font-normal" style={{ color: "var(--dash-text-muted)" }}>
                                     (optional)
                                   </span>
                                 </button>
@@ -886,7 +890,8 @@ export default function SubmissionsList({
                                         }
                                         placeholder="Add a personal note to include in the SMS..."
                                         rows={2}
-                                        className="mt-2 w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+                                        className="mt-2 w-full resize-none rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
+                                        style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-card-bg)", color: "var(--dash-text)" }}
                                       />
                                     </motion.div>
                                   )}
@@ -924,7 +929,8 @@ export default function SubmissionsList({
                                     handleReview(sub.id, "rejected")
                                   }
                                   disabled={isUpdating}
-                                  className="flex items-center gap-1.5 rounded-lg bg-white border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="flex items-center gap-1.5 rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  style={{ backgroundColor: "var(--dash-card-bg)" }}
                                 >
                                   {isUpdating ? (
                                     <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-red-300/30 border-t-red-500" />
@@ -984,7 +990,8 @@ export default function SubmissionsList({
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 transition={{ duration: 0.2 }}
-                className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl"
+                className="relative w-full max-w-sm overflow-hidden rounded-2xl shadow-2xl"
+                style={{ backgroundColor: "var(--dash-surface)" }}
               >
                 <div className="p-6">
                   {/* Warning icon */}
@@ -992,11 +999,11 @@ export default function SubmissionsList({
                     <AlertTriangle className="h-6 w-6 text-amber-500" />
                   </div>
 
-                  <h3 className="text-center text-base font-semibold text-gray-900">
+                  <h3 className="text-center text-base font-semibold" style={{ color: "var(--dash-text)" }}>
                     Early Approval
                   </h3>
 
-                  <p className="mt-3 text-center text-sm text-gray-600">
+                  <p className="mt-3 text-center text-sm" style={{ color: "var(--dash-text-secondary)" }}>
                     This submission was submitted {timeInfo.elapsed} ago and hasn&apos;t completed the verification period. The post may still be removed by the customer after receiving their reward.
                   </p>
 
@@ -1010,7 +1017,8 @@ export default function SubmissionsList({
                   <div className="mt-5 flex gap-3">
                     <button
                       onClick={() => setEarlyApprovalSub(null)}
-                      className="flex-1 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                      className="flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors"
+                      style={{ borderColor: "var(--dash-card-border)", backgroundColor: "var(--dash-card-bg)", color: "var(--dash-text-secondary)" }}
                     >
                       Wait
                     </button>
@@ -1065,16 +1073,18 @@ export default function SubmissionsList({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-2xl"
+              className="relative w-full max-w-sm overflow-hidden rounded-2xl shadow-2xl"
+              style={{ backgroundColor: "var(--dash-surface)" }}
             >
               {/* Modal header */}
-              <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-                <h3 className="text-base font-semibold text-gray-900">
+              <div className="flex items-center justify-between border-b px-6 py-4" style={{ borderColor: "var(--dash-divider)" }}>
+                <h3 className="text-base font-semibold" style={{ color: "var(--dash-text)" }}>
                   SMS Preview
                 </h3>
                 <button
                   onClick={() => setPreviewModalOpen(false)}
-                  className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  className="rounded-lg p-1.5"
+                  style={{ color: "var(--dash-text-muted)" }}
                 >
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -1084,7 +1094,7 @@ export default function SubmissionsList({
 
               {/* SMS preview */}
               <div className="bg-[#F2F2F7] px-4 py-6">
-                <p className="text-center text-[10px] text-gray-400 mb-3">
+                <p className="text-center text-[10px] mb-3" style={{ color: "var(--dash-text-muted)" }}>
                   Text Message from {st.businessName}
                 </p>
                 <div className="flex justify-start">
@@ -1092,7 +1102,7 @@ export default function SubmissionsList({
                     className="max-w-[90%] rounded-2xl rounded-tl-md px-4 py-3"
                     style={{ backgroundColor: "#E9E9EB" }}
                   >
-                    <p className="text-[13px] leading-relaxed text-gray-900 whitespace-pre-wrap">
+                    <p className="text-[13px] leading-relaxed whitespace-pre-wrap" style={{ color: "var(--dash-text)" }}>
                       {renderSmsPreview(
                         st.approvalTemplate ||
                           "Great news! Your post for [Business Name] has been approved! Here's your reward: [Reward Details]. Thank you for your support!",
@@ -1104,7 +1114,7 @@ export default function SubmissionsList({
                     </p>
                   </div>
                 </div>
-                <p className="text-right text-[10px] text-gray-400 pr-1 mt-2">
+                <p className="text-right text-[10px] pr-1 mt-2" style={{ color: "var(--dash-text-muted)" }}>
                   Delivered
                 </p>
               </div>

@@ -358,15 +358,18 @@ export default function CustomersList({
         }
         className={`rounded-2xl border transition-colors duration-200 ${
           isExpiredVariant
-            ? "opacity-50 border-gray-100/60"
+            ? "opacity-50"
             : isExpanded
               ? "border-[#2563EB]/20"
-              : "border-gray-100/80 hover:border-gray-200"
+              : ""
         }`}
         style={{
-          backgroundColor: isExpiredVariant
-            ? "rgba(249, 250, 251, 0.6)"
-            : "rgba(255, 255, 255, 0.8)",
+          backgroundColor: "var(--dash-card-bg)",
+          borderColor: isExpiredVariant
+            ? "var(--dash-card-border)"
+            : isExpanded
+              ? undefined
+              : "var(--dash-card-border)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
           boxShadow: isExpanded
@@ -393,18 +396,24 @@ export default function CustomersList({
           {/* Customer info */}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-medium text-gray-900">
+              <p className="font-medium" style={{ color: "var(--dash-text)" }}>
                 {coupon.customer_name}
               </p>
               {platformInfo?.label && (
-                <span className="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                <span
+                  className="rounded-lg px-2 py-0.5 text-xs font-medium"
+                  style={{
+                    backgroundColor: "var(--dash-hover)",
+                    color: "var(--dash-text-secondary)",
+                  }}
+                >
                   {platformInfo.label}
                 </span>
               )}
             </div>
-            <div className="mt-0.5 flex items-center gap-2 text-sm text-gray-500">
+            <div className="mt-0.5 flex items-center gap-2 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
               <span>{maskPhoneForDisplay(coupon.customer_phone)}</span>
-              <span className="text-gray-300">·</span>
+              <span style={{ color: "var(--dash-text-muted)" }}>&middot;</span>
               <span className="truncate max-w-[200px]">
                 {coupon.reward_description}
               </span>
@@ -415,11 +424,19 @@ export default function CustomersList({
           <span
             className={`shrink-0 rounded-lg px-3 py-1.5 font-mono text-xs font-bold tracking-wider ${
               variant === "used"
-                ? "bg-gray-100 text-gray-400 line-through"
+                ? "line-through"
                 : variant === "expired"
-                  ? "bg-gray-100 text-gray-400 line-through"
+                  ? "line-through"
                   : "bg-purple-50 text-purple-700 border border-purple-200"
             }`}
+            style={
+              variant === "used" || variant === "expired"
+                ? {
+                    backgroundColor: "var(--dash-hover)",
+                    color: "var(--dash-text-muted)",
+                  }
+                : undefined
+            }
           >
             {coupon.code}
           </span>
@@ -428,15 +445,16 @@ export default function CustomersList({
           <div className="hidden sm:flex shrink-0 flex-col items-end gap-0.5">
             {variant === "used" && coupon.used_at ? (
               <>
-                <span className="text-xs text-gray-500">Redeemed</span>
-                <span className="text-xs font-medium text-gray-700">
+                <span className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>Redeemed</span>
+                <span className="text-xs font-medium" style={{ color: "var(--dash-text)" }}>
                   {formatDate(coupon.used_at)}
                 </span>
               </>
             ) : variant === "active" && expiryInfo ? (
               <>
                 <span
-                  className={`text-xs ${expiryInfo.isWarning ? "font-medium text-amber-600" : "text-gray-500"}`}
+                  className={`text-xs ${expiryInfo.isWarning ? "font-medium text-amber-600" : ""}`}
+                  style={!expiryInfo.isWarning ? { color: "var(--dash-text-secondary)" } : undefined}
                 >
                   {expiryInfo.isWarning
                     ? `Expires in ${expiryInfo.daysLeft}d`
@@ -444,7 +462,7 @@ export default function CustomersList({
                 </span>
               </>
             ) : (
-              <span className="text-xs text-gray-500">
+              <span className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                 {formatDate(coupon.created_at)}
               </span>
             )}
@@ -488,7 +506,12 @@ export default function CustomersList({
                 handleUndo(coupon.id);
               }}
               disabled={isUpdating}
-              className="shrink-0 flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="shrink-0 flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                borderColor: "var(--dash-card-border)",
+                backgroundColor: "var(--dash-card-bg)",
+                color: "var(--dash-text-secondary)",
+              }}
             >
               {isUpdating ? (
                 <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-gray-300/30 border-t-gray-500" />
@@ -504,9 +527,10 @@ export default function CustomersList({
           {/* Expand chevron */}
           {!isExpiredVariant && (
             <svg
-              className={`h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 ${
+              className={`h-5 w-5 shrink-0 transition-transform duration-200 ${
                 isExpanded ? "rotate-180" : ""
               }`}
+              style={{ color: "var(--dash-text-muted)" }}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -531,19 +555,19 @@ export default function CustomersList({
               transition={{ duration: 0.25, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              <div className="border-t border-gray-100 px-5 pb-5 pt-4">
+              <div className="border-t px-5 pb-5 pt-4" style={{ borderColor: "var(--dash-divider)" }}>
                 {/* Details grid */}
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--dash-text-muted)" }}>
                       Phone
                     </p>
-                    <p className="mt-1 text-sm text-gray-900">
+                    <p className="mt-1 text-sm" style={{ color: "var(--dash-text)" }}>
                       {formatPhoneForDisplay(coupon.customer_phone)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--dash-text-muted)" }}>
                       Post URL
                     </p>
                     {sub ? (
@@ -565,22 +589,22 @@ export default function CustomersList({
                         </span>
                       </a>
                     ) : (
-                      <p className="mt-1 text-sm text-gray-400">—</p>
+                      <p className="mt-1 text-sm" style={{ color: "var(--dash-text-muted)" }}>—</p>
                     )}
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--dash-text-muted)" }}>
                       Date Earned
                     </p>
-                    <p className="mt-1 text-sm text-gray-900">
+                    <p className="mt-1 text-sm" style={{ color: "var(--dash-text)" }}>
                       {formatDateTime(coupon.created_at)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--dash-text-muted)" }}>
                       Reward
                     </p>
-                    <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                    <p className="mt-1 flex items-center gap-1.5 text-sm font-medium" style={{ color: "var(--dash-text)" }}>
                       <Gift className="h-4 w-4 text-emerald-500" />
                       {coupon.reward_description}
                     </p>
@@ -588,11 +612,17 @@ export default function CustomersList({
                 </div>
 
                 {/* Verification & SMS status */}
-                <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
+                <div
+                  className="mt-4 rounded-xl border p-4"
+                  style={{
+                    borderColor: "var(--dash-card-border)",
+                    backgroundColor: "var(--dash-card-bg)",
+                  }}
+                >
                   <div className="grid gap-3 sm:grid-cols-2">
                     {/* Verification */}
                     <div>
-                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                      <p className="text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--dash-text-muted)" }}>
                         Verification
                       </p>
                       {sub?.verification_status ? (
@@ -620,19 +650,19 @@ export default function CustomersList({
                             {sub.verification_status}
                           </span>
                           {sub.verified_at && (
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                               · {formatDate(sub.verified_at)}
                             </span>
                           )}
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-400">No verification required</p>
+                        <p className="text-sm" style={{ color: "var(--dash-text-muted)" }}>No verification required</p>
                       )}
                     </div>
 
                     {/* SMS Status */}
                     <div>
-                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                      <p className="text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--dash-text-muted)" }}>
                         SMS Delivery
                       </p>
                       <div className="flex items-center gap-2">
@@ -643,15 +673,15 @@ export default function CustomersList({
                               Sent
                             </span>
                             {coupon.sms_sent_at && (
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                                 · {formatDateTime(coupon.sms_sent_at)}
                               </span>
                             )}
                           </>
                         ) : (
                           <>
-                            <Clock className="h-4 w-4 text-gray-400" />
-                            <span className="text-sm text-gray-500">
+                            <Clock className="h-4 w-4" style={{ color: "var(--dash-text-muted)" }} />
+                            <span className="text-sm" style={{ color: "var(--dash-text-secondary)" }}>
                               Not sent
                             </span>
                           </>
@@ -662,35 +692,35 @@ export default function CustomersList({
 
                   {/* Timeline */}
                   {sub && (
-                    <div className="mt-3 border-t border-gray-100 pt-3">
-                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                    <div className="mt-3 border-t pt-3" style={{ borderColor: "var(--dash-divider)" }}>
+                      <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--dash-text-muted)" }}>
                         Timeline
                       </p>
                       <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 text-xs text-gray-600">
+                        <div className="flex items-center gap-2 text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                           <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shrink-0" />
                           Submitted {formatDateTime(sub.created_at)}
                         </div>
                         {sub.reviewed_at && (
-                          <div className="flex items-center gap-2 text-xs text-gray-600">
+                          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
                             Approved {formatDateTime(sub.reviewed_at)}
                           </div>
                         )}
                         {sub.verified_at && (
-                          <div className="flex items-center gap-2 text-xs text-gray-600">
+                          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                             <span className="h-1.5 w-1.5 rounded-full bg-purple-400 shrink-0" />
                             Verified {formatDateTime(sub.verified_at)}
                           </div>
                         )}
                         {coupon.sms_sent_at && (
-                          <div className="flex items-center gap-2 text-xs text-gray-600">
+                          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                             <span className="h-1.5 w-1.5 rounded-full bg-green-400 shrink-0" />
                             Coupon SMS sent {formatDateTime(coupon.sms_sent_at)}
                           </div>
                         )}
                         {coupon.used_at && (
-                          <div className="flex items-center gap-2 text-xs text-gray-600">
+                          <div className="flex items-center gap-2 text-xs" style={{ color: "var(--dash-text-secondary)" }}>
                             <span className="h-1.5 w-1.5 rounded-full bg-gray-400 shrink-0" />
                             Redeemed {formatDateTime(coupon.used_at)}
                           </div>
@@ -702,8 +732,14 @@ export default function CustomersList({
 
                 {/* Coupon history for this phone */}
                 {phoneHistory.length > 1 && (
-                  <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
-                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                  <div
+                    className="mt-4 rounded-xl border p-4"
+                    style={{
+                      borderColor: "var(--dash-card-border)",
+                      backgroundColor: "var(--dash-card-bg)",
+                    }}
+                  >
+                    <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--dash-text-muted)" }}>
                       Coupon History ({phoneHistory.length} total)
                     </p>
                     <div className="space-y-2">
@@ -713,21 +749,31 @@ export default function CustomersList({
                           className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${
                             h.id === coupon.id
                               ? "bg-blue-50 border border-blue-100"
-                              : "bg-gray-50"
+                              : ""
                           }`}
+                          style={
+                            h.id !== coupon.id
+                              ? { backgroundColor: "var(--dash-hover)" }
+                              : undefined
+                          }
                         >
                           <div className="flex items-center gap-2">
-                            <Ticket className="h-3.5 w-3.5 text-gray-400" />
+                            <Ticket className="h-3.5 w-3.5" style={{ color: "var(--dash-text-muted)" }} />
                             <span
                               className={`font-mono text-xs font-bold tracking-wider ${
                                 h.status === "active"
                                   ? "text-purple-700"
-                                  : "text-gray-400 line-through"
+                                  : "line-through"
                               }`}
+                              style={
+                                h.status !== "active"
+                                  ? { color: "var(--dash-text-muted)" }
+                                  : undefined
+                              }
                             >
                               {h.code}
                             </span>
-                            <span className="text-gray-500 truncate max-w-[150px]">
+                            <span className="truncate max-w-[150px]" style={{ color: "var(--dash-text-secondary)" }}>
                               {h.reward_description}
                             </span>
                           </div>
@@ -743,7 +789,7 @@ export default function CustomersList({
                             >
                               {h.status}
                             </span>
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs" style={{ color: "var(--dash-text-muted)" }}>
                               {formatDate(h.created_at)}
                             </span>
                           </div>
@@ -771,7 +817,7 @@ export default function CustomersList({
             className={`dash-animate-fade-in-up dash-stagger-${i + 1} relative overflow-hidden rounded-2xl border p-4`}
             style={{
               borderColor: stat.borderColor,
-              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              backgroundColor: "var(--dash-card-bg)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
               boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
@@ -789,7 +835,7 @@ export default function CustomersList({
               >
                 {statValues[stat.key]}
               </p>
-              <p className="mt-0.5 text-xs font-medium text-gray-500">
+              <p className="mt-0.5 text-xs font-medium" style={{ color: "var(--dash-text-secondary)" }}>
                 {stat.label}
               </p>
             </div>
@@ -818,9 +864,13 @@ export default function CustomersList({
                 className={`relative rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? ""
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    : ""
                 }`}
-                style={isActive ? { color: tab.color } : undefined}
+                style={
+                  isActive
+                    ? { color: tab.color }
+                    : { color: "var(--dash-text-secondary)" }
+                }
               >
                 {isActive && (
                   <motion.div
@@ -842,8 +892,16 @@ export default function CustomersList({
                   className={`ml-1.5 rounded-full px-1.5 py-0.5 text-xs ${
                     isActive
                       ? "bg-white/20 text-white"
-                      : "bg-gray-100 text-gray-500"
+                      : ""
                   }`}
+                  style={
+                    !isActive
+                      ? {
+                          backgroundColor: "var(--dash-hover)",
+                          color: "var(--dash-text-secondary)",
+                        }
+                      : undefined
+                  }
                 >
                   {count}
                 </span>
@@ -855,7 +913,12 @@ export default function CustomersList({
         <button
           onClick={handleExpireCoupons}
           disabled={isExpiring}
-          className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{
+            borderColor: "var(--dash-card-border)",
+            backgroundColor: "var(--dash-card-bg)",
+            color: "var(--dash-text-secondary)",
+          }}
         >
           <RefreshCw
             className={`h-3.5 w-3.5 ${isExpiring ? "animate-spin" : ""}`}
@@ -867,19 +930,25 @@ export default function CustomersList({
       {/* Search Bar */}
       {coupons.length > 0 && (
         <div className="relative mb-5">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: "var(--dash-text-muted)" }} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by name, phone, or coupon code..."
-            className="w-full rounded-xl border border-gray-200 bg-white/80 py-2.5 pl-10 pr-9 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10"
-            style={{ backdropFilter: "blur(8px)" }}
+            className="w-full rounded-xl border py-2.5 pl-10 pr-9 text-sm outline-none transition-all focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10"
+            style={{
+              borderColor: "var(--dash-card-border)",
+              backgroundColor: "var(--dash-card-bg)",
+              color: "var(--dash-text)",
+              backdropFilter: "blur(8px)",
+            }}
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5"
+              style={{ color: "var(--dash-text-muted)" }}
             >
               <X className="h-4 w-4" />
             </button>
@@ -890,32 +959,44 @@ export default function CustomersList({
       {/* Main List */}
       {coupons.length === 0 ? (
         /* Global empty state — no customers at all */
-        <div className="dash-animate-scale-in rounded-2xl border border-gray-100 bg-white/70 p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]">
+        <div
+          className="dash-animate-scale-in rounded-2xl border p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]"
+          style={{
+            borderColor: "var(--dash-card-border)",
+            backgroundColor: "var(--dash-card-bg)",
+          }}
+        >
           <div className="mx-auto mb-4">
-            <Users className="mx-auto h-10 w-10 text-gray-300" />
+            <Users className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />
           </div>
-          <p className="font-medium text-gray-900">No customers yet</p>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="font-medium" style={{ color: "var(--dash-text)" }}>No customers yet</p>
+          <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
             Once you approve submissions, your customers and their rewards will
             appear here.
           </p>
         </div>
       ) : displayed.length === 0 && !query ? (
         /* Tab-specific empty state */
-        <div className="dash-animate-scale-in rounded-2xl border border-gray-100 bg-white/70 p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]">
+        <div
+          className="dash-animate-scale-in rounded-2xl border p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]"
+          style={{
+            borderColor: "var(--dash-card-border)",
+            backgroundColor: "var(--dash-card-bg)",
+          }}
+        >
           <div className="mx-auto mb-4">
             {activeTab === "active" ? (
-              <Gift className="mx-auto h-10 w-10 text-gray-300" />
+              <Gift className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />
             ) : (
-              <CheckCircle className="mx-auto h-10 w-10 text-gray-300" />
+              <CheckCircle className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />
             )}
           </div>
-          <p className="font-medium text-gray-900">
+          <p className="font-medium" style={{ color: "var(--dash-text)" }}>
             {activeTab === "active"
               ? "All caught up!"
               : "No coupons have been redeemed yet"}
           </p>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
             {activeTab === "active"
               ? "No active rewards pending redemption."
               : "Coupons will appear here once customers use them."}
@@ -923,12 +1004,18 @@ export default function CustomersList({
         </div>
       ) : displayed.length === 0 && query ? (
         /* Search empty state */
-        <div className="dash-animate-scale-in rounded-2xl border border-gray-100 bg-white/70 p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]">
+        <div
+          className="dash-animate-scale-in rounded-2xl border p-12 text-center shadow-[0_4px_24px_-4px_rgba(37,99,235,0.06)]"
+          style={{
+            borderColor: "var(--dash-card-border)",
+            backgroundColor: "var(--dash-card-bg)",
+          }}
+        >
           <div className="mx-auto mb-4">
-            <Search className="mx-auto h-10 w-10 text-gray-300" />
+            <Search className="mx-auto h-10 w-10" style={{ color: "var(--dash-text-muted)" }} />
           </div>
-          <p className="font-medium text-gray-900">No results found</p>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="font-medium" style={{ color: "var(--dash-text)" }}>No results found</p>
+          <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
             No customers found matching &ldquo;{searchQuery}&rdquo;
           </p>
         </div>
@@ -951,7 +1038,12 @@ export default function CustomersList({
         <div className="mt-6">
           <button
             onClick={() => setShowExpired(!showExpired)}
-            className="flex w-full items-center gap-2 rounded-xl border border-gray-100 bg-white/60 px-4 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-white/80"
+            className="flex w-full items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors"
+            style={{
+              borderColor: "var(--dash-card-border)",
+              backgroundColor: "var(--dash-card-bg)",
+              color: "var(--dash-text-secondary)",
+            }}
           >
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-200 ${

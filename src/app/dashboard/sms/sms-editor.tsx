@@ -35,7 +35,8 @@ function SegmentCounter({ text }: { text: string }) {
   const isWarning = segments > 2;
   return (
     <p
-      className={`mt-1.5 text-xs ${isWarning ? "text-amber-600 font-medium" : "text-gray-400"}`}
+      className={`mt-1.5 text-xs ${isWarning ? "text-amber-600 font-medium" : ""}`}
+      style={isWarning ? undefined : { color: "var(--dash-text-muted)" }}
     >
       {characters}/160 chars ({segments} segment{segments !== 1 ? "s" : ""})
       {isWarning && " — Consider shortening to reduce SMS costs"}
@@ -86,13 +87,14 @@ function VariableChips({
 
   return (
     <div className="mt-2 flex flex-wrap gap-1.5">
-      <span className="text-xs text-gray-400 self-center mr-1">Insert:</span>
+      <span className="text-xs self-center mr-1" style={{ color: "var(--dash-text-muted)" }}>Insert:</span>
       {chips.map((chip) => (
         <button
           key={chip.variable}
           type="button"
           onClick={() => insertVariable(chip.variable)}
-          className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-900"
+          className="rounded-lg px-2.5 py-1 text-xs font-medium transition-colors"
+          style={{ backgroundColor: "var(--dash-hover)", color: "var(--dash-text-secondary)" }}
         >
           {chip.label}
         </button>
@@ -152,8 +154,13 @@ export default function SmsEditor({ business }: SmsEditorProps) {
   const approvalRef = useRef<HTMLTextAreaElement>(null);
   const rejectionRef = useRef<HTMLTextAreaElement>(null);
 
+  const inputStyle = {
+    backgroundColor: "var(--dash-surface)",
+    borderColor: "var(--dash-card-border)",
+    color: "var(--dash-text)",
+  };
   const inputClasses =
-    "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-all focus:border-blue-300 focus:ring-2 focus:ring-blue-100 resize-none";
+    "w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all focus:border-blue-300 focus:ring-2 focus:ring-blue-100 resize-none";
 
   async function handleSave() {
     setSaving(true);
@@ -255,24 +262,27 @@ export default function SmsEditor({ business }: SmsEditorProps) {
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+            className="rounded-2xl border p-6"
             style={{
               backdropFilter: "blur(12px)",
               boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+              backgroundColor: "var(--dash-card-bg)",
+              borderColor: "var(--dash-card-border)",
             }}
           >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2
-                  className="text-base font-semibold text-gray-900"
+                  className="text-base font-semibold"
                   style={{
                     paddingLeft: "12px",
                     borderLeft: `3px solid ${SECTION_COLORS[t.colorIndex]}`,
+                    color: "var(--dash-text)",
                   }}
                 >
                   {t.title}
                 </h2>
-                <p className="mt-1 text-sm text-gray-500">{t.description}</p>
+                <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>{t.description}</p>
               </div>
               <button
                 type="button"
@@ -280,8 +290,9 @@ export default function SmsEditor({ business }: SmsEditorProps) {
                 aria-checked={t.enabled}
                 onClick={() => t.setEnabled(!t.enabled)}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                  t.enabled ? "bg-[#2563EB]" : "bg-gray-200"
+                  t.enabled ? "bg-[#2563EB]" : ""
                 }`}
+                style={t.enabled ? undefined : { backgroundColor: "var(--dash-toggle-bg)" }}
               >
                 <span
                   className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
@@ -298,6 +309,7 @@ export default function SmsEditor({ business }: SmsEditorProps) {
                 onChange={(e) => t.setTemplate(e.target.value)}
                 rows={3}
                 className={inputClasses}
+                style={inputStyle}
                 onFocus={() => setActivePreview(t.key)}
               />
               <SegmentCounter text={t.template} />
@@ -317,29 +329,33 @@ export default function SmsEditor({ business }: SmsEditorProps) {
           initial="hidden"
           animate="visible"
           variants={sectionVariants}
-          className="rounded-2xl border border-gray-100 bg-white/70 p-6"
+          className="rounded-2xl border p-6"
           style={{
             backdropFilter: "blur(12px)",
             boxShadow: "0 4px 24px -4px rgba(37, 99, 235, 0.06)",
+            backgroundColor: "var(--dash-card-bg)",
+            borderColor: "var(--dash-card-border)",
           }}
         >
           <h2
-            className="text-base font-semibold text-gray-900"
+            className="text-base font-semibold"
             style={{
               paddingLeft: "12px",
               borderLeft: "3px solid #8b5cf6",
+              color: "var(--dash-text)",
             }}
           >
             Coupon Settings
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
             Auto-generated coupon codes are included in approval messages
           </p>
 
           <div className="mt-4">
             <label
               htmlFor="coupon-expiry"
-              className="mb-1.5 block text-xs font-medium text-gray-500"
+              className="mb-1.5 block text-xs font-medium"
+              style={{ color: "var(--dash-text-secondary)" }}
             >
               Default coupon expiry
             </label>
@@ -351,7 +367,7 @@ export default function SmsEditor({ business }: SmsEditorProps) {
                 setCouponExpiryDays(val === 0 ? null : val);
               }}
               className={inputClasses}
-              style={{ resize: "none" }}
+              style={{ resize: "none", ...inputStyle }}
             >
               <option value={7}>7 days</option>
               <option value={14}>14 days</option>
@@ -360,7 +376,7 @@ export default function SmsEditor({ business }: SmsEditorProps) {
               <option value={90}>90 days</option>
               <option value={0}>No expiry</option>
             </select>
-            <p className="mt-1.5 text-xs text-gray-400">
+            <p className="mt-1.5 text-xs" style={{ color: "var(--dash-text-muted)" }}>
               Coupon codes will automatically expire after this period
             </p>
           </div>
@@ -380,7 +396,7 @@ export default function SmsEditor({ business }: SmsEditorProps) {
       {/* Right — iPhone SMS Preview */}
       <div className="hidden lg:block">
         <div className="sticky top-6 flex flex-col items-center">
-          <p className="mb-3 text-sm font-medium text-gray-500">
+          <p className="mb-3 text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
             SMS Preview — {previewLabel}
           </p>
 
@@ -466,8 +482,9 @@ export default function SmsEditor({ business }: SmsEditorProps) {
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                   activePreview === key
                     ? "bg-[#2563EB] text-white"
-                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                    : ""
                 }`}
+                style={activePreview === key ? undefined : { backgroundColor: "var(--dash-toggle-bg)", color: "var(--dash-text-muted)" }}
               >
                 {key.charAt(0).toUpperCase() + key.slice(1)}
               </button>
