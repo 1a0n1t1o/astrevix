@@ -22,9 +22,9 @@ export default async function BusinessLayout({
       style={{
         "--brand-color": business.brandColor,
         background: business.darkMode
-          ? `linear-gradient(to bottom, ${business.brandColor}20 0%, #0f0f17 45%)`
+          ? `linear-gradient(135deg, #0f1117 0%, #141620 40%, ${business.brandColor}08 100%)`
           : `linear-gradient(to bottom, ${business.brandColor}14 0%, #FEFCFA 45%)`,
-        backgroundColor: business.darkMode ? "#0f0f17" : "#FEFCFA",
+        backgroundColor: business.darkMode ? "#0f1117" : "#FEFCFA",
       } as React.CSSProperties}
       className={`min-h-dvh${business.darkMode ? " storefront-dark" : ""}`}
     >

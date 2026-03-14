@@ -137,18 +137,24 @@
 
 /* ===== Storefront dark mode ===== */
 .storefront-dark {
-  --sf-bg: #0f0f17;
+  --sf-bg: #0f1117;
+  --sf-surface: #1a1d27;
+  --sf-surface-secondary: #141620;
   --sf-text: #f1f5f9;
   --sf-text-secondary: #94a3b8;
   --sf-text-muted: #64748b;
-  --sf-card-bg: rgba(255, 255, 255, 0.06);
-  --sf-card-border: rgba(255, 255, 255, 0.08);
-  --sf-card-glass: rgba(255, 255, 255, 0.04);
-  --sf-req-bg: #1a1a26;
-  --sf-req-border: rgba(255, 255, 255, 0.08);
-  --sf-input-bg: #16161f;
-  --sf-input-border: rgba(255, 255, 255, 0.12);
+  --sf-card-bg: rgba(26, 29, 39, 0.7);
+  --sf-card-border: rgba(55, 65, 81, 0.4);
+  --sf-card-glass: rgba(26, 29, 39, 0.5);
+  --sf-card-shadow: rgba(0, 0, 0, 0.2);
+  --sf-req-bg: #1a1d27;
+  --sf-req-border: rgba(55, 65, 81, 0.4);
+  --sf-input-bg: #141620;
+  --sf-input-border: rgba(55, 65, 81, 0.6);
+  --sf-input-focus-border: rgba(55, 65, 81, 0.8);
   --sf-badge-bg: rgba(255, 255, 255, 0.08);
+  --sf-divider: rgba(55, 65, 81, 0.3);
+  --sf-hover: #1e2130;
 }
 
 @theme inline {

@@ -46,8 +46,9 @@ function PlatformBadgeInline({ platform, darkMode }: { platform: Platform | null
     <span
       className="inline-flex items-center gap-1.5 whitespace-nowrap"
       style={{
-        backgroundColor: darkMode ? "rgba(255,255,255,0.08)" : "#F2F0ED",
+        backgroundColor: darkMode ? "rgba(26, 29, 39, 0.8)" : "#F2F0ED",
         color: darkMode ? "#94a3b8" : undefined,
+        border: darkMode ? "1px solid rgba(55, 65, 81, 0.4)" : undefined,
         borderRadius: "8px",
         padding: "5px 10px",
         fontSize: "12px",
@@ -105,6 +106,16 @@ export default function SubmitForm({
     isPhoneValid &&
     smsConsent &&
     (!hasTiers || selectedTier !== null);
+
+  // Dashboard-matching dark mode color constants
+  const inputBg = dk ? "#141620" : "#fff";
+  const inputBorder = dk ? "rgba(55, 65, 81, 0.6)" : "#E0DDD8";
+  const cardBg = dk ? "rgba(26, 29, 39, 0.7)" : "#F7F5F2";
+  const cardBorder = dk ? "rgba(55, 65, 81, 0.4)" : undefined;
+  const surfaceBg = dk ? "#1a1d27" : "#F7F5F2";
+  const outlineBtnBg = dk ? "rgba(26, 29, 39, 0.7)" : "#fff";
+  const outlineBtnBorder = dk ? "1.5px solid rgba(55, 65, 81, 0.6)" : "1.5px solid #E0DDD8";
+  const checkboxBorder = dk ? "1.5px solid rgba(55, 65, 81, 0.6)" : "1.5px solid #D0CCC6";
 
   async function handleSubmit() {
     if (!isValid || submitting) return;
@@ -187,9 +198,10 @@ export default function SubmitForm({
           href={`/b/${business.slug}`}
           className="mt-8 block w-full rounded-2xl py-4 text-center text-base font-semibold transition-colors"
           style={{
-            backgroundColor: dk ? "rgba(255,255,255,0.06)" : "#fff",
+            backgroundColor: outlineBtnBg,
             color: dk ? "#94a3b8" : "#6B6B7B",
-            border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
+            border: outlineBtnBorder,
+            boxShadow: dk ? "0 4px 16px rgba(0, 0, 0, 0.15)" : undefined,
           }}
         >
           Back to {business.name}
@@ -207,12 +219,14 @@ export default function SubmitForm({
           style={{
             width: "88px",
             height: "88px",
-            background: "linear-gradient(135deg, #E8F5E8, #D4EDDA)",
+            background: dk
+              ? "linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.2))"
+              : "linear-gradient(135deg, #E8F5E8, #D4EDDA)",
           }}
         >
           <svg
             className="h-10 w-10"
-            style={{ color: "#2E7D32" }}
+            style={{ color: dk ? "#34d399" : "#2E7D32" }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -241,7 +255,11 @@ export default function SubmitForm({
         {/* Reward summary card */}
         <div
           className="mt-6 w-full rounded-2xl p-5 text-center"
-          style={{ backgroundColor: dk ? "#1a1a26" : "#F7F5F2" }}
+          style={{
+            backgroundColor: surfaceBg,
+            border: dk ? `1px solid ${cardBorder}` : undefined,
+            boxShadow: dk ? "0 4px 16px rgba(0, 0, 0, 0.15)" : undefined,
+          }}
         >
           <p
             className="font-semibold uppercase tracking-widest"
@@ -250,7 +268,7 @@ export default function SubmitForm({
             Your Reward
           </p>
           {selectedTier && (
-            <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-gray-500">
+            <p className="mt-1 flex items-center justify-center gap-1.5 text-xs" style={{ color: dk ? "#64748b" : "#6b7280" }}>
               <span style={{ color: business.brandColor }}>
                 {TIER_ICONS[selectedTier.platform] || <Gift className="h-3.5 w-3.5" />}
               </span>
@@ -267,7 +285,7 @@ export default function SubmitForm({
             <span
               className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
               style={{
-                backgroundColor: `${business.brandColor}15`,
+                backgroundColor: `${business.brandColor}18`,
                 color: business.brandColor,
               }}
             >
@@ -284,7 +302,10 @@ export default function SubmitForm({
         {detectedPlatform && (
           <div
             className="mt-4 flex w-full items-center gap-3 rounded-xl p-4"
-            style={{ backgroundColor: dk ? "#1a1a26" : "#F7F5F2" }}
+            style={{
+              backgroundColor: cardBg,
+              border: dk ? `1px solid ${cardBorder}` : undefined,
+            }}
           >
             <span className="flex h-5 w-5 items-center justify-center" style={{ color: dk ? "#94a3b8" : "#374151" }}>
               {PLATFORM_ICON_MAP[PLATFORM_INFO[detectedPlatform].icon]}
@@ -305,9 +326,10 @@ export default function SubmitForm({
           href={`/b/${business.slug}`}
           className="mt-8 block w-full rounded-2xl py-4 text-center text-base font-semibold transition-colors"
           style={{
-            backgroundColor: dk ? "rgba(255,255,255,0.06)" : "#fff",
+            backgroundColor: outlineBtnBg,
             color: dk ? "#94a3b8" : "#6B6B7B",
-            border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
+            border: outlineBtnBorder,
+            boxShadow: dk ? "0 4px 16px rgba(0, 0, 0, 0.15)" : undefined,
           }}
         >
           Done
@@ -346,17 +368,20 @@ export default function SubmitForm({
       {hasTiers && selectedTier ? (
         <div
           className="mt-5 rounded-2xl p-4"
-          style={{ backgroundColor: `${business.brandColor}0D` }}
+          style={{
+            backgroundColor: dk ? "rgba(26, 29, 39, 0.5)" : `${business.brandColor}0D`,
+            border: dk ? `1px solid rgba(55, 65, 81, 0.3)` : undefined,
+          }}
         >
           <div className="flex items-center gap-3">
             <span
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-              style={{ backgroundColor: `${business.brandColor}12`, color: business.brandColor }}
+              style={{ backgroundColor: `${business.brandColor}18`, color: business.brandColor }}
             >
               {TIER_ICONS[selectedTier.platform] || <Gift className="h-4 w-4" />}
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-500">
+              <p className="text-xs font-medium" style={{ color: dk ? "#64748b" : "#6b7280" }}>
                 {selectedTier.tier_name}
               </p>
               <p className="text-sm font-semibold text-brand">
@@ -366,7 +391,7 @@ export default function SubmitForm({
                 <span
                   className="mt-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold"
                   style={{
-                    backgroundColor: `${business.brandColor}15`,
+                    backgroundColor: `${business.brandColor}18`,
                     color: business.brandColor,
                   }}
                 >
@@ -386,7 +411,7 @@ export default function SubmitForm({
 
           {/* Tier picker dropdown */}
           {showTierPicker && (
-            <div className="mt-3 space-y-2 border-t pt-3" style={{ borderColor: `${business.brandColor}20` }}>
+            <div className="mt-3 space-y-2 border-t pt-3" style={{ borderColor: dk ? "rgba(55, 65, 81, 0.3)" : `${business.brandColor}20` }}>
               {business.rewardTiers.map((tier) => (
                 <button
                   key={tier.id}
@@ -395,16 +420,17 @@ export default function SubmitForm({
                     setSelectedTier(tier);
                     setShowTierPicker(false);
                   }}
-                  className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors ${
-                    tier.id === selectedTier.id
-                      ? dk ? "shadow-sm" : "bg-white shadow-sm"
-                      : dk ? "" : "hover:bg-white/50"
-                  }`}
-                  style={tier.id === selectedTier.id && dk ? { backgroundColor: "rgba(255,255,255,0.08)" } : dk ? {} : {}}
+                  className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors"
+                  style={{
+                    backgroundColor: tier.id === selectedTier.id
+                      ? dk ? "rgba(26, 29, 39, 0.8)" : "#fff"
+                      : "transparent",
+                    boxShadow: tier.id === selectedTier.id ? (dk ? "0 2px 8px rgba(0,0,0,0.2)" : "0 1px 3px rgba(0,0,0,0.08)") : undefined,
+                  }}
                 >
                   <span
                     className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: `${business.brandColor}12`, color: business.brandColor }}
+                    style={{ backgroundColor: `${business.brandColor}18`, color: business.brandColor }}
                   >
                     {TIER_ICONS[tier.platform] || <Gift className="h-4 w-4" />}
                   </span>
@@ -417,7 +443,7 @@ export default function SubmitForm({
                     </p>
                   </div>
                   {tier.id === selectedTier.id && (
-                    <svg className="h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="h-5 w-5 shrink-0" style={{ color: dk ? "#34d399" : "#10b981" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
                   )}
@@ -440,15 +466,16 @@ export default function SubmitForm({
               key={tier.id}
               type="button"
               onClick={() => setSelectedTier(tier)}
-              className="flex w-full items-center gap-3 rounded-2xl p-4 text-left shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+              className="flex w-full items-center gap-3 rounded-2xl p-4 text-left transition-all hover:shadow-md active:scale-[0.98]"
               style={{
-                backgroundColor: dk ? "rgba(255,255,255,0.06)" : "#fff",
-                border: dk ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
+                backgroundColor: dk ? "rgba(26, 29, 39, 0.7)" : "#fff",
+                border: dk ? "1px solid rgba(55, 65, 81, 0.4)" : "1px solid rgba(0,0,0,0.06)",
+                boxShadow: dk ? "0 4px 16px rgba(0, 0, 0, 0.15)" : "0 1px 3px rgba(0,0,0,0.08)",
               }}
             >
               <span
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                style={{ backgroundColor: `${business.brandColor}12`, color: business.brandColor }}
+                style={{ backgroundColor: `${business.brandColor}18`, color: business.brandColor }}
               >
                 {TIER_ICONS[tier.platform] || <Gift className="h-5 w-5" />}
               </span>
@@ -460,7 +487,7 @@ export default function SubmitForm({
                   {tier.reward_description}
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 shrink-0" style={{ color: dk ? "#64748b" : "#9ca3af" }} />
+              <ArrowRight className="h-4 w-4 shrink-0" style={{ color: dk ? "#4b5563" : "#9ca3af" }} />
             </button>
           ))}
         </div>
@@ -468,7 +495,10 @@ export default function SubmitForm({
         /* Legacy single reward banner */
         <div
           className="mt-5 flex items-center gap-3 rounded-2xl p-4"
-          style={{ backgroundColor: `${business.brandColor}0D` }}
+          style={{
+            backgroundColor: dk ? "rgba(26, 29, 39, 0.5)" : `${business.brandColor}0D`,
+            border: dk ? "1px solid rgba(55, 65, 81, 0.3)" : undefined,
+          }}
         >
           <Gift className="h-5 w-5 shrink-0" style={{ color: business.brandColor }} />
           <div>
@@ -484,7 +514,11 @@ export default function SubmitForm({
       {formError && (
         <div
           className="mt-4 rounded-xl p-3 text-center text-sm font-medium"
-          style={{ backgroundColor: "#FEF2F2", color: "#DC2626" }}
+          style={{
+            backgroundColor: dk ? "rgba(244, 63, 94, 0.12)" : "#FEF2F2",
+            color: dk ? "#fb7185" : "#DC2626",
+            border: dk ? "1px solid rgba(244, 63, 94, 0.25)" : undefined,
+          }}
         >
           {formError}
         </div>
@@ -510,17 +544,17 @@ export default function SubmitForm({
               className="w-full text-sm outline-none transition-colors"
               style={{
                 borderRadius: "14px",
-                border: `1.5px solid ${duplicateLink ? "#EF4444" : dk ? "rgba(255,255,255,0.12)" : "#E0DDD8"}`,
+                border: `1.5px solid ${duplicateLink ? "#EF4444" : inputBorder}`,
                 padding: "16px",
                 paddingRight: postLink.trim() ? "120px" : "16px",
-                backgroundColor: dk ? "#16161f" : "#fff",
+                backgroundColor: inputBg,
                 color: dk ? "#f1f5f9" : undefined,
               }}
               onFocus={(e) => {
                 if (!duplicateLink) e.target.style.borderColor = business.brandColor;
               }}
               onBlur={(e) => {
-                if (!duplicateLink) e.target.style.borderColor = dk ? "rgba(255,255,255,0.12)" : "#E0DDD8";
+                if (!duplicateLink) e.target.style.borderColor = inputBorder;
                 setTouched((t) => ({ ...t, postLink: true }));
               }}
             />
@@ -531,11 +565,11 @@ export default function SubmitForm({
             )}
           </div>
           {duplicateLink ? (
-            <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
+            <p className="mt-1.5" style={{ fontSize: "12px", color: dk ? "#fb7185" : "#EF4444" }}>
               This link has already been submitted
             </p>
           ) : touched.postLink && !isValidUrl ? (
-            <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
+            <p className="mt-1.5" style={{ fontSize: "12px", color: dk ? "#fb7185" : "#EF4444" }}>
               Please enter a valid URL
             </p>
           ) : (
@@ -559,13 +593,13 @@ export default function SubmitForm({
             className="mt-1.5 w-full text-sm outline-none transition-colors"
             style={{
               borderRadius: "14px",
-              border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
+              border: `1.5px solid ${inputBorder}`,
               padding: "16px",
-              backgroundColor: dk ? "#16161f" : "#fff",
+              backgroundColor: inputBg,
               color: dk ? "#f1f5f9" : undefined,
             }}
             onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
-            onBlur={(e) => (e.target.style.borderColor = dk ? "rgba(255,255,255,0.12)" : "#E0DDD8")}
+            onBlur={(e) => (e.target.style.borderColor = inputBorder)}
           />
         </div>
 
@@ -576,7 +610,8 @@ export default function SubmitForm({
           </label>
           <div className="relative mt-1.5">
             <span
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-sm text-gray-500"
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-sm"
+              style={{ color: dk ? "#64748b" : "#6b7280" }}
             >
               <span className="text-base leading-none">🇺🇸</span> +1
             </span>
@@ -593,21 +628,21 @@ export default function SubmitForm({
               className="w-full text-sm outline-none transition-colors"
               style={{
                 borderRadius: "14px",
-                border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
+                border: `1.5px solid ${inputBorder}`,
                 padding: "16px",
                 paddingLeft: "72px",
-                backgroundColor: dk ? "#16161f" : "#fff",
+                backgroundColor: inputBg,
                 color: dk ? "#f1f5f9" : undefined,
               }}
               onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
               onBlur={(e) => {
-                e.target.style.borderColor = dk ? "rgba(255,255,255,0.12)" : "#E0DDD8";
+                e.target.style.borderColor = inputBorder;
                 setTouched((t) => ({ ...t, phone: true }));
               }}
             />
           </div>
           {touched.phone && !isPhoneValid ? (
-            <p className="mt-1.5" style={{ fontSize: "12px", color: "#EF4444" }}>
+            <p className="mt-1.5" style={{ fontSize: "12px", color: dk ? "#fb7185" : "#EF4444" }}>
               Please enter a valid 10-digit US phone number
             </p>
           ) : (
@@ -630,7 +665,7 @@ export default function SubmitForm({
           <span
             className="absolute inset-0 rounded-md transition-colors"
             style={{
-              border: smsConsent ? "none" : dk ? "1.5px solid rgba(255,255,255,0.2)" : "1.5px solid #D0CCC6",
+              border: smsConsent ? "none" : checkboxBorder,
               backgroundColor: smsConsent ? business.brandColor : "transparent",
             }}
           />
@@ -659,11 +694,12 @@ export default function SubmitForm({
             ? {
                 backgroundColor: business.brandColor,
                 color: "#fff",
-                boxShadow: `0 8px 24px ${business.brandColor}66`,
+                boxShadow: dk ? `0 8px 24px ${business.brandColor}50` : `0 8px 24px ${business.brandColor}66`,
               }
             : {
-                backgroundColor: dk ? "rgba(255,255,255,0.08)" : "#E0DDD8",
-                color: dk ? "#64748b" : "#A0A0AA",
+                backgroundColor: dk ? "rgba(26, 29, 39, 0.7)" : "#E0DDD8",
+                color: dk ? "#4b5563" : "#A0A0AA",
+                border: dk ? "1px solid rgba(55, 65, 81, 0.4)" : undefined,
                 cursor: "not-allowed",
               }
         }

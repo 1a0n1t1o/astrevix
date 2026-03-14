@@ -690,12 +690,12 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                 width: "375px",
                 height: "750px",
                 borderRadius: "40px",
-                borderColor: darkMode ? "#374151" : "#E5E7EB",
+                borderColor: darkMode ? "rgba(55, 65, 81, 0.6)" : "#E5E7EB",
                 borderWidth: "1px",
                 overflowY: "auto",
                 overflowX: "hidden",
                 scrollbarWidth: "none",
-                backgroundColor: darkMode ? "#0f0f17" : "#FEFCFA",
+                backgroundColor: darkMode ? "#0f1117" : "#FEFCFA",
               }}
             >
               {/* Zoomed preview content — zoom shrinks 480px → 375px and allows native scrolling */}
@@ -704,7 +704,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   width: "480px",
                   zoom: 0.78125,
                   background: darkMode
-                    ? `linear-gradient(to bottom, ${brandColor}20 0%, #0f0f17 35%)`
+                    ? `linear-gradient(135deg, #0f1117 0%, #141620 40%, ${brandColor}08 100%)`
                     : `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 35%)`,
                 }}
               >
@@ -713,9 +713,9 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   <div className="flex justify-center">
                     <div
                       className="inline-flex items-center gap-1"
-                      style={{ fontSize: "10px", color: "#B0B0BA", letterSpacing: "0.01em" }}
+                      style={{ fontSize: "10px", color: darkMode ? "#64748b" : "#B0B0BA", letterSpacing: "0.01em" }}
                     >
-                      Powered by <span className="font-medium" style={{ color: "#9090A0" }}>Astrevix</span>
+                      Powered by <span className="font-medium" style={{ color: darkMode ? "#94a3b8" : "#9090A0" }}>Astrevix</span>
                     </div>
                   </div>
 
@@ -763,11 +763,12 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                               key={tier.id}
                               className="overflow-hidden rounded-2xl px-4 py-4 transition-shadow hover:shadow-md"
                               style={{
-                                background: darkMode ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.85)",
+                                background: darkMode ? "rgba(26, 29, 39, 0.7)" : "rgba(255,255,255,0.85)",
                                 backdropFilter: "blur(16px)",
                                 WebkitBackdropFilter: "blur(16px)",
-                                border: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
+                                border: darkMode ? "1px solid rgba(55, 65, 81, 0.4)" : "1px solid rgba(0,0,0,0.06)",
                                 borderLeft: `3px solid ${brandColor}`,
+                                boxShadow: darkMode ? "0 4px 16px rgba(0, 0, 0, 0.2)" : undefined,
                               }}
                             >
                               <div className="flex items-center gap-3.5">
@@ -796,7 +797,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                                     </span>
                                   )}
                                 </div>
-                                <svg className="h-4 w-4 shrink-0" style={{ color: darkMode ? "#64748b" : "#d1d5db" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <svg className="h-4 w-4 shrink-0" style={{ color: darkMode ? "#4b5563" : "#d1d5db" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                 </svg>
                               </div>
@@ -813,11 +814,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                       <div
                         className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
                         style={{
-                          background: darkMode ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.6)",
+                          background: darkMode ? "rgba(26, 29, 39, 0.7)" : "rgba(255,255,255,0.6)",
                           backdropFilter: "blur(20px)",
                           WebkitBackdropFilter: "blur(20px)",
-                          border: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(255,255,255,0.4)",
-                          boxShadow: darkMode ? "none" : "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+                          border: darkMode ? "1px solid rgba(55, 65, 81, 0.4)" : "1px solid rgba(255,255,255,0.4)",
+                          boxShadow: darkMode ? "0 4px 16px rgba(0, 0, 0, 0.2)" : "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
                         }}
                       >
                         <p
@@ -852,7 +853,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                             {i < PREVIEW_STEPS.length - 1 && (
                               <div
                                 className="my-1 flex-1 w-0.5 rounded-full"
-                                style={{ backgroundColor: `${brandColor}20` }}
+                                style={{ backgroundColor: darkMode ? "rgba(55, 65, 81, 0.4)" : `${brandColor}20` }}
                               />
                             )}
                           </div>
@@ -870,8 +871,9 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                     <div
                       className="mt-8 rounded-2xl p-5"
                       style={{
-                        backgroundColor: darkMode ? "#1a1a26" : "#F7F5F2",
-                        border: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid #EDEAE6",
+                        backgroundColor: darkMode ? "#1a1d27" : "#F7F5F2",
+                        border: darkMode ? "1px solid rgba(55, 65, 81, 0.4)" : "1px solid #EDEAE6",
+                        boxShadow: darkMode ? "0 4px 16px rgba(0, 0, 0, 0.15)" : undefined,
                       }}
                     >
                       <h3 className="flex items-center gap-2 text-lg font-bold" style={{ color: darkMode ? "#f1f5f9" : "#111827" }}>
