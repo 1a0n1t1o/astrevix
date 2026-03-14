@@ -25,6 +25,7 @@ export interface BusinessData {
   requirements: string[];
   maxRewardsPerCustomer: number | null;
   termsConditions: string | null;
+  darkMode: boolean;
   status: "active" | "suspended";
   rewardTiers: RewardTierPublic[];
 }
@@ -105,6 +106,7 @@ export async function getBusinessBySlug(slug: string): Promise<BusinessData | nu
     requirements: data.requirements || [],
     maxRewardsPerCustomer: data.max_rewards_per_customer ?? 1,
     termsConditions: data.terms_conditions || null,
+    darkMode: data.storefront_dark_mode === true,
     status: data.status || "active",
     rewardTiers: activeTiers,
   };

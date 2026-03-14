@@ -68,6 +68,7 @@ export default async function BusinessPage({
   }
 
   const hasLogo = !!business.logoUrl;
+  const dk = business.darkMode;
 
   return (
     <>
@@ -75,9 +76,9 @@ export default async function BusinessPage({
       <div className="flex justify-center">
         <div
           className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5"
-          style={{ fontSize: "10px", color: "#B0B0BA", letterSpacing: "0.01em" }}
+          style={{ fontSize: "10px", color: dk ? "#64748b" : "#B0B0BA", letterSpacing: "0.01em" }}
         >
-          Powered by <span className="font-medium" style={{ color: "#9090A0" }}>Astrevix</span>
+          Powered by <span className="font-medium" style={{ color: dk ? "#94a3b8" : "#9090A0" }}>Astrevix</span>
         </div>
       </div>
 
@@ -100,13 +101,13 @@ export default async function BusinessPage({
       {/* Business name + tagline */}
       <div className={`${hasLogo ? "mt-4" : "mt-8"} text-center`}>
         <h1
-          className="font-bold text-foreground"
-          style={{ fontSize: hasLogo ? "24px" : "36px" }}
+          className="font-bold"
+          style={{ fontSize: hasLogo ? "24px" : "36px", color: dk ? "#f1f5f9" : "#1a1a1a" }}
         >
           {business.name}
         </h1>
         {business.tagline && (
-          <p className="mt-1 text-sm text-gray-500">{business.tagline}</p>
+          <p className="mt-1 text-sm" style={{ color: dk ? "#94a3b8" : "#6b7280" }}>{business.tagline}</p>
         )}
       </div>
 
@@ -128,10 +129,10 @@ export default async function BusinessPage({
               <div
                 className="overflow-hidden rounded-2xl px-4 py-4 transition-shadow group-hover:shadow-md"
                 style={{
-                  background: "rgba(255,255,255,0.85)",
+                  background: dk ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.85)",
                   backdropFilter: "blur(16px)",
                   WebkitBackdropFilter: "blur(16px)",
-                  border: "1px solid rgba(0,0,0,0.06)",
+                  border: dk ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
                   borderLeft: `3px solid ${business.brandColor}`,
                 }}
               >
@@ -143,10 +144,10 @@ export default async function BusinessPage({
                     {TIER_ICONS[tier.platform] || <Gift className="h-5 w-5" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                    <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color: dk ? "#64748b" : "#9ca3af" }}>
                       {tier.tier_name}
                     </p>
-                    <p className="mt-0.5 text-base font-bold text-gray-900">
+                    <p className="mt-0.5 text-base font-bold" style={{ color: dk ? "#f1f5f9" : "#111827" }}>
                       {tier.reward_description}
                     </p>
                     {tier.reward_value && (
@@ -161,7 +162,7 @@ export default async function BusinessPage({
                       </span>
                     )}
                   </div>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5" />
+                  <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" style={{ color: dk ? "#64748b" : "#d1d5db" }} />
                 </div>
               </div>
             </a>
@@ -176,11 +177,11 @@ export default async function BusinessPage({
           <div
             className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
             style={{
-              background: "rgba(255,255,255,0.6)",
+              background: dk ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.6)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.4)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+              border: dk ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(255,255,255,0.4)",
+              boxShadow: dk ? "none" : "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
             }}
           >
             <p
@@ -189,10 +190,10 @@ export default async function BusinessPage({
             >
               Your Reward
             </p>
-            <p className="mt-3 text-2xl font-bold text-gray-900">
+            <p className="mt-3 text-2xl font-bold" style={{ color: dk ? "#f1f5f9" : "#111827" }}>
               {business.reward}
             </p>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm" style={{ color: dk ? "#94a3b8" : "#6b7280" }}>
               Create a {business.contentType}
             </p>
           </div>
@@ -201,7 +202,7 @@ export default async function BusinessPage({
 
       {/* How it works */}
       <div className="mt-8">
-        <h2 className="text-lg font-bold text-gray-900">How it works</h2>
+        <h2 className="text-lg font-bold" style={{ color: dk ? "#f1f5f9" : "#111827" }}>How it works</h2>
         <div className="mt-5">
           {STEPS.map((step, i) => (
             <div key={step.num} className="flex gap-3.5">
@@ -220,8 +221,8 @@ export default async function BusinessPage({
                 )}
               </div>
               <div className={i < STEPS.length - 1 ? "pb-5 pt-1" : "pt-1"}>
-                <p className="text-sm font-semibold text-gray-900">{step.label}</p>
-                <p className="mt-0.5 text-[13px] text-gray-400">{step.desc}</p>
+                <p className="text-sm font-semibold" style={{ color: dk ? "#f1f5f9" : "#111827" }}>{step.label}</p>
+                <p className="mt-0.5 text-[13px]" style={{ color: dk ? "#64748b" : "#9ca3af" }}>{step.desc}</p>
               </div>
             </div>
           ))}
@@ -232,10 +233,13 @@ export default async function BusinessPage({
       {business.requirements.length > 0 && (
         <div
           className="mt-8 rounded-2xl p-5"
-          style={{ backgroundColor: "#F7F5F2", border: "1px solid #EDEAE6" }}
+          style={{
+            backgroundColor: dk ? "#1a1a26" : "#F7F5F2",
+            border: dk ? "1px solid rgba(255,255,255,0.08)" : "1px solid #EDEAE6",
+          }}
         >
-          <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-            <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <h2 className="flex items-center gap-2 text-lg font-bold" style={{ color: dk ? "#f1f5f9" : "#111827" }}>
+            <svg className="h-5 w-5" style={{ color: dk ? "#94a3b8" : "#6b7280" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
             </svg>
             Requirements
@@ -258,7 +262,7 @@ export default async function BusinessPage({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
                 </div>
-                <span>{req}</span>
+                <span style={{ color: dk ? "#94a3b8" : undefined }}>{req}</span>
               </li>
             ))}
           </ul>
@@ -277,13 +281,13 @@ export default async function BusinessPage({
       </a>
 
       {/* Footer note */}
-      <p className="mt-3 text-center text-xs text-gray-400">
+      <p className="mt-3 text-center text-xs" style={{ color: dk ? "#64748b" : "#9ca3af" }}>
         Rewards issued after review. Usually within 24 hours.
       </p>
 
       {/* Terms & Conditions */}
       <details className="group mt-4 mb-2">
-        <summary className="flex cursor-pointer items-center justify-center gap-1.5 text-xs font-medium text-gray-400 transition-colors hover:text-gray-600">
+        <summary className="flex cursor-pointer items-center justify-center gap-1.5 text-xs font-medium transition-colors" style={{ color: dk ? "#64748b" : "#9ca3af" }}>
           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
           </svg>
@@ -292,7 +296,7 @@ export default async function BusinessPage({
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         </summary>
-        <div className="mt-3 rounded-xl bg-gray-50 p-4 text-[11px] leading-relaxed text-gray-500" style={{ border: "1px solid #EDEAE6" }}>
+        <div className="mt-3 rounded-xl p-4 text-[11px] leading-relaxed" style={{ backgroundColor: dk ? "#1a1a26" : "#f9fafb", color: dk ? "#94a3b8" : "#6b7280", border: dk ? "1px solid rgba(255,255,255,0.08)" : "1px solid #EDEAE6" }}>
           {(business.termsConditions || DEFAULT_TERMS).split("\n").map((line, i) => (
             <p key={i} className={line.trim() === "" ? "h-2" : ""}>{line}</p>
           ))}
@@ -300,7 +304,7 @@ export default async function BusinessPage({
       </details>
 
       {/* Legal links */}
-      <div className="mb-4 flex justify-center gap-3 text-[10px] text-gray-400">
+      <div className="mb-4 flex justify-center gap-3 text-[10px]" style={{ color: dk ? "#64748b" : "#9ca3af" }}>
         <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Privacy Policy</a>
         <span>&middot;</span>
         <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms</a>

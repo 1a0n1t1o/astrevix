@@ -46,6 +46,8 @@ export interface Business {
   default_coupon_expiry_days: number | null;
   // Terms & Conditions
   terms_conditions: string | null;
+  // Storefront appearance
+  storefront_dark_mode: boolean | null;
   // Admin fields
   plan: "free" | "pro";
   status: "active" | "suspended";

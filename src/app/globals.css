@@ -135,6 +135,22 @@
   --dash-negative-text: #fb7185;
 }
 
+/* ===== Storefront dark mode ===== */
+.storefront-dark {
+  --sf-bg: #0f0f17;
+  --sf-text: #f1f5f9;
+  --sf-text-secondary: #94a3b8;
+  --sf-text-muted: #64748b;
+  --sf-card-bg: rgba(255, 255, 255, 0.06);
+  --sf-card-border: rgba(255, 255, 255, 0.08);
+  --sf-card-glass: rgba(255, 255, 255, 0.04);
+  --sf-req-bg: #1a1a26;
+  --sf-req-border: rgba(255, 255, 255, 0.08);
+  --sf-input-bg: #16161f;
+  --sf-input-border: rgba(255, 255, 255, 0.12);
+  --sf-badge-bg: rgba(255, 255, 255, 0.08);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -38,7 +38,7 @@ const TIER_ICONS: Record<string, React.ReactNode> = {
   tiktok: <Video className="h-5 w-5" />,
 };
 
-function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
+function PlatformBadgeInline({ platform, darkMode }: { platform: Platform | null; darkMode?: boolean }) {
   const iconKey = platform ? PLATFORM_INFO[platform].icon : null;
   const icon = iconKey ? PLATFORM_ICON_MAP[iconKey] : <Link className="h-3.5 w-3.5" />;
   const label = platform ? PLATFORM_INFO[platform].label : "Link";
@@ -46,7 +46,8 @@ function PlatformBadgeInline({ platform }: { platform: Platform | null }) {
     <span
       className="inline-flex items-center gap-1.5 whitespace-nowrap"
       style={{
-        backgroundColor: "#F2F0ED",
+        backgroundColor: darkMode ? "rgba(255,255,255,0.08)" : "#F2F0ED",
+        color: darkMode ? "#94a3b8" : undefined,
         borderRadius: "8px",
         padding: "5px 10px",
         fontSize: "12px",
@@ -65,6 +66,7 @@ export default function SubmitForm({
   business: BusinessData;
   selectedTierId: string | null;
 }) {
+  const dk = business.darkMode;
   const hasTiers = business.rewardTiers.length > 0;
   const initialTier = selectedTierId
     ? business.rewardTiers.find((t) => t.id === selectedTierId) || null
@@ -172,11 +174,11 @@ export default function SubmitForm({
 
         <h1
           className="mt-5"
-          style={{ fontSize: "26px", fontWeight: 700 }}
+          style={{ fontSize: "26px", fontWeight: 700, color: dk ? "#f1f5f9" : undefined }}
         >
           You&apos;ve already submitted!
         </h1>
-        <p className="mt-2" style={{ fontSize: "15px", color: "#8B8B9B" }}>
+        <p className="mt-2" style={{ fontSize: "15px", color: dk ? "#94a3b8" : "#8B8B9B" }}>
           You&apos;ve already submitted content for{" "}
           <strong>{business.name}</strong>. Thank you for your support!
         </p>
@@ -185,9 +187,9 @@ export default function SubmitForm({
           href={`/b/${business.slug}`}
           className="mt-8 block w-full rounded-2xl py-4 text-center text-base font-semibold transition-colors"
           style={{
-            backgroundColor: "#fff",
-            color: "#6B6B7B",
-            border: "1.5px solid #E0DDD8",
+            backgroundColor: dk ? "rgba(255,255,255,0.06)" : "#fff",
+            color: dk ? "#94a3b8" : "#6B6B7B",
+            border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
           }}
         >
           Back to {business.name}
@@ -226,11 +228,11 @@ export default function SubmitForm({
 
         <h1
           className="mt-5"
-          style={{ fontSize: "26px", fontWeight: 700 }}
+          style={{ fontSize: "26px", fontWeight: 700, color: dk ? "#f1f5f9" : undefined }}
         >
           You&apos;re all set!
         </h1>
-        <p className="mt-2" style={{ fontSize: "15px", color: "#8B8B9B" }}>
+        <p className="mt-2" style={{ fontSize: "15px", color: dk ? "#94a3b8" : "#8B8B9B" }}>
           {selectedTier
             ? `Your post needs to stay live for ${selectedTier.verification_hours} hours. ${business.name} will verify and send your reward after that.`
             : `${business.name} will review your post and send your reward within 24 hours.`}
@@ -239,11 +241,11 @@ export default function SubmitForm({
         {/* Reward summary card */}
         <div
           className="mt-6 w-full rounded-2xl p-5 text-center"
-          style={{ backgroundColor: "#F7F5F2" }}
+          style={{ backgroundColor: dk ? "#1a1a26" : "#F7F5F2" }}
         >
           <p
             className="font-semibold uppercase tracking-widest"
-            style={{ fontSize: "11px", color: "#8B8B9B" }}
+            style={{ fontSize: "11px", color: dk ? "#64748b" : "#8B8B9B" }}
           >
             Your Reward
           </p>
@@ -272,7 +274,7 @@ export default function SubmitForm({
               {selectedTier.reward_value}
             </span>
           )}
-          <p className="mt-2 text-xs" style={{ color: "#8B8B9B" }}>
+          <p className="mt-2 text-xs" style={{ color: dk ? "#64748b" : "#8B8B9B" }}>
             We&apos;ll text it to the number you provided once your post is
             {selectedTier ? " verified and" : ""} approved.
           </p>
@@ -282,16 +284,16 @@ export default function SubmitForm({
         {detectedPlatform && (
           <div
             className="mt-4 flex w-full items-center gap-3 rounded-xl p-4"
-            style={{ backgroundColor: "#F7F5F2" }}
+            style={{ backgroundColor: dk ? "#1a1a26" : "#F7F5F2" }}
           >
-            <span className="flex h-5 w-5 items-center justify-center text-gray-700">
+            <span className="flex h-5 w-5 items-center justify-center" style={{ color: dk ? "#94a3b8" : "#374151" }}>
               {PLATFORM_ICON_MAP[PLATFORM_INFO[detectedPlatform].icon]}
             </span>
             <div className="min-w-0 text-left">
-              <p className="text-sm font-semibold">
+              <p className="text-sm font-semibold" style={{ color: dk ? "#f1f5f9" : undefined }}>
                 {PLATFORM_INFO[detectedPlatform].label} post submitted
               </p>
-              <p className="truncate text-xs" style={{ color: "#8B8B9B" }}>
+              <p className="truncate text-xs" style={{ color: dk ? "#64748b" : "#8B8B9B" }}>
                 {postLink}
               </p>
             </div>
@@ -303,9 +305,9 @@ export default function SubmitForm({
           href={`/b/${business.slug}`}
           className="mt-8 block w-full rounded-2xl py-4 text-center text-base font-semibold transition-colors"
           style={{
-            backgroundColor: "#fff",
-            color: "#6B6B7B",
-            border: "1.5px solid #E0DDD8",
+            backgroundColor: dk ? "rgba(255,255,255,0.06)" : "#fff",
+            color: dk ? "#94a3b8" : "#6B6B7B",
+            border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
           }}
         >
           Done
@@ -319,7 +321,8 @@ export default function SubmitForm({
       {/* Back link */}
       <a
         href={`/b/${business.slug}`}
-        className="inline-flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-foreground"
+        className="inline-flex items-center gap-1 text-sm transition-colors"
+        style={{ color: dk ? "#94a3b8" : "#6b7280" }}
       >
         &larr; Back
       </a>
@@ -334,8 +337,8 @@ export default function SubmitForm({
           />
         )}
         <div>
-          <h1 className="text-xl font-bold">Submit your post</h1>
-          <p className="text-xs text-gray-500">{business.name}</p>
+          <h1 className="text-xl font-bold" style={{ color: dk ? "#f1f5f9" : undefined }}>Submit your post</h1>
+          <p className="text-xs" style={{ color: dk ? "#94a3b8" : "#6b7280" }}>{business.name}</p>
         </div>
       </div>
 
@@ -394,9 +397,10 @@ export default function SubmitForm({
                   }}
                   className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition-colors ${
                     tier.id === selectedTier.id
-                      ? "bg-white shadow-sm"
-                      : "hover:bg-white/50"
+                      ? dk ? "shadow-sm" : "bg-white shadow-sm"
+                      : dk ? "" : "hover:bg-white/50"
                   }`}
+                  style={tier.id === selectedTier.id && dk ? { backgroundColor: "rgba(255,255,255,0.08)" } : dk ? {} : {}}
                 >
                   <span
                     className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
@@ -405,10 +409,10 @@ export default function SubmitForm({
                     {TIER_ICONS[tier.platform] || <Gift className="h-4 w-4" />}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-gray-500">
+                    <p className="text-xs font-medium" style={{ color: dk ? "#64748b" : "#6b7280" }}>
                       {tier.tier_name}
                     </p>
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold" style={{ color: dk ? "#f1f5f9" : "#111827" }}>
                       {tier.reward_description}
                     </p>
                   </div>
@@ -436,8 +440,11 @@ export default function SubmitForm({
               key={tier.id}
               type="button"
               onClick={() => setSelectedTier(tier)}
-              className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
-              style={{ border: "1px solid rgba(0,0,0,0.06)" }}
+              className="flex w-full items-center gap-3 rounded-2xl p-4 text-left shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+              style={{
+                backgroundColor: dk ? "rgba(255,255,255,0.06)" : "#fff",
+                border: dk ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
+              }}
             >
               <span
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
@@ -446,14 +453,14 @@ export default function SubmitForm({
                 {TIER_ICONS[tier.platform] || <Gift className="h-5 w-5" />}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-gray-500">
+                <p className="text-xs font-medium" style={{ color: dk ? "#64748b" : "#6b7280" }}>
                   {tier.tier_name}
                 </p>
-                <p className="text-sm font-bold text-gray-900">
+                <p className="text-sm font-bold" style={{ color: dk ? "#f1f5f9" : "#111827" }}>
                   {tier.reward_description}
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 shrink-0 text-gray-400" />
+              <ArrowRight className="h-4 w-4 shrink-0" style={{ color: dk ? "#64748b" : "#9ca3af" }} />
             </button>
           ))}
         </div>
@@ -468,7 +475,7 @@ export default function SubmitForm({
             <p className="text-sm font-semibold text-brand">
               {business.reward}
             </p>
-            <p className="text-xs text-gray-500">After your post is approved</p>
+            <p className="text-xs" style={{ color: dk ? "#94a3b8" : "#6b7280" }}>After your post is approved</p>
           </div>
         </div>
       )}
@@ -487,7 +494,7 @@ export default function SubmitForm({
       <div className="mt-6 space-y-4">
         {/* Post link */}
         <div>
-          <label htmlFor="postLink" className="block text-sm font-medium">
+          <label htmlFor="postLink" className="block text-sm font-medium" style={{ color: dk ? "#f1f5f9" : undefined }}>
             Post link
           </label>
           <div className="relative mt-1.5">
@@ -500,24 +507,26 @@ export default function SubmitForm({
                 if (duplicateLink) setDuplicateLink(false);
               }}
               placeholder="https://www.instagram.com/reel/..."
-              className="w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
+              className="w-full text-sm outline-none transition-colors"
               style={{
                 borderRadius: "14px",
-                border: `1.5px solid ${duplicateLink ? "#EF4444" : "#E0DDD8"}`,
+                border: `1.5px solid ${duplicateLink ? "#EF4444" : dk ? "rgba(255,255,255,0.12)" : "#E0DDD8"}`,
                 padding: "16px",
                 paddingRight: postLink.trim() ? "120px" : "16px",
+                backgroundColor: dk ? "#16161f" : "#fff",
+                color: dk ? "#f1f5f9" : undefined,
               }}
               onFocus={(e) => {
                 if (!duplicateLink) e.target.style.borderColor = business.brandColor;
               }}
               onBlur={(e) => {
-                if (!duplicateLink) e.target.style.borderColor = "#E0DDD8";
+                if (!duplicateLink) e.target.style.borderColor = dk ? "rgba(255,255,255,0.12)" : "#E0DDD8";
                 setTouched((t) => ({ ...t, postLink: true }));
               }}
             />
             {postLink.trim() && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                <PlatformBadgeInline platform={detectedPlatform} />
+                <PlatformBadgeInline platform={detectedPlatform} darkMode={dk} />
               </span>
             )}
           </div>
@@ -530,7 +539,7 @@ export default function SubmitForm({
               Please enter a valid URL
             </p>
           ) : (
-            <p className="mt-1.5 text-xs text-gray-400">
+            <p className="mt-1.5 text-xs" style={{ color: dk ? "#64748b" : "#9ca3af" }}>
               We&apos;ll automatically detect which platform you posted on
             </p>
           )}
@@ -538,7 +547,7 @@ export default function SubmitForm({
 
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium">
+          <label htmlFor="name" className="block text-sm font-medium" style={{ color: dk ? "#f1f5f9" : undefined }}>
             First name
           </label>
           <input
@@ -547,20 +556,22 @@ export default function SubmitForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your first name"
-            className="mt-1.5 w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
+            className="mt-1.5 w-full text-sm outline-none transition-colors"
             style={{
               borderRadius: "14px",
-              border: "1.5px solid #E0DDD8",
+              border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
               padding: "16px",
+              backgroundColor: dk ? "#16161f" : "#fff",
+              color: dk ? "#f1f5f9" : undefined,
             }}
             onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
-            onBlur={(e) => (e.target.style.borderColor = "#E0DDD8")}
+            onBlur={(e) => (e.target.style.borderColor = dk ? "rgba(255,255,255,0.12)" : "#E0DDD8")}
           />
         </div>
 
         {/* Phone number */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium">
+          <label htmlFor="phone" className="block text-sm font-medium" style={{ color: dk ? "#f1f5f9" : undefined }}>
             Phone number
           </label>
           <div className="relative mt-1.5">
@@ -579,16 +590,18 @@ export default function SubmitForm({
                 setPhone(formatted);
               }}
               placeholder="(555) 123-4567"
-              className="w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
+              className="w-full text-sm outline-none transition-colors"
               style={{
                 borderRadius: "14px",
-                border: "1.5px solid #E0DDD8",
+                border: dk ? "1.5px solid rgba(255,255,255,0.12)" : "1.5px solid #E0DDD8",
                 padding: "16px",
                 paddingLeft: "72px",
+                backgroundColor: dk ? "#16161f" : "#fff",
+                color: dk ? "#f1f5f9" : undefined,
               }}
               onFocus={(e) => (e.target.style.borderColor = business.brandColor)}
               onBlur={(e) => {
-                e.target.style.borderColor = "#E0DDD8";
+                e.target.style.borderColor = dk ? "rgba(255,255,255,0.12)" : "#E0DDD8";
                 setTouched((t) => ({ ...t, phone: true }));
               }}
             />
@@ -598,7 +611,7 @@ export default function SubmitForm({
               Please enter a valid 10-digit US phone number
             </p>
           ) : (
-            <p className="mt-1.5 text-xs text-gray-400">
+            <p className="mt-1.5 text-xs" style={{ color: dk ? "#64748b" : "#9ca3af" }}>
               Only used to text your reward. We never spam.
             </p>
           )}
@@ -617,7 +630,7 @@ export default function SubmitForm({
           <span
             className="absolute inset-0 rounded-md transition-colors"
             style={{
-              border: smsConsent ? "none" : "1.5px solid #D0CCC6",
+              border: smsConsent ? "none" : dk ? "1.5px solid rgba(255,255,255,0.2)" : "1.5px solid #D0CCC6",
               backgroundColor: smsConsent ? business.brandColor : "transparent",
             }}
           />
@@ -627,7 +640,7 @@ export default function SubmitForm({
             </svg>
           )}
         </span>
-        <span className="text-xs leading-relaxed text-gray-500">
+        <span className="text-xs leading-relaxed" style={{ color: dk ? "#94a3b8" : "#6b7280" }}>
           By submitting, I agree to receive SMS messages from {business.name} via Astrevix about my submission
           and reward. Up to 3 msgs per submission. Msg &amp; data rates may apply. Reply STOP to opt-out.{" "}
           <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms &amp; Conditions</a>
@@ -649,8 +662,8 @@ export default function SubmitForm({
                 boxShadow: `0 8px 24px ${business.brandColor}66`,
               }
             : {
-                backgroundColor: "#E0DDD8",
-                color: "#A0A0AA",
+                backgroundColor: dk ? "rgba(255,255,255,0.08)" : "#E0DDD8",
+                color: dk ? "#64748b" : "#A0A0AA",
                 cursor: "not-allowed",
               }
         }
@@ -659,7 +672,7 @@ export default function SubmitForm({
       </button>
 
       {/* Trust signals */}
-      <div className="mt-4 flex justify-center gap-6 text-xs text-gray-400">
+      <div className="mt-4 flex justify-center gap-6 text-xs" style={{ color: dk ? "#64748b" : "#9ca3af" }}>
         <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> Info stays private</span>
         <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> Usually approved in {selectedTier ? (selectedTier.verification_hours >= 24 ? `${Math.round(selectedTier.verification_hours / 24)}d` : `${selectedTier.verification_hours}h`) : "24h"}</span>
       </div>

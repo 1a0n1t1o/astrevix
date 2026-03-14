@@ -113,6 +113,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
   const [hexInput, setHexInput] = useState(business.brand_color || "#E8553A");
   const [showTiersEditor, setShowTiersEditor] = useState(rewardTiers.length > 0);
   const [liveTiers, setLiveTiers] = useState<RewardTier[]>(rewardTiers);
+  const [darkMode, setDarkMode] = useState(business.storefront_dark_mode === true);
 
   // Suppress unused variable
   void createClient;
@@ -189,6 +190,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
           content_type: contentType,
           requirements: requirements.filter((r) => r.trim() !== ""),
           terms_conditions: termsConditions.trim() || null,
+          storefront_dark_mode: darkMode,
         }),
       });
 
@@ -466,6 +468,32 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                 className="ml-1 w-[90px] rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 font-mono text-xs text-gray-700 outline-none transition-colors focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
               />
             </div>
+
+            {/* Storefront Dark Mode toggle */}
+            <div className="mt-5 flex items-center justify-between rounded-xl border-[1.5px] border-gray-200 bg-white px-4 py-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-900 text-white">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Dark mode storefront</p>
+                  <p className="text-xs text-gray-500">Customers see a dark-themed page</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDarkMode(!darkMode)}
+                className="relative h-6 w-11 rounded-full transition-colors"
+                style={{ backgroundColor: darkMode ? "#2563EB" : "#d1d5db" }}
+              >
+                <div
+                  className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform"
+                  style={{ left: darkMode ? "22px" : "2px" }}
+                />
+              </button>
+            </div>
           </motion.section>
 
           {/* Reward Tiers */}
@@ -662,12 +690,12 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                 width: "375px",
                 height: "750px",
                 borderRadius: "40px",
-                borderColor: "#E5E7EB",
+                borderColor: darkMode ? "#374151" : "#E5E7EB",
                 borderWidth: "1px",
                 overflowY: "auto",
                 overflowX: "hidden",
                 scrollbarWidth: "none",
-                backgroundColor: "#FEFCFA",
+                backgroundColor: darkMode ? "#0f0f17" : "#FEFCFA",
               }}
             >
               {/* Zoomed preview content — zoom shrinks 480px → 375px and allows native scrolling */}
@@ -675,7 +703,9 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                 style={{
                   width: "480px",
                   zoom: 0.78125,
-                  background: `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 35%)`,
+                  background: darkMode
+                    ? `linear-gradient(to bottom, ${brandColor}20 0%, #0f0f17 35%)`
+                    : `linear-gradient(to bottom, ${brandColor}14 0%, #FEFCFA 35%)`,
                 }}
               >
                 <div className="mx-auto max-w-[480px] px-5 py-8">
@@ -704,13 +734,13 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   {/* Business name + tagline */}
                   <div className={`${logoUrl ? "mt-4" : "mt-8"} text-center`}>
                     <h3
-                      className="font-bold text-gray-900"
-                      style={{ fontSize: logoUrl ? "24px" : "36px" }}
+                      className="font-bold"
+                      style={{ fontSize: logoUrl ? "24px" : "36px", color: darkMode ? "#f1f5f9" : "#111827" }}
                     >
                       {name || "Your Business"}
                     </h3>
                     {tagline && (
-                      <p className="mt-1 text-sm text-gray-500">{tagline}</p>
+                      <p className="mt-1 text-sm" style={{ color: darkMode ? "#94a3b8" : "#6b7280" }}>{tagline}</p>
                     )}
                   </div>
 
@@ -733,10 +763,10 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                               key={tier.id}
                               className="overflow-hidden rounded-2xl px-4 py-4 transition-shadow hover:shadow-md"
                               style={{
-                                background: "rgba(255,255,255,0.85)",
+                                background: darkMode ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.85)",
                                 backdropFilter: "blur(16px)",
                                 WebkitBackdropFilter: "blur(16px)",
-                                border: "1px solid rgba(0,0,0,0.06)",
+                                border: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
                                 borderLeft: `3px solid ${brandColor}`,
                               }}
                             >
@@ -748,10 +778,10 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                                   <IconComponent />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                                  <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color: darkMode ? "#64748b" : "#9ca3af" }}>
                                     {tier.tier_name}
                                   </p>
-                                  <p className="mt-0.5 text-base font-bold text-gray-900">
+                                  <p className="mt-0.5 text-base font-bold" style={{ color: darkMode ? "#f1f5f9" : "#111827" }}>
                                     {tier.reward_description}
                                   </p>
                                   {tier.reward_value && (
@@ -766,7 +796,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                                     </span>
                                   )}
                                 </div>
-                                <svg className="h-4 w-4 shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <svg className="h-4 w-4 shrink-0" style={{ color: darkMode ? "#64748b" : "#d1d5db" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                 </svg>
                               </div>
@@ -783,11 +813,11 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                       <div
                         className="relative overflow-hidden rounded-[20px] px-6 py-8 text-center"
                         style={{
-                          background: "rgba(255,255,255,0.6)",
+                          background: darkMode ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.6)",
                           backdropFilter: "blur(20px)",
                           WebkitBackdropFilter: "blur(20px)",
-                          border: "1px solid rgba(255,255,255,0.4)",
-                          boxShadow: "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
+                          border: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(255,255,255,0.4)",
+                          boxShadow: darkMode ? "none" : "0 8px 32px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
                         }}
                       >
                         <p
@@ -796,10 +826,10 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                         >
                           Your Reward
                         </p>
-                        <p className="mt-3 text-2xl font-bold text-gray-900">
+                        <p className="mt-3 text-2xl font-bold" style={{ color: darkMode ? "#f1f5f9" : "#111827" }}>
                           {rewardDescription || "Your reward here"}
                         </p>
-                        <p className="mt-2 text-sm text-gray-500">
+                        <p className="mt-2 text-sm" style={{ color: darkMode ? "#94a3b8" : "#6b7280" }}>
                           Create a {contentType}
                         </p>
                       </div>
@@ -808,7 +838,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
 
                   {/* How it works */}
                   <div className="mt-8">
-                    <h3 className="text-lg font-bold text-gray-900">How it works</h3>
+                    <h3 className="text-lg font-bold" style={{ color: darkMode ? "#f1f5f9" : "#111827" }}>How it works</h3>
                     <div className="mt-5">
                       {PREVIEW_STEPS.map((step, i) => (
                         <div key={step.num} className="flex gap-3.5">
@@ -827,8 +857,8 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                             )}
                           </div>
                           <div className={i < PREVIEW_STEPS.length - 1 ? "pb-5 pt-1" : "pt-1"}>
-                            <p className="text-sm font-semibold text-gray-900">{step.label}</p>
-                            <p className="mt-0.5 text-[13px] text-gray-400">{step.desc}</p>
+                            <p className="text-sm font-semibold" style={{ color: darkMode ? "#f1f5f9" : "#111827" }}>{step.label}</p>
+                            <p className="mt-0.5 text-[13px]" style={{ color: darkMode ? "#64748b" : "#9ca3af" }}>{step.desc}</p>
                           </div>
                         </div>
                       ))}
@@ -839,10 +869,13 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   {requirements.filter((r) => r.trim()).length > 0 && (
                     <div
                       className="mt-8 rounded-2xl p-5"
-                      style={{ backgroundColor: "#F7F5F2", border: "1px solid #EDEAE6" }}
+                      style={{
+                        backgroundColor: darkMode ? "#1a1a26" : "#F7F5F2",
+                        border: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid #EDEAE6",
+                      }}
                     >
-                      <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-                        <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <h3 className="flex items-center gap-2 text-lg font-bold" style={{ color: darkMode ? "#f1f5f9" : "#111827" }}>
+                        <svg className="h-5 w-5" style={{ color: darkMode ? "#94a3b8" : "#6b7280" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                         </svg>
                         Requirements
@@ -867,7 +900,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>
                               </div>
-                              <span className="text-gray-700">{req}</span>
+                              <span style={{ color: darkMode ? "#94a3b8" : "#374151" }}>{req}</span>
                             </li>
                           ))}
                       </ul>
@@ -886,13 +919,13 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   </div>
 
                   {/* Footer */}
-                  <p className="mt-3 text-center text-xs text-gray-400">
+                  <p className="mt-3 text-center text-xs" style={{ color: darkMode ? "#64748b" : "#9ca3af" }}>
                     Rewards issued after review. Usually within 24 hours.
                   </p>
 
                   {/* Terms & Conditions preview */}
                   <div className="mt-4">
-                    <p className="flex items-center justify-center gap-1.5 text-xs font-medium text-gray-400">
+                    <p className="flex items-center justify-center gap-1.5 text-xs font-medium" style={{ color: darkMode ? "#64748b" : "#9ca3af" }}>
                       <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                       </svg>
@@ -904,7 +937,7 @@ export default function CustomizeEditor({ business, rewardTiers }: CustomizeEdit
                   </div>
 
                   {/* Legal links */}
-                  <div className="mb-4 mt-2 flex justify-center gap-3 text-[10px] text-gray-400 pb-4">
+                  <div className="mb-4 mt-2 flex justify-center gap-3 text-[10px] pb-4" style={{ color: darkMode ? "#64748b" : "#9ca3af" }}>
                     <span className="underline">Privacy Policy</span>
                     <span>&middot;</span>
                     <span className="underline">Terms</span>

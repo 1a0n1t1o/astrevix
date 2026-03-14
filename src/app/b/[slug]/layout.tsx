@@ -21,10 +21,12 @@ export default async function BusinessLayout({
     <div
       style={{
         "--brand-color": business.brandColor,
-        background: `linear-gradient(to bottom, ${business.brandColor}14 0%, #FEFCFA 45%)`,
-        backgroundColor: "#FEFCFA",
+        background: business.darkMode
+          ? `linear-gradient(to bottom, ${business.brandColor}20 0%, #0f0f17 45%)`
+          : `linear-gradient(to bottom, ${business.brandColor}14 0%, #FEFCFA 45%)`,
+        backgroundColor: business.darkMode ? "#0f0f17" : "#FEFCFA",
       } as React.CSSProperties}
-      className="min-h-dvh"
+      className={`min-h-dvh${business.darkMode ? " storefront-dark" : ""}`}
     >
       <div className="mx-auto max-w-[480px] px-5 py-8">{children}</div>
     </div>
