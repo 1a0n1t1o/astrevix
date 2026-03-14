@@ -32,10 +32,10 @@ export default async function SubmissionsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold" style={{ color: "var(--dash-text)" }}>
           Submissions
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Review and manage customer content submissions
         </p>
       </div>

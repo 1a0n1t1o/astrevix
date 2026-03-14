@@ -42,10 +42,16 @@ export async function PATCH(request: Request) {
     storefront_dark_mode,
   } = body;
 
-  // Validate required fields
-  if (!name || !reward_description) {
+  // Validate required fields only when they are provided (full save from customize page)
+  if (name !== undefined && !name) {
     return NextResponse.json(
-      { error: "Business name and reward description are required." },
+      { error: "Business name is required." },
+      { status: 400 }
+    );
+  }
+  if (reward_description !== undefined && !reward_description) {
+    return NextResponse.json(
+      { error: "Reward description is required." },
       { status: 400 }
     );
   }
@@ -68,36 +74,41 @@ export async function PATCH(request: Request) {
     }
   }
 
+  // Build update object with only the fields that were provided
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateData: Record<string, any> = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if (name !== undefined) updateData.name = name;
+  if (tagline !== undefined) updateData.tagline = tagline || null;
+  if (logo_url !== undefined) updateData.logo_url = logo_url || null;
+  if (brand_color !== undefined) updateData.brand_color = brand_color || null;
+  if (reward_description !== undefined) updateData.reward_description = reward_description;
+  if (content_type !== undefined) updateData.content_type = content_type || null;
+  if (requirements !== undefined) updateData.requirements = requirements && requirements.length > 0 ? requirements : null;
+  if (max_rewards_per_customer !== undefined) updateData.max_rewards_per_customer = max_rewards_per_customer;
+  if (email_subject !== undefined) updateData.email_subject = email_subject || null;
+  if (email_header !== undefined) updateData.email_header = email_header || null;
+  if (email_body !== undefined) updateData.email_body = email_body || null;
+  if (email_footer !== undefined) updateData.email_footer = email_footer || null;
+  if (email_brand_color !== undefined) updateData.email_brand_color = email_brand_color || null;
+  if (reward_file_url !== undefined) updateData.reward_file_url = reward_file_url || null;
+  if (reward_file_name !== undefined) updateData.reward_file_name = reward_file_name || null;
+  if (terms_conditions !== undefined) updateData.terms_conditions = terms_conditions || null;
+  if (sms_confirmation_template !== undefined) updateData.sms_confirmation_template = sms_confirmation_template || null;
+  if (sms_confirmation_enabled !== undefined) updateData.sms_confirmation_enabled = sms_confirmation_enabled;
+  if (sms_approval_template !== undefined) updateData.sms_approval_template = sms_approval_template || null;
+  if (sms_approval_enabled !== undefined) updateData.sms_approval_enabled = sms_approval_enabled;
+  if (sms_rejection_template !== undefined) updateData.sms_rejection_template = sms_rejection_template || null;
+  if (sms_rejection_enabled !== undefined) updateData.sms_rejection_enabled = sms_rejection_enabled;
+  if (default_coupon_expiry_days !== undefined) updateData.default_coupon_expiry_days = default_coupon_expiry_days;
+  if (auto_approve_requested !== undefined) updateData.auto_approve_requested = auto_approve_requested;
+  if (storefront_dark_mode !== undefined) updateData.storefront_dark_mode = !!storefront_dark_mode;
+
   const { error } = await supabase
     .from("businesses")
-    .update({
-      name,
-      tagline: tagline || null,
-      logo_url: logo_url || null,
-      brand_color: brand_color || null,
-      reward_description,
-      content_type: content_type || null,
-      requirements: requirements && requirements.length > 0 ? requirements : null,
-      ...(max_rewards_per_customer !== undefined && { max_rewards_per_customer }),
-      ...(email_subject !== undefined && { email_subject: email_subject || null }),
-      ...(email_header !== undefined && { email_header: email_header || null }),
-      ...(email_body !== undefined && { email_body: email_body || null }),
-      ...(email_footer !== undefined && { email_footer: email_footer || null }),
-      ...(email_brand_color !== undefined && { email_brand_color: email_brand_color || null }),
-      ...(reward_file_url !== undefined && { reward_file_url: reward_file_url || null }),
-      ...(reward_file_name !== undefined && { reward_file_name: reward_file_name || null }),
-      ...(terms_conditions !== undefined && { terms_conditions: terms_conditions || null }),
-      ...(sms_confirmation_template !== undefined && { sms_confirmation_template: sms_confirmation_template || null }),
-      ...(sms_confirmation_enabled !== undefined && { sms_confirmation_enabled }),
-      ...(sms_approval_template !== undefined && { sms_approval_template: sms_approval_template || null }),
-      ...(sms_approval_enabled !== undefined && { sms_approval_enabled }),
-      ...(sms_rejection_template !== undefined && { sms_rejection_template: sms_rejection_template || null }),
-      ...(sms_rejection_enabled !== undefined && { sms_rejection_enabled }),
-      ...(default_coupon_expiry_days !== undefined && { default_coupon_expiry_days }),
-      ...(auto_approve_requested !== undefined && { auto_approve_requested }),
-      ...(storefront_dark_mode !== undefined && { storefront_dark_mode: !!storefront_dark_mode }),
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq("owner_id", user.id);
 
   if (error) {

@@ -16,10 +16,10 @@ export default async function CustomizePage() {
   return (
     <div className="lg:-mr-4">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold" style={{ color: "var(--dash-text)" }}>
           Customize
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Edit how your landing page looks to customers
         </p>
       </div>

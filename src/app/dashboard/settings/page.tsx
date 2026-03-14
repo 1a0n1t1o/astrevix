@@ -25,10 +25,10 @@ export default async function SettingsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--dash-text)" }}>
           Settings
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Manage your account, business details, and preferences
         </p>
       </div>

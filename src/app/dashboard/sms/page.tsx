@@ -9,10 +9,10 @@ export default async function SmsPage() {
   return (
     <div className="lg:-mr-4">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold" style={{ color: "var(--dash-text)" }}>
           SMS Templates
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
           Customize the text messages your customers receive
         </p>
       </div>

@@ -9,6 +9,7 @@ interface SubscriptionBillingProps {
   readonly userEmail: string;
   readonly approvedThisMonth: number;
   readonly autoApproveRequested: boolean;
+  readonly plan: "free" | "pro";
 }
 
 const sectionVariants = {
@@ -37,12 +38,13 @@ export default function SubscriptionBilling({
   userEmail,
   approvedThisMonth,
   autoApproveRequested,
+  plan,
 }: SubscriptionBillingProps) {
-  const approvedLimit = 100;
-  const approvedPercent = Math.min(
-    Math.round((approvedThisMonth / approvedLimit) * 100),
-    100
-  );
+  const isPro = plan === "pro";
+  const approvedLimit = isPro ? Infinity : 100;
+  const approvedPercent = isPro
+    ? 0
+    : Math.min(Math.round((approvedThisMonth / approvedLimit) * 100), 100);
   const [showCheckout, setShowCheckout] = useState(false);
   const [autoApprove, setAutoApprove] = useState(autoApproveRequested);
   const [togglingAutoApprove, setTogglingAutoApprove] = useState(false);
@@ -141,27 +143,35 @@ export default function SubscriptionBilling({
         <div className="mt-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-lg font-semibold" style={{ color: "var(--dash-text)" }}>
-              Free Plan
+              {isPro ? "Pro Plan" : "Free Plan"}
             </span>
-            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${
+              isPro
+                ? "bg-blue-50 text-blue-700 ring-blue-600/20"
+                : "bg-emerald-50 text-emerald-700 ring-emerald-600/20"
+            }`}>
               Active
             </span>
           </div>
         </div>
 
         <p className="mt-2 text-sm" style={{ color: "var(--dash-text-secondary)" }}>
-          You&apos;re on the free plan with basic features.
+          {isPro
+            ? "You have unlimited access to all features."
+            : "You\u0027re on the free plan with basic features."}
         </p>
 
-        <div className="mt-4">
-          <button
-            type="button"
-            onClick={() => setShowCheckout(true)}
-            className="rounded-xl border-[1.5px] border-[#2563EB] bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-[#1d4ed8] hover:border-[#1d4ed8] active:scale-[0.98]"
-          >
-            Upgrade Plan
-          </button>
-        </div>
+        {!isPro && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setShowCheckout(true)}
+              className="rounded-xl border-[1.5px] border-[#2563EB] bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-[#1d4ed8] hover:border-[#1d4ed8] active:scale-[0.98]"
+            >
+              Upgrade Plan
+            </button>
+          </div>
+        )}
       </motion.section>
 
       {/* Section 1: Usage */}
@@ -190,7 +200,7 @@ export default function SubscriptionBilling({
               <span className="text-sm font-medium" style={{ color: "var(--dash-text-secondary)" }}>
                 Approved submissions this month
               </span>
-              <span className="text-sm" style={{ color: "var(--dash-text-secondary)" }}>{approvedThisMonth} / {approvedLimit}</span>
+              <span className="text-sm" style={{ color: "var(--dash-text-secondary)" }}>{approvedThisMonth}{isPro ? "" : ` / ${approvedLimit}`}</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full" style={{ backgroundColor: "var(--dash-hover)" }}>
               <div
