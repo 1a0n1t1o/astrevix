@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getAuthenticatedBusiness } from "@/lib/get-business";
+import { DashboardThemeProvider } from "@/components/theme-provider";
 import DashboardShell from "./dashboard-shell";
 import type { Business } from "@/types/database";
 
@@ -25,12 +26,14 @@ export default async function DashboardLayout({
   };
 
   return (
-    <DashboardShell
-      business={business as Business}
-      userEmail={user.email || ""}
-      userMetadata={userMetadata}
-    >
-      {children}
-    </DashboardShell>
+    <DashboardThemeProvider>
+      <DashboardShell
+        business={business as Business}
+        userEmail={user.email || ""}
+        userMetadata={userMetadata}
+      >
+        {children}
+      </DashboardShell>
+    </DashboardThemeProvider>
   );
 }

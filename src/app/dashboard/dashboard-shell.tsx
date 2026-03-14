@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
+import { useTheme } from "@/components/theme-provider";
 import type { Business } from "@/types/database";
 
 interface DashboardShellProps {
@@ -87,6 +88,7 @@ export default function DashboardShell({
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -109,7 +111,7 @@ export default function DashboardShell({
           alt="Astrevix"
           width={130}
           height={26}
-          style={{ filter: "brightness(0)" }}
+          style={{ filter: "var(--dash-logo-filter)" }}
         />
       </div>
 
@@ -125,18 +127,19 @@ export default function DashboardShell({
               onClick={() => setSidebarOpen(false)}
               onMouseEnter={() => router.prefetch(item.href)}
               onTouchStart={() => router.prefetch(item.href)}
-              className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+              className="relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors"
+              style={
                 active
-                  ? "text-[#2563EB]"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-              }`}
+                  ? { color: "var(--dash-blue)" }
+                  : { color: "var(--dash-text-secondary)" }
+              }
             >
               {active && (
                 <motion.div
                   layoutId="sidebar-active-indicator"
                   className="absolute inset-0 rounded-xl"
                   style={{
-                    background: "linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%)",
+                    background: "var(--dash-active-gradient)",
                     zIndex: -1,
                   }}
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
@@ -145,7 +148,8 @@ export default function DashboardShell({
               {active && (
                 <motion.div
                   layoutId="sidebar-active-bar"
-                  className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-[#2563EB]"
+                  className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full"
+                  style={{ backgroundColor: "var(--dash-blue)" }}
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
@@ -162,7 +166,12 @@ export default function DashboardShell({
           href={`/b/${business.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2.5 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+          className="flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors"
+          style={{
+            borderColor: "var(--dash-storefront-border)",
+            backgroundColor: "var(--dash-storefront-bg)",
+            color: "var(--dash-text-secondary)",
+          }}
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -175,7 +184,36 @@ export default function DashboardShell({
       <div className="flex-1" />
 
       {/* Bottom section */}
-      <div className="border-t border-gray-100 px-4 py-4">
+      <div className="border-t px-4 py-4" style={{ borderColor: "var(--dash-border)" }}>
+        {/* Dark mode toggle */}
+        <button
+          onClick={toggleTheme}
+          className="mb-3 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors"
+          style={{ color: "var(--dash-text-secondary)" }}
+        >
+          {theme === "light" ? (
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            </svg>
+          ) : (
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            </svg>
+          )}
+          {theme === "light" ? "Dark mode" : "Light mode"}
+          <div className="ml-auto">
+            <div
+              className="relative h-5 w-9 rounded-full transition-colors"
+              style={{ backgroundColor: theme === "dark" ? "var(--dash-blue)" : "#d1d5db" }}
+            >
+              <div
+                className="absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform"
+                style={{ left: theme === "dark" ? "18px" : "2px" }}
+              />
+            </div>
+          </div>
+        </button>
+
         <div className="flex items-center gap-3">
           {userMetadata?.avatar_url ? (
             <img
@@ -192,17 +230,18 @@ export default function DashboardShell({
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-gray-900">
+            <p className="truncate text-sm font-medium" style={{ color: "var(--dash-text)" }}>
               {userMetadata?.first_name && userMetadata?.last_name
                 ? `${userMetadata.first_name} ${userMetadata.last_name}`
                 : business.name}
             </p>
-            <p className="truncate text-xs text-gray-500">{userEmail}</p>
+            <p className="truncate text-xs" style={{ color: "var(--dash-text-secondary)" }}>{userEmail}</p>
           </div>
         </div>
         <button
           onClick={handleSignOut}
-          className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
+          className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors"
+          style={{ color: "var(--dash-text-secondary)" }}
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
@@ -216,7 +255,7 @@ export default function DashboardShell({
   return (
     <div
       className="min-h-screen"
-      style={{ background: "linear-gradient(135deg, #f0f4ff 0%, #fafbfc 40%, #f5f3ff 100%)" }}
+      style={{ background: "var(--dash-gradient-main)" }}
     >
       {/* Mobile backdrop */}
       <AnimatePresence>
@@ -226,7 +265,7 @@ export default function DashboardShell({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
@@ -234,10 +273,10 @@ export default function DashboardShell({
 
       {/* Sidebar - desktop: fixed, mobile: overlay */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 border-r border-gray-100/80 transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 border-r transition-transform lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
-        style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8faff 100%)" }}
+        style={{ background: "var(--dash-sidebar-gradient)", borderColor: "var(--dash-border)" }}
       >
         {sidebar}
       </aside>
@@ -245,10 +284,14 @@ export default function DashboardShell({
       {/* Main content */}
       <div className="lg:ml-64">
         {/* Mobile top bar */}
-        <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-100 bg-white/80 px-4 py-3 backdrop-blur-md lg:hidden">
+        <div
+          className="sticky top-0 z-30 flex items-center gap-3 border-b px-4 py-3 backdrop-blur-md lg:hidden"
+          style={{ borderColor: "var(--dash-border)", backgroundColor: "var(--dash-topbar-bg)" }}
+        >
           <button
             onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-gray-600 hover:bg-gray-50"
+            className="rounded-lg p-2"
+            style={{ color: "var(--dash-text-secondary)" }}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -259,7 +302,7 @@ export default function DashboardShell({
             alt="Astrevix"
             width={120}
             height={24}
-            style={{ filter: "brightness(0)" }}
+            style={{ filter: "var(--dash-logo-filter)" }}
           />
         </div>
 
