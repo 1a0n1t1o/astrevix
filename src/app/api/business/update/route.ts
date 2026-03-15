@@ -106,10 +106,23 @@ export async function PATCH(request: Request) {
   if (auto_approve_requested !== undefined) updateData.auto_approve_requested = auto_approve_requested;
   if (storefront_dark_mode !== undefined) updateData.storefront_dark_mode = !!storefront_dark_mode;
 
-  const { error } = await supabase
+  let { error } = await supabase
     .from("businesses")
     .update(updateData)
     .eq("owner_id", user.id);
+
+  // If the update failed and storefront_dark_mode was included,
+  // retry without it (column may not exist yet in the database)
+  if (error && updateData.storefront_dark_mode !== undefined) {
+    console.warn("Retrying update without storefront_dark_mode:", error.message);
+    const retryData = { ...updateData };
+    delete retryData.storefront_dark_mode;
+    const result = await supabase
+      .from("businesses")
+      .update(retryData)
+      .eq("owner_id", user.id);
+    error = result.error;
+  }
 
   if (error) {
     console.error("Business update error:", error);
