@@ -30,7 +30,7 @@ export default function PrivacyPage() {
         </div>
 
         <h1 className="mt-8 text-3xl font-bold text-gray-900">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-gray-500">Last updated: March 7, 2026</p>
+        <p className="mt-2 text-sm text-gray-500">Last updated: March 17, 2026</p>
 
         <div className="mt-8 space-y-8 text-sm leading-relaxed text-gray-700">
           <section>
@@ -108,8 +108,9 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-semibold text-gray-900">4. SMS Messaging</h2>
             <p className="mt-2">
-              By providing your phone number and checking the consent box, you agree to receive SMS messages from
-              Astrevix on behalf of the business. These messages may include:
+              By providing your phone number and checking the SMS consent box on our submission form, you agree to
+              receive SMS messages from Astrevix on behalf of the business. Providing your phone number is optional.
+              These messages may include:
             </p>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>A confirmation message when you submit your content</li>
@@ -118,7 +119,7 @@ export default function PrivacyPage() {
             </ul>
             <p className="mt-3">
               <strong>Message frequency:</strong> You may receive up to 3 SMS messages per submission
-              (confirmation, status update, and reward delivery).
+              (confirmation, status update, and reward delivery). Message frequency may vary.
             </p>
             <p className="mt-2">
               <strong>Message and data rates may apply.</strong>
@@ -132,6 +133,21 @@ export default function PrivacyPage() {
               <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
                 contact@astrevix.com
               </a>.
+            </p>
+            <p className="mt-4 font-semibold">
+              Your mobile information will not be sold or shared with third parties for promotional or
+              marketing purposes.
+            </p>
+            <p className="mt-2">
+              All the above categories exclude text messaging originator opt-in data and consent; this
+              information will not be shared with any third parties.
+            </p>
+            <p className="mt-2">
+              We will not share your opt-in to an SMS campaign with any third party for purposes unrelated
+              to providing you with the services of that campaign. We may share your Personal Data, including
+              your SMS opt-in or consent status, with third parties that help us provide our messaging
+              services, including but not limited to platform providers, phone companies, and any other
+              vendors who assist us in the delivery of text messages.
             </p>
           </section>
 
@@ -147,6 +163,11 @@ export default function PrivacyPage() {
               We only share your information with the specific business you submitted content to (so they can
               review your submission and issue your reward) and with the third-party service providers listed
               below, solely to operate the Service.
+            </p>
+            <p className="mt-2">
+              All the above categories exclude text messaging originator opt-in data and consent; this
+              information will not be shared with any third parties, excluding aggregators and providers
+              of the text message services.
             </p>
           </section>
 

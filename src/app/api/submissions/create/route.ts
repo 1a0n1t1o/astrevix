@@ -27,25 +27,31 @@ export async function POST(request: Request) {
     detected_platform,
     customer_name,
     customer_phone,
+    sms_consent,
     reward_tier_id,
   } = body;
 
-  // Basic validation
-  if (!business_id || !post_url || !customer_name || !customer_phone) {
+  // Basic validation — phone is now optional
+  if (!business_id || !post_url || !customer_name) {
     return NextResponse.json(
-      { error: "All fields are required.", code: "VALIDATION_ERROR" },
+      { error: "Business ID, post URL, and name are required.", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
 
-  // Normalize phone to E.164
-  const normalizedPhone = parsePhoneToE164(customer_phone);
-  if (!normalizedPhone) {
-    return NextResponse.json(
-      { error: "Please enter a valid US phone number.", code: "VALIDATION_ERROR" },
-      { status: 400 }
-    );
+  // Normalize phone to E.164 (only if provided)
+  let normalizedPhone: string | null = null;
+  if (customer_phone) {
+    normalizedPhone = parsePhoneToE164(customer_phone);
+    if (!normalizedPhone) {
+      return NextResponse.json(
+        { error: "Please enter a valid US phone number.", code: "VALIDATION_ERROR" },
+        { status: 400 }
+      );
+    }
   }
+
+  const hasSmsConsent = Boolean(sms_consent) && Boolean(normalizedPhone);
 
   // Check if business is suspended
   const { data: business } = await supabase
@@ -89,13 +95,14 @@ export async function POST(request: Request) {
 
   // Insert the submission — the database handles enforcement:
   //   - Unique index on (business_id, post_url) blocks duplicate links
-  //   - BEFORE INSERT trigger checks per-customer submission limit (by phone)
+  //   - BEFORE INSERT trigger checks per-customer submission limit (by phone, if provided)
   const { error } = await supabase.from("submissions").insert({
     business_id,
     post_url: post_url.trim(),
     detected_platform: detected_platform || null,
     customer_name: customer_name.trim(),
     customer_phone: normalizedPhone,
+    sms_consent: hasSmsConsent,
     reward_tier_id: reward_tier_id || null,
     verification_deadline: verificationDeadline,
     verification_status: verificationStatus,
@@ -129,38 +136,40 @@ export async function POST(request: Request) {
     );
   }
 
-  // Fire-and-forget confirmation SMS
-  try {
-    const admin = getSupabaseAdmin();
-    const { data: smsSettings } = await admin
-      .from("businesses")
-      .select("sms_confirmation_template, sms_confirmation_enabled")
-      .eq("id", business_id)
-      .single();
+  // Fire-and-forget confirmation SMS — only if phone provided AND SMS consent given
+  if (normalizedPhone && hasSmsConsent) {
+    try {
+      const admin = getSupabaseAdmin();
+      const { data: smsSettings } = await admin
+        .from("businesses")
+        .select("sms_confirmation_template, sms_confirmation_enabled")
+        .eq("id", business_id)
+        .single();
 
-    if (smsSettings?.sms_confirmation_enabled !== false) {
-      const template =
-        smsSettings?.sms_confirmation_template ||
-        DEFAULT_SMS_TEMPLATES.confirmation;
-      const rendered = renderSmsTemplate(template, {
-        businessName: business.name,
-        customerName: customer_name.trim(),
-      });
+      if (smsSettings?.sms_confirmation_enabled !== false) {
+        const template =
+          smsSettings?.sms_confirmation_template ||
+          DEFAULT_SMS_TEMPLATES.confirmation;
+        const rendered = renderSmsTemplate(template, {
+          businessName: business.name,
+          customerName: customer_name.trim(),
+        });
 
-      const result = await sendSms(normalizedPhone, rendered);
+        const result = await sendSms(normalizedPhone, rendered);
 
-      await admin.from("sms_log").insert({
-        business_id,
-        customer_phone: normalizedPhone,
-        message_type: "confirmation",
-        message_body: rendered,
-        twilio_sid: result.sid,
-        status: result.status,
-      });
+        await admin.from("sms_log").insert({
+          business_id,
+          customer_phone: normalizedPhone,
+          message_type: "confirmation",
+          message_body: rendered,
+          twilio_sid: result.sid,
+          status: result.status,
+        });
+      }
+    } catch (smsErr) {
+      // Don't block submission if SMS fails
+      console.error("[submissions/create] Confirmation SMS failed:", smsErr);
     }
-  } catch (smsErr) {
-    // Don't block submission if SMS fails
-    console.error("[submissions/create] Confirmation SMS failed:", smsErr);
   }
 
   return NextResponse.json({ success: true });

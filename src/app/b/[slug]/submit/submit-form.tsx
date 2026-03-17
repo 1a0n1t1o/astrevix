@@ -95,13 +95,13 @@ export default function SubmitForm({
   const phoneDigits = phone.replace(/\D/g, "");
   const isPhoneValid = phone.trim() === "" || isValidUSPhone(phone);
 
+  const hasPhone = phoneDigits.length > 0;
+
   const isValid =
     postLink.trim() !== "" &&
     isValidUrl &&
     name.trim() !== "" &&
-    phoneDigits.length === 10 &&
-    isPhoneValid &&
-    smsConsent &&
+    (!hasPhone || (phoneDigits.length === 10 && isPhoneValid)) &&
     (!hasTiers || selectedTier !== null);
 
   async function handleSubmit() {
@@ -110,11 +110,14 @@ export default function SubmitForm({
     setDuplicateLink(false);
     setFormError(null);
 
-    const e164 = parsePhoneToE164(phone);
-    if (!e164) {
-      setFormError("Invalid phone number.");
-      setSubmitting(false);
-      return;
+    let e164: string | null = null;
+    if (hasPhone) {
+      e164 = parsePhoneToE164(phone);
+      if (!e164) {
+        setFormError("Invalid phone number.");
+        setSubmitting(false);
+        return;
+      }
     }
 
     const { error, code } = await createSubmission({
@@ -123,6 +126,7 @@ export default function SubmitForm({
       detectedPlatform: detectedPlatform,
       customerName: name,
       customerPhone: e164,
+      smsConsent: hasPhone && smsConsent,
       rewardTierId: selectedTier?.id || null,
     });
 
@@ -273,8 +277,9 @@ export default function SubmitForm({
             </span>
           )}
           <p className="mt-2 text-xs" style={{ color: "#8B8B9B" }}>
-            We&apos;ll text it to the number you provided once your post is
-            {selectedTier ? " verified and" : ""} approved.
+            {hasPhone && smsConsent
+              ? `We'll text it to the number you provided once your post is${selectedTier ? " verified and" : ""} approved.`
+              : `${business.name} will send your reward once your post is${selectedTier ? " verified and" : ""} approved.`}
           </p>
         </div>
 
@@ -561,7 +566,7 @@ export default function SubmitForm({
         {/* Phone number */}
         <div>
           <label htmlFor="phone" className="block text-sm font-medium">
-            Phone number
+            Phone number <span className="text-xs font-normal text-gray-400">(optional)</span>
           </label>
           <div className="relative mt-1.5">
             <span
@@ -577,6 +582,10 @@ export default function SubmitForm({
               onChange={(e) => {
                 const formatted = formatPhoneInput(e.target.value);
                 setPhone(formatted);
+                // Reset SMS consent if phone is cleared
+                if (formatted.replace(/\D/g, "").length === 0) {
+                  setSmsConsent(false);
+                }
               }}
               placeholder="(555) 123-4567"
               className="w-full bg-white text-sm outline-none transition-colors placeholder:text-gray-400"
@@ -599,42 +608,64 @@ export default function SubmitForm({
             </p>
           ) : (
             <p className="mt-1.5 text-xs text-gray-400">
-              Only used to text your reward. We never spam.
+              Optional &mdash; provide your number to receive SMS updates about your submission
             </p>
           )}
+          {/* Phone number disclaimer text */}
+          <p className="mt-2 text-[11px] leading-relaxed text-gray-400">
+            By providing your phone number, you agree to receive SMS account notifications and customer care
+            messages from Astrevix. Message frequency may vary. Standard message and data rates may apply.
+            Reply STOP to opt out. Reply HELP for help. We will not share mobile information with third
+            parties for promotional or marketing purposes.
+          </p>
         </div>
       </div>
 
-      {/* SMS consent checkbox */}
-      <label className="mt-5 flex items-start gap-3 cursor-pointer">
-        <span className="relative mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center">
-          <input
-            type="checkbox"
-            checked={smsConsent}
-            onChange={(e) => setSmsConsent(e.target.checked)}
-            className="sr-only"
-          />
-          <span
-            className="absolute inset-0 rounded-md transition-colors"
-            style={{
-              border: smsConsent ? "none" : "1.5px solid #D0CCC6",
-              backgroundColor: smsConsent ? business.brandColor : "transparent",
-            }}
-          />
-          {smsConsent && (
-            <svg className="relative h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-          )}
-        </span>
-        <span className="text-xs leading-relaxed text-gray-500">
-          By submitting, I agree to receive SMS messages from {business.name} via Astrevix about my submission
-          and reward. Up to 3 msgs per submission. Msg &amp; data rates may apply. Reply STOP to opt-out.{" "}
-          <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms &amp; Conditions</a>
-          {" | "}
-          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Privacy Policy</a>.
-        </span>
-      </label>
+      {/* SMS consent checkbox — only shown when phone number is entered */}
+      {hasPhone && (
+        <div className="mt-5 space-y-2">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <span className="relative mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+              <input
+                type="checkbox"
+                checked={smsConsent}
+                onChange={(e) => setSmsConsent(e.target.checked)}
+                className="sr-only"
+              />
+              <span
+                className="absolute inset-0 rounded-md transition-colors"
+                style={{
+                  border: smsConsent ? "none" : "1.5px solid #D0CCC6",
+                  backgroundColor: smsConsent ? business.brandColor : "transparent",
+                }}
+              />
+              {smsConsent && (
+                <svg className="relative h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+              )}
+            </span>
+            <span className="text-xs leading-relaxed text-gray-500">
+              I agree to receive SMS notifications about my submission status and reward code delivery
+              from Astrevix. Message frequency may vary. Msg &amp; data rates may apply. Reply STOP to
+              opt out. Reply HELP for help.
+            </span>
+          </label>
+
+          {/* Privacy verbiage */}
+          <p className="pl-[30px] text-[11px] leading-relaxed text-gray-400">
+            Your mobile information will not be sold or shared with third parties for promotional or
+            marketing purposes. View our{" "}
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">
+              Terms of Service
+            </a>.
+          </p>
+        </div>
+      )}
 
       {/* Submit button */}
       <button

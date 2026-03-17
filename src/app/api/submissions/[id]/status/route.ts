@@ -62,7 +62,7 @@ export async function PATCH(
       .eq("id", id)
       .single();
 
-    if (!submission?.customer_phone) {
+    if (!submission?.customer_phone || !submission?.sms_consent) {
       return NextResponse.json({ success: true });
     }
 
