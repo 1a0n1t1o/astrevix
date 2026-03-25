@@ -166,3 +166,83 @@ body {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12), 0 8px 16px -6px rgba(0,0,0,0.06);
 }
+
+/* ===== Landing Page — CSS entrance animations (replace framer-motion) ===== */
+
+/* Fade up on load (for above-fold hero content) */
+@keyframes landing-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: landing-fade-up 0.6s ease-out both;
+}
+.animate-fade-up-d1 { animation: landing-fade-up 0.6s ease-out 0.1s both; }
+.animate-fade-up-d2 { animation: landing-fade-up 0.6s ease-out 0.2s both; }
+.animate-fade-up-d3 { animation: landing-fade-up 0.6s ease-out 0.3s both; }
+.animate-fade-up-d4 { animation: landing-fade-up 0.6s ease-out 0.4s both; }
+.animate-fade-up-d5 { animation: landing-fade-up 0.6s ease-out 0.5s both; }
+.animate-fade-up-d6 { animation: landing-fade-up 0.6s ease-out 0.6s both; }
+.animate-fade-up-d7 { animation: landing-fade-up 0.6s ease-out 0.7s both; }
+.animate-fade-up-d8 { animation: landing-fade-up 0.6s ease-out 0.8s both; }
+.animate-fade-up-d9 { animation: landing-fade-up 0.6s ease-out 0.9s both; }
+.animate-fade-up-d10 { animation: landing-fade-up 0.6s ease-out 1.0s both; }
+
+/* Scale in on load (for phone mockup) */
+@keyframes landing-scale-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in {
+  animation: landing-scale-in 0.8s ease-out 0.4s both;
+}
+
+/* Fade in from left/right (for floating badges) */
+@keyframes landing-fade-left {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes landing-fade-right {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-fade-left { animation: landing-fade-left 0.6s ease-out both; }
+.animate-fade-right { animation: landing-fade-right 0.6s ease-out both; }
+
+/* Gentle floating for badges */
+@keyframes badge-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-badge-float {
+  animation: badge-float 3s ease-in-out infinite;
+}
+
+/* Slow drift for background orbs (CSS only, no JS) */
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -20px); }
+  66% { transform: translate(-10px, 15px); }
+}
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-25px, 20px); }
+  66% { transform: translate(15px, -10px); }
+}
+.animate-orb-1 { animation: orb-drift-1 20s ease-in-out infinite; }
+.animate-orb-2 { animation: orb-drift-2 25s ease-in-out infinite; }
+
+/* Scroll-triggered fade up (used with IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
