@@ -2,8 +2,12 @@ import { supabase } from "@/lib/supabase";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { parsePhoneToE164 } from "@/lib/phone-utils";
-import { sendSms, renderSmsTemplate, DEFAULT_SMS_TEMPLATES } from "@/lib/twilio";
+import {
+  sendRewardEmail,
+  renderEmailTemplate,
+  buildEmailHtml,
+  DEFAULT_EMAIL_TEMPLATES,
+} from "@/lib/email";
 import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
@@ -26,23 +30,23 @@ export async function POST(request: Request) {
     post_url,
     detected_platform,
     customer_name,
-    customer_phone,
+    customer_email,
     reward_tier_id,
   } = body;
 
   // Basic validation
-  if (!business_id || !post_url || !customer_name || !customer_phone) {
+  if (!business_id || !post_url || !customer_name || !customer_email) {
     return NextResponse.json(
       { error: "All fields are required.", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
 
-  // Normalize phone to E.164
-  const normalizedPhone = parsePhoneToE164(customer_phone);
-  if (!normalizedPhone) {
+  // Validate email format
+  const normalizedEmail = customer_email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
     return NextResponse.json(
-      { error: "Please enter a valid US phone number.", code: "VALIDATION_ERROR" },
+      { error: "Please enter a valid email address.", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
@@ -50,7 +54,7 @@ export async function POST(request: Request) {
   // Check if business is suspended
   const { data: business } = await supabase
     .from("businesses")
-    .select("id, status, name")
+    .select("id, status, name, brand_color, logo_url")
     .eq("id", business_id)
     .single();
 
@@ -89,13 +93,13 @@ export async function POST(request: Request) {
 
   // Insert the submission — the database handles enforcement:
   //   - Unique index on (business_id, post_url) blocks duplicate links
-  //   - BEFORE INSERT trigger checks per-customer submission limit (by phone)
+  //   - BEFORE INSERT trigger checks per-customer submission limit (by email)
   const { error } = await supabase.from("submissions").insert({
     business_id,
     post_url: post_url.trim(),
     detected_platform: detected_platform || null,
     customer_name: customer_name.trim(),
-    customer_phone: normalizedPhone,
+    customer_email: normalizedEmail,
     reward_tier_id: reward_tier_id || null,
     verification_deadline: verificationDeadline,
     verification_status: verificationStatus,
@@ -115,7 +119,7 @@ export async function POST(request: Request) {
       const businessName = error.message.split("LIMIT_REACHED:")[1] || "this business";
       return NextResponse.json(
         {
-          error: `You've already submitted content for ${businessName}. Thank you for your support!`,
+          error: `This email has already reached the maximum submissions for ${businessName}.`,
           code: "LIMIT_REACHED",
         },
         { status: 429 }
@@ -129,38 +133,46 @@ export async function POST(request: Request) {
     );
   }
 
-  // Fire-and-forget confirmation SMS
+  // Fire-and-forget confirmation email
   try {
     const admin = getSupabaseAdmin();
-    const { data: smsSettings } = await admin
+    const { data: emailSettings } = await admin
       .from("businesses")
-      .select("sms_confirmation_template, sms_confirmation_enabled")
+      .select("email_subject_confirmation, email_body_confirmation, email_confirmation_enabled, email_brand_color")
       .eq("id", business_id)
       .single();
 
-    if (smsSettings?.sms_confirmation_enabled !== false) {
-      const template =
-        smsSettings?.sms_confirmation_template ||
-        DEFAULT_SMS_TEMPLATES.confirmation;
-      const rendered = renderSmsTemplate(template, {
+    if (emailSettings?.email_confirmation_enabled !== false) {
+      const subject =
+        emailSettings?.email_subject_confirmation ||
+        DEFAULT_EMAIL_TEMPLATES.confirmation.subject;
+      const bodyTemplate =
+        emailSettings?.email_body_confirmation ||
+        DEFAULT_EMAIL_TEMPLATES.confirmation.body;
+
+      const variables = {
         businessName: business.name,
         customerName: customer_name.trim(),
-      });
+      };
 
-      const result = await sendSms(normalizedPhone, rendered);
+      const renderedSubject = renderEmailTemplate(subject, variables);
+      const renderedBody = renderEmailTemplate(bodyTemplate, variables);
+      const brandColor = emailSettings?.email_brand_color || business.brand_color || "#E8553A";
+      const html = buildEmailHtml(renderedBody, brandColor, business.name, business.logo_url);
 
-      await admin.from("sms_log").insert({
+      await sendRewardEmail(normalizedEmail, renderedSubject, html);
+
+      await admin.from("email_log").insert({
         business_id,
-        customer_phone: normalizedPhone,
+        customer_email: normalizedEmail,
         message_type: "confirmation",
-        message_body: rendered,
-        twilio_sid: result.sid,
-        status: result.status,
+        subject: renderedSubject,
+        status: "sent",
       });
     }
-  } catch (smsErr) {
-    // Don't block submission if SMS fails
-    console.error("[submissions/create] Confirmation SMS failed:", smsErr);
+  } catch (emailErr) {
+    // Don't block submission if email fails
+    console.error("[submissions/create] Confirmation email failed:", emailErr);
   }
 
   return NextResponse.json({ success: true });

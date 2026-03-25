@@ -58,7 +58,7 @@ export async function DELETE(
     }
 
     // 4. Hard delete the business record
-    //    This cascades to: submissions, qr_scans, sms_log, rewards_sent
+    //    This cascades to: submissions, qr_scans, email_log, rewards_sent
     const { error: deleteError } = await admin
       .from("businesses")
       .delete()

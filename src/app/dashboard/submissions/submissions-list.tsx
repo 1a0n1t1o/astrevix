@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Submission, RewardTier, CouponCode } from "@/types/database";
-import { formatPhoneForDisplay } from "@/lib/phone-utils";
 import {
   Instagram,
   Music,
@@ -125,9 +124,11 @@ function getVerificationInfo(sub: Submission) {
   };
 }
 
-interface SmsTemplateData {
-  approvalTemplate: string | null;
-  rejectionTemplate: string | null;
+interface EmailTemplateData {
+  approvalSubject: string | null;
+  approvalBody: string | null;
+  rejectionSubject: string | null;
+  rejectionBody: string | null;
   businessName: string;
   rewardDescription: string;
 }
@@ -138,11 +139,11 @@ interface SubmissionsListProps {
   readonly rewardDescription: string;
   readonly rewardTiers: RewardTier[];
   readonly couponCodes: CouponCode[];
-  readonly hasSmsTemplate: boolean;
-  readonly smsTemplateData: SmsTemplateData;
+  readonly hasEmailTemplate: boolean;
+  readonly emailTemplateData: EmailTemplateData;
 }
 
-function renderSmsPreview(
+function renderEmailPreview(
   template: string,
   customerName: string,
   businessName: string,
@@ -156,7 +157,7 @@ function renderSmsPreview(
     .replace(/\[Reward Link\]/g, "")
     .replace(/\[Coupon Code\]/g, "AX7K2M");
   if (note) {
-    result += `\n\n${note}`;
+    result = `${note}\n\n${result}`;
   }
   return result;
 }
@@ -167,8 +168,8 @@ export default function SubmissionsList({
   rewardDescription,
   rewardTiers,
   couponCodes,
-  hasSmsTemplate,
-  smsTemplateData,
+  hasEmailTemplate,
+  emailTemplateData,
 }: SubmissionsListProps) {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -198,7 +199,7 @@ export default function SubmissionsList({
     ? submissions.filter(
         (s) =>
           s.customer_name.toLowerCase().includes(query) ||
-          (s.customer_phone || "").includes(query) ||
+          (s.customer_email || "").includes(query) ||
           s.post_url.toLowerCase().includes(query)
       )
     : submissions;
@@ -302,7 +303,7 @@ export default function SubmissionsList({
     };
   }
 
-  const st = smsTemplateData;
+  const et = emailTemplateData;
 
   return (
     <div>
@@ -357,7 +358,7 @@ export default function SubmissionsList({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name, phone, or link..."
+            placeholder="Search by name, email, or link..."
             className="w-full rounded-xl border border-gray-200 bg-white/80 py-2.5 pl-10 pr-9 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10"
             style={{ backdropFilter: "blur(8px)" }}
           />
@@ -559,10 +560,10 @@ export default function SubmissionsList({
                           <div className="grid gap-3 sm:grid-cols-2">
                             <div>
                               <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                Phone
+                                Email
                               </p>
                               <p className="mt-1 text-sm text-gray-900">
-                                {formatPhoneForDisplay(sub.customer_phone)}
+                                {sub.customer_email || "—"}
                               </p>
                             </div>
                             <div>
@@ -773,9 +774,9 @@ export default function SubmissionsList({
                                         >
                                           {coupon.status}
                                         </span>
-                                        {coupon.sms_sent && (
+                                        {coupon.email_sent && (
                                           <span className="text-[10px] text-emerald-600 font-medium">
-                                            SMS sent
+                                            Email sent
                                           </span>
                                         )}
                                       </div>
@@ -818,15 +819,15 @@ export default function SubmissionsList({
                                 />
                               </div>
 
-                              {/* SMS template notice */}
-                              {hasSmsTemplate ? (
+                              {/* Email template notice */}
+                              {hasEmailTemplate ? (
                                 <div className="mb-3 flex items-center justify-between rounded-lg bg-blue-50 border border-blue-100 px-3 py-2.5">
                                   <div className="flex items-center gap-2">
                                     <svg className="h-4 w-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                     </svg>
                                     <p className="text-xs text-blue-700">
-                                      Reward SMS will be sent using your template
+                                      Reward email will be sent using your template
                                     </p>
                                   </div>
                                   <button
@@ -846,7 +847,7 @@ export default function SubmissionsList({
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                                   </svg>
                                   <p className="text-xs text-amber-700">
-                                    <a href="/dashboard/sms" className="font-medium underline hover:text-amber-900">Set up your SMS templates</a>{" "}
+                                    <a href="/dashboard/email" className="font-medium underline hover:text-amber-900">Set up your email templates</a>{" "}
                                     to customize what customers receive
                                   </p>
                                 </div>
@@ -884,7 +885,7 @@ export default function SubmissionsList({
                                         onChange={(e) =>
                                           setCommentValue(e.target.value)
                                         }
-                                        placeholder="Add a personal note to include in the SMS..."
+                                        placeholder="Add a personal note to include in the email..."
                                         rows={2}
                                         className="mt-2 w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20"
                                       />
@@ -1042,7 +1043,7 @@ export default function SubmissionsList({
         })()}
       </AnimatePresence>
 
-      {/* SMS Preview Modal */}
+      {/* Email Preview Modal */}
       <AnimatePresence>
         {previewModalOpen && previewSub && (
           <motion.div
@@ -1070,7 +1071,7 @@ export default function SubmissionsList({
               {/* Modal header */}
               <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                 <h3 className="text-base font-semibold text-gray-900">
-                  SMS Preview
+                  Email Preview
                 </h3>
                 <button
                   onClick={() => setPreviewModalOpen(false)}
@@ -1082,31 +1083,36 @@ export default function SubmissionsList({
                 </button>
               </div>
 
-              {/* SMS preview */}
-              <div className="bg-[#F2F2F7] px-4 py-6">
+              {/* Email preview */}
+              <div className="bg-gray-50 px-4 py-6">
                 <p className="text-center text-[10px] text-gray-400 mb-3">
-                  Text Message from {st.businessName}
+                  Email from {et.businessName}
                 </p>
-                <div className="flex justify-start">
-                  <div
-                    className="max-w-[90%] rounded-2xl rounded-tl-md px-4 py-3"
-                    style={{ backgroundColor: "#E9E9EB" }}
-                  >
-                    <p className="text-[13px] leading-relaxed text-gray-900 whitespace-pre-wrap">
-                      {renderSmsPreview(
-                        st.approvalTemplate ||
-                          "Great news! Your post for [Business Name] has been approved! Here's your reward: [Reward Details]. Thank you for your support!",
+                <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+                  <div className="border-b border-gray-100 px-4 py-2">
+                    <p className="text-[11px] font-medium text-gray-900">
+                      {renderEmailPreview(
+                        et.approvalSubject || "Your reward from [Business Name] is here!",
                         previewSub.customer_name,
-                        st.businessName,
-                        rewardValue || st.rewardDescription,
+                        et.businessName,
+                        rewardValue || et.rewardDescription,
+                        ""
+                      )}
+                    </p>
+                  </div>
+                  <div className="px-4 py-3">
+                    <p className="text-[13px] leading-relaxed text-gray-700 whitespace-pre-wrap">
+                      {renderEmailPreview(
+                        et.approvalBody ||
+                          "Great news! Your post has been approved. Here's your reward: [Reward Details]. Thank you for your support!",
+                        previewSub.customer_name,
+                        et.businessName,
+                        rewardValue || et.rewardDescription,
                         commentValue
                       )}
                     </p>
                   </div>
                 </div>
-                <p className="text-right text-[10px] text-gray-400 pr-1 mt-2">
-                  Delivered
-                </p>
               </div>
             </motion.div>
           </motion.div>

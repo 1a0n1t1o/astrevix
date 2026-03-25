@@ -5,10 +5,6 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CouponCode } from "@/types/database";
 import {
-  formatPhoneForDisplay,
-  maskPhoneForDisplay,
-} from "@/lib/phone-utils";
-import {
   Instagram,
   Music,
   Youtube,
@@ -182,17 +178,18 @@ export default function CustomersList({
   // ---- Lookup maps ----
   const submissionMap = new Map(submissions.map((s) => [s.id, s]));
 
-  const couponsByPhone = new Map<string, CouponCode[]>();
+  const couponsByEmail = new Map<string, CouponCode[]>();
   coupons.forEach((c) => {
-    if (!couponsByPhone.has(c.customer_phone)) {
-      couponsByPhone.set(c.customer_phone, []);
+    const key = c.customer_email || c.customer_phone || c.id;
+    if (!couponsByEmail.has(key)) {
+      couponsByEmail.set(key, []);
     }
-    couponsByPhone.get(c.customer_phone)!.push(c);
+    couponsByEmail.get(key)!.push(c);
   });
 
   // ---- Stats ----
-  const uniquePhones = new Set(coupons.map((c) => c.customer_phone));
-  const totalCustomers = uniquePhones.size;
+  const uniqueCustomers = new Set(coupons.map((c) => c.customer_email || c.customer_phone || c.id));
+  const totalCustomers = uniqueCustomers.size;
   const activeCoupons = coupons.filter((c) => c.status === "active").length;
   const redeemedCoupons = coupons.filter((c) => c.status === "used").length;
 
@@ -209,7 +206,7 @@ export default function CustomersList({
     ? coupons.filter(
         (c) =>
           c.customer_name.toLowerCase().includes(query) ||
-          c.customer_phone.includes(query) ||
+          (c.customer_email || "").includes(query) ||
           c.code.toLowerCase().includes(query)
       )
     : coupons;
@@ -333,7 +330,8 @@ export default function CustomersList({
     const platformInfo = getPlatformInfo(coupon);
     const expiryInfo = getExpiryInfo(coupon.expires_at);
     const sub = submissionMap.get(coupon.submission_id);
-    const phoneHistory = couponsByPhone.get(coupon.customer_phone) || [];
+    const customerKey = coupon.customer_email || coupon.customer_phone || coupon.id;
+    const customerHistory = couponsByEmail.get(customerKey) || [];
     const isExpiredVariant = variant === "expired";
 
     return (
@@ -403,7 +401,7 @@ export default function CustomersList({
               )}
             </div>
             <div className="mt-0.5 flex items-center gap-2 text-sm text-gray-500">
-              <span>{maskPhoneForDisplay(coupon.customer_phone)}</span>
+              <span>{coupon.customer_email || "—"}</span>
               <span className="text-gray-300">·</span>
               <span className="truncate max-w-[200px]">
                 {coupon.reward_description}
@@ -536,10 +534,10 @@ export default function CustomersList({
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
                     <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                      Phone
+                      Email
                     </p>
                     <p className="mt-1 text-sm text-gray-900">
-                      {formatPhoneForDisplay(coupon.customer_phone)}
+                      {coupon.customer_email || "—"}
                     </p>
                   </div>
                   <div>
@@ -587,7 +585,7 @@ export default function CustomersList({
                   </div>
                 </div>
 
-                {/* Verification & SMS status */}
+                {/* Verification & Email status */}
                 <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
                   <div className="grid gap-3 sm:grid-cols-2">
                     {/* Verification */}
@@ -630,21 +628,21 @@ export default function CustomersList({
                       )}
                     </div>
 
-                    {/* SMS Status */}
+                    {/* Email Status */}
                     <div>
                       <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
-                        SMS Delivery
+                        Email Delivery
                       </p>
                       <div className="flex items-center gap-2">
-                        {coupon.sms_sent ? (
+                        {coupon.email_sent ? (
                           <>
                             <CheckCircle className="h-4 w-4 text-emerald-500" />
                             <span className="text-sm font-medium text-emerald-600">
                               Sent
                             </span>
-                            {coupon.sms_sent_at && (
+                            {coupon.email_sent_at && (
                               <span className="text-xs text-gray-500">
-                                · {formatDateTime(coupon.sms_sent_at)}
+                                · {formatDateTime(coupon.email_sent_at)}
                               </span>
                             )}
                           </>
@@ -683,10 +681,10 @@ export default function CustomersList({
                             Verified {formatDateTime(sub.verified_at)}
                           </div>
                         )}
-                        {coupon.sms_sent_at && (
+                        {coupon.email_sent_at && (
                           <div className="flex items-center gap-2 text-xs text-gray-600">
                             <span className="h-1.5 w-1.5 rounded-full bg-green-400 shrink-0" />
-                            Coupon SMS sent {formatDateTime(coupon.sms_sent_at)}
+                            Reward email sent {formatDateTime(coupon.email_sent_at)}
                           </div>
                         )}
                         {coupon.used_at && (
@@ -700,14 +698,14 @@ export default function CustomersList({
                   )}
                 </div>
 
-                {/* Coupon history for this phone */}
-                {phoneHistory.length > 1 && (
+                {/* Coupon history for this customer */}
+                {customerHistory.length > 1 && (
                   <div className="mt-4 rounded-xl border border-gray-100 bg-white p-4">
                     <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
-                      Coupon History ({phoneHistory.length} total)
+                      Coupon History ({customerHistory.length} total)
                     </p>
                     <div className="space-y-2">
-                      {phoneHistory.map((h) => (
+                      {customerHistory.map((h) => (
                         <div
                           key={h.id}
                           className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${
@@ -872,7 +870,7 @@ export default function CustomersList({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name, phone, or coupon code..."
+            placeholder="Search by name, email, or coupon code..."
             className="w-full rounded-xl border border-gray-200 bg-white/80 py-2.5 pl-10 pr-9 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/10"
             style={{ backdropFilter: "blur(8px)" }}
           />

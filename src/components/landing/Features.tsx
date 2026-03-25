@@ -18,7 +18,7 @@ const FEATURES = [
     icon: Gift,
     title: "Custom Rewards",
     description:
-      "Set up your own coupons, discounts, or freebies. Deliver them automatically via SMS.",
+      "Set up your own coupons, discounts, or freebies. Deliver them automatically via email.",
     color: "#7C3AED",
     bgColor: "rgba(124, 58, 237, 0.12)",
     borderColor: "rgba(124, 58, 237, 0.2)",

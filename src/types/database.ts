@@ -27,7 +27,7 @@ export interface Business {
   qr_default_branding: boolean | null;
   // Submission limits
   max_rewards_per_customer: number | null;
-  // Email template (legacy)
+  // Email templates
   email_subject: string | null;
   email_header: string | null;
   email_body: string | null;
@@ -35,13 +35,18 @@ export interface Business {
   email_brand_color: string | null;
   reward_file_url: string | null;
   reward_file_name: string | null;
-  // SMS templates
-  sms_confirmation_template: string | null;
-  sms_confirmation_enabled: boolean | null;
-  sms_approval_template: string | null;
-  sms_approval_enabled: boolean | null;
-  sms_rejection_template: string | null;
-  sms_rejection_enabled: boolean | null;
+  email_subject_confirmation: string | null;
+  email_body_confirmation: string | null;
+  email_confirmation_enabled: boolean | null;
+  email_subject_approval: string | null;
+  email_body_approval: string | null;
+  email_approval_enabled: boolean | null;
+  email_subject_rejection: string | null;
+  email_body_rejection: string | null;
+  email_rejection_enabled: boolean | null;
+  email_reward_link: string | null;
+  email_reward_file_url: string | null;
+  email_reward_file_name: string | null;
   // Coupon settings
   default_coupon_expiry_days: number | null;
   // Terms & Conditions
@@ -123,16 +128,15 @@ export interface RewardSent {
   sent_at: string;
 }
 
-export interface SmsLog {
+export interface EmailLog {
   id: string;
   business_id: string;
   submission_id: string | null;
-  customer_phone: string;
+  customer_email: string;
   message_type: "confirmation" | "approval" | "rejection";
-  message_body: string;
-  twilio_sid: string | null;
+  subject: string | null;
   status: string;
-  created_at: string;
+  sent_at: string;
 }
 
 export interface CouponCode {
@@ -142,11 +146,12 @@ export interface CouponCode {
   reward_tier_id: string | null;
   code: string;
   customer_name: string;
-  customer_phone: string;
+  customer_phone: string | null;
+  customer_email: string | null;
   reward_description: string;
   status: "active" | "used" | "expired";
-  sms_sent: boolean;
-  sms_sent_at: string | null;
+  email_sent: boolean;
+  email_sent_at: string | null;
   used_at: string | null;
   expires_at: string | null;
   created_at: string;

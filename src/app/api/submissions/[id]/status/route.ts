@@ -2,10 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { generateUniqueCouponCode } from "@/lib/coupon";
 import {
-  sendSms,
-  renderSmsTemplate,
-  DEFAULT_SMS_TEMPLATES,
-} from "@/lib/twilio";
+  sendRewardEmail,
+  renderEmailTemplate,
+  buildEmailHtml,
+  DEFAULT_EMAIL_TEMPLATES,
+} from "@/lib/email";
 
 export async function PATCH(
   request: Request,
@@ -50,10 +51,7 @@ export async function PATCH(
   }
 
   // -----------------------------------------------------------------------
-  // Post-approval / rejection: coupon creation + SMS
-  // All inline so we have the authenticated Supabase client (RLS works).
-  // Previously this was a fire-and-forget fetch to /notify which silently
-  // failed because cookies were not forwarded.
+  // Post-approval / rejection: coupon creation + email
   // -----------------------------------------------------------------------
   try {
     const { data: submission } = await supabase
@@ -62,7 +60,7 @@ export async function PATCH(
       .eq("id", id)
       .single();
 
-    if (!submission?.customer_phone) {
+    if (!submission?.customer_email) {
       return NextResponse.json({ success: true });
     }
 
@@ -70,12 +68,13 @@ export async function PATCH(
     const { data: business } = await supabase
       .from("businesses")
       .select(
-        "name, sms_approval_template, sms_approval_enabled, sms_rejection_template, sms_rejection_enabled, default_coupon_expiry_days"
+        "name, brand_color, logo_url, email_subject_approval, email_body_approval, email_approval_enabled, email_subject_rejection, email_body_rejection, email_rejection_enabled, email_reward_link, email_reward_file_url, email_reward_file_name, email_brand_color, default_coupon_expiry_days"
       )
       .eq("id", submission.business_id)
       .single();
 
     const businessName = business?.name || "the business";
+    const brandColor = business?.email_brand_color || business?.brand_color || "#E8553A";
 
     if (status === "approved") {
       // Idempotency: skip if reward already logged for this submission
@@ -118,7 +117,7 @@ export async function PATCH(
             reward_tier_id: submission.reward_tier_id || null,
             code: couponCode,
             customer_name: submission.customer_name,
-            customer_phone: submission.customer_phone,
+            customer_email: submission.customer_email,
             reward_description: rewardDesc,
             expires_at: expiresAt,
           });
@@ -132,75 +131,102 @@ export async function PATCH(
           await supabase.from("rewards_sent").insert({
             business_id: submission.business_id,
             submission_id: id,
-            customer_phone: submission.customer_phone,
+            customer_email: submission.customer_email,
             reward_type: reward_given || null,
           });
         } catch (logErr) {
           console.error("Failed to log reward_sent:", logErr);
         }
 
-        // --- Send approval SMS ---
-        const smsEnabled = business?.sms_approval_enabled !== false;
-        if (smsEnabled) {
+        // --- Send approval email ---
+        const emailEnabled = business?.email_approval_enabled !== false;
+        if (emailEnabled) {
           try {
-            const template =
-              business?.sms_approval_template ||
-              DEFAULT_SMS_TEMPLATES.approval;
-            const rendered = renderSmsTemplate(template, {
+            const subjectTemplate =
+              business?.email_subject_approval ||
+              DEFAULT_EMAIL_TEMPLATES.approval.subject;
+            const bodyTemplate =
+              business?.email_body_approval ||
+              DEFAULT_EMAIL_TEMPLATES.approval.body;
+
+            const variables = {
               businessName,
               customerName: submission.customer_name,
-              rewardDetails: reward_given || undefined,
+              rewardDetails: reward_given || rewardDesc || undefined,
               personalNote: review_comment || undefined,
               couponCode: couponCode || undefined,
-            });
+              rewardLink: business?.email_reward_link || undefined,
+            };
 
-            const result = await sendSms(
-              submission.customer_phone,
-              rendered
-            );
+            const renderedSubject = renderEmailTemplate(subjectTemplate, variables);
+            const renderedBody = renderEmailTemplate(bodyTemplate, variables);
+            const html = buildEmailHtml(renderedBody, brandColor, businessName, business?.logo_url);
 
-            // Log to sms_log
-            try {
-              await supabase.from("sms_log").insert({
-                business_id: submission.business_id,
-                submission_id: id,
-                customer_phone: submission.customer_phone,
-                message_type: "approval",
-                message_body: rendered,
-                twilio_sid: result.sid,
-                status: result.status,
-              });
-            } catch (smsLogErr) {
-              console.error("Failed to log SMS:", smsLogErr);
+            // Handle attachment
+            let attachment: { filename: string; content: Buffer } | undefined;
+            if (business?.email_reward_file_url) {
+              try {
+                const fileRes = await fetch(business.email_reward_file_url);
+                if (fileRes.ok) {
+                  const buffer = Buffer.from(await fileRes.arrayBuffer());
+                  attachment = {
+                    filename: business.email_reward_file_name || "reward.pdf",
+                    content: buffer,
+                  };
+                }
+              } catch (fileErr) {
+                console.error("Failed to fetch reward file:", fileErr);
+              }
             }
 
-            // Mark coupon as SMS sent
+            await sendRewardEmail(
+              submission.customer_email,
+              renderedSubject,
+              html,
+              attachment
+            );
+
+            // Log to email_log
+            try {
+              await supabase.from("email_log").insert({
+                business_id: submission.business_id,
+                submission_id: id,
+                customer_email: submission.customer_email,
+                message_type: "approval",
+                subject: renderedSubject,
+                status: "sent",
+              });
+            } catch (emailLogErr) {
+              console.error("Failed to log email:", emailLogErr);
+            }
+
+            // Mark coupon as email sent
             if (couponCode) {
               try {
                 await supabase
                   .from("coupon_codes")
                   .update({
-                    sms_sent: true,
-                    sms_sent_at: new Date().toISOString(),
+                    email_sent: true,
+                    email_sent_at: new Date().toISOString(),
                   })
                   .eq("submission_id", id);
               } catch (couponUpdateErr) {
                 console.error(
-                  "Failed to update coupon sms_sent:",
+                  "Failed to update coupon email_sent:",
                   couponUpdateErr
                 );
               }
             }
-          } catch (smsErr) {
-            console.error("Approval SMS failed:", smsErr);
+          } catch (emailErr) {
+            console.error("Approval email failed:", emailErr);
             // Log failed attempt
             try {
-              await supabase.from("sms_log").insert({
+              await supabase.from("email_log").insert({
                 business_id: submission.business_id,
                 submission_id: id,
-                customer_phone: submission.customer_phone,
+                customer_email: submission.customer_email,
                 message_type: "approval",
-                message_body: "SMS send failed",
+                subject: "Email send failed",
                 status: "failed",
               });
             } catch {
@@ -210,43 +236,50 @@ export async function PATCH(
         }
       }
     } else if (status === "rejected") {
-      // --- Send rejection SMS if enabled ---
-      const rejectionEnabled = business?.sms_rejection_enabled === true;
+      // --- Send rejection email if enabled ---
+      const rejectionEnabled = business?.email_rejection_enabled === true;
       if (rejectionEnabled) {
         try {
-          const template =
-            business?.sms_rejection_template ||
-            DEFAULT_SMS_TEMPLATES.rejection;
-          const rendered = renderSmsTemplate(template, {
+          const subjectTemplate =
+            business?.email_subject_rejection ||
+            DEFAULT_EMAIL_TEMPLATES.rejection.subject;
+          const bodyTemplate =
+            business?.email_body_rejection ||
+            DEFAULT_EMAIL_TEMPLATES.rejection.body;
+
+          const variables = {
             businessName,
             customerName: submission.customer_name,
             personalNote: review_comment || undefined,
-          });
+          };
 
-          const result = await sendSms(submission.customer_phone, rendered);
+          const renderedSubject = renderEmailTemplate(subjectTemplate, variables);
+          const renderedBody = renderEmailTemplate(bodyTemplate, variables);
+          const html = buildEmailHtml(renderedBody, brandColor, businessName, business?.logo_url);
+
+          await sendRewardEmail(submission.customer_email, renderedSubject, html);
 
           try {
-            await supabase.from("sms_log").insert({
+            await supabase.from("email_log").insert({
               business_id: submission.business_id,
               submission_id: id,
-              customer_phone: submission.customer_phone,
+              customer_email: submission.customer_email,
               message_type: "rejection",
-              message_body: rendered,
-              twilio_sid: result.sid,
-              status: result.status,
+              subject: renderedSubject,
+              status: "sent",
             });
-          } catch (smsLogErr) {
-            console.error("Failed to log rejection SMS:", smsLogErr);
+          } catch (emailLogErr) {
+            console.error("Failed to log rejection email:", emailLogErr);
           }
-        } catch (smsErr) {
-          console.error("Rejection SMS failed:", smsErr);
+        } catch (emailErr) {
+          console.error("Rejection email failed:", emailErr);
           try {
-            await supabase.from("sms_log").insert({
+            await supabase.from("email_log").insert({
               business_id: submission.business_id,
               submission_id: id,
-              customer_phone: submission.customer_phone,
+              customer_email: submission.customer_email,
               message_type: "rejection",
-              message_body: "SMS send failed",
+              subject: "Email send failed",
               status: "failed",
             });
           } catch {
