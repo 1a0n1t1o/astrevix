@@ -5,14 +5,12 @@ import {
   Dumbbell,
   ShoppingBag,
   Sparkles,
-  Heart,
   Cake,
   Dog,
   Paintbrush,
   Car,
-  Flower2,
-  Pizza,
   Wine,
+  SprayCan,
 } from "lucide-react";
 
 const BUSINESS_TYPES = [
@@ -22,13 +20,11 @@ const BUSINESS_TYPES = [
   { icon: Dumbbell, label: "Gyms" },
   { icon: ShoppingBag, label: "Boutiques" },
   { icon: Sparkles, label: "Spas" },
-  { icon: Heart, label: "Wellness" },
   { icon: Cake, label: "Bakeries" },
   { icon: Dog, label: "Pet Shops" },
   { icon: Paintbrush, label: "Nail Studios" },
   { icon: Car, label: "Auto Detailing" },
-  { icon: Flower2, label: "Florists" },
-  { icon: Pizza, label: "Pizzerias" },
+  { icon: SprayCan, label: "Body Shops" },
   { icon: Wine, label: "Bars & Lounges" },
 ];
 
