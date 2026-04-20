@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Camera, Gift, Star, TrendingUp, Zap } from "lucide-react";
+import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
 
 const CALENDLY_URL =
   "https://calendly.com/contact-astrevix/new-meeting";
@@ -125,6 +125,18 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Text */}
         <div className="mx-auto max-w-3xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            className="mb-6 flex justify-center"
+          >
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-100 bg-white/60 px-3 py-1.5 text-xs font-medium tracking-wide text-slate-700 backdrop-blur-sm">
+              <MapPin className="h-[14px] w-[14px] text-blue-600" />
+              Built in Southern California
+            </span>
+          </motion.div>
+
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

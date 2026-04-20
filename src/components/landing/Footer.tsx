@@ -19,13 +19,16 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center gap-0 md:items-start">
             <Image
               src="/logo-text.png"
               alt="Astrevix"
               width={120}
               height={24}
             />
+            <p className="mt-2 text-xs font-medium text-white/60">
+              Made in Southern California &middot; Fullerton, CA
+            </p>
           </div>
 
           {/* Links */}
