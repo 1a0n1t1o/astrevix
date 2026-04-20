@@ -25,8 +25,8 @@ export default async function SubmissionsPage() {
       .eq("business_id", business.id),
   ]);
 
-  const hasSmsTemplate = Boolean(
-    business.sms_approval_template || business.sms_confirmation_template
+  const hasEmailTemplate = Boolean(
+    business.email_approval_template || business.email_confirmation_template
   );
 
   return (
@@ -46,10 +46,12 @@ export default async function SubmissionsPage() {
         rewardDescription={business.reward_description}
         rewardTiers={(rewardTiers as RewardTier[]) || []}
         couponCodes={(couponCodes as CouponCode[]) || []}
-        hasSmsTemplate={hasSmsTemplate}
-        smsTemplateData={{
-          approvalTemplate: business.sms_approval_template ?? null,
-          rejectionTemplate: business.sms_rejection_template ?? null,
+        hasEmailTemplate={hasEmailTemplate}
+        emailTemplateData={{
+          approvalTemplate: business.email_approval_template ?? null,
+          approvalSubject: business.email_approval_subject ?? null,
+          rejectionTemplate: business.email_rejection_template ?? null,
+          rejectionSubject: business.email_rejection_subject ?? null,
           businessName: business.name,
           rewardDescription: business.reward_description,
         }}

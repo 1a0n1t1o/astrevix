@@ -125,7 +125,7 @@ export async function createSubmission(params: {
   postUrl: string;
   detectedPlatform: string | null;
   customerName: string;
-  customerPhone: string;
+  customerEmail: string;
   rewardTierId?: string | null;
 }): Promise<{ error: string | null; code: string | null }> {
   try {
@@ -137,7 +137,7 @@ export async function createSubmission(params: {
         post_url: params.postUrl,
         detected_platform: params.detectedPlatform,
         customer_name: params.customerName,
-        customer_phone: params.customerPhone,
+        customer_email: params.customerEmail,
         reward_tier_id: params.rewardTierId || null,
       }),
     });

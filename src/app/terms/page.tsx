@@ -41,7 +41,7 @@ export default function TermsPage() {
             <p className="mt-2">
               Astrevix enables local businesses to collect customer-generated social media content in exchange for
               rewards. Customers scan a QR code or NFC tag, view the business&apos;s branded landing page, post
-              content on platforms like TikTok or Instagram, submit their post link, and receive SMS updates about
+              content on platforms like TikTok or Instagram, submit their post link, and receive email updates about
               their submission status and reward delivery.
             </p>
           </section>
@@ -61,7 +61,7 @@ export default function TermsPage() {
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>Your submitted content is original and publicly posted on the specified social media platform.</li>
               <li>Your content complies with the social media platform&apos;s community guidelines and all applicable laws.</li>
-              <li>You provide accurate information including your first name, phone number, and a valid post link.</li>
+              <li>You provide accurate information including your first name, email address, and a valid post link.</li>
               <li>Only one reward per person per business is allowed unless otherwise stated by the business.</li>
               <li>Duplicate or fraudulent submissions may be rejected without notice.</li>
             </ul>
@@ -78,40 +78,30 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">5. SMS Communications</h2>
+            <h2 className="text-lg font-semibold text-gray-900">5. Email Communications</h2>
             <p className="mt-2">
-              By providing your phone number and consenting to receive SMS messages, you agree to the following:
+              By providing your email address and consenting to receive emails, you agree to the following:
             </p>
 
             <h3 className="mt-4 text-sm font-semibold text-gray-800">What messages you will receive:</h3>
             <ul className="mt-2 list-disc space-y-2 pl-5">
-              <li>A submission confirmation message when you submit your content</li>
+              <li>A submission confirmation email when you submit your content</li>
               <li>An approval notification with your reward details and coupon code when your submission is approved</li>
               <li>Optionally, a rejection notification if your submission is not approved</li>
             </ul>
 
             <h3 className="mt-4 text-sm font-semibold text-gray-800">Message frequency:</h3>
             <p className="mt-2">
-              You may receive up to 3 SMS messages per submission (confirmation, status update, and reward delivery).
-            </p>
-
-            <p className="mt-4 font-semibold text-gray-900">
-              Message and data rates may apply.
+              You may receive up to 3 emails per submission (confirmation, status update, and reward delivery).
             </p>
 
             <p className="mt-4">
               <strong>
-                Text STOP to opt out of all future messages from this number. You will receive a confirmation
-                message upon opting out.
-              </strong>
-            </p>
-
-            <p className="mt-2">
-              <strong>
-                Text HELP for support or contact us at{" "}
+                To unsubscribe, reply to any message or contact us at{" "}
                 <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
                   contact@astrevix.com
-                </a>.
+                </a>
+                .
               </strong>
             </p>
 
@@ -123,15 +113,11 @@ export default function TermsPage() {
             </p>
 
             <p className="mt-2">
-              SMS messages are sent via Twilio, a third-party communications provider.
+              Emails are sent via Resend, a third-party email delivery provider, from contact@astrevix.com.
             </p>
 
             <p className="mt-2">
-              Consent to receive SMS is not a condition of making a purchase from any business on our platform.
-            </p>
-
-            <p className="mt-2 font-semibold text-gray-900">
-              Carriers are not liable for delayed or undelivered messages.
+              Consent to receive emails is not a condition of making a purchase from any business on our platform.
             </p>
           </section>
 
@@ -147,13 +133,13 @@ export default function TermsPage() {
           <section>
             <h2 className="text-lg font-semibold text-gray-900">7. Data Collection &amp; Privacy</h2>
             <p className="mt-2">
-              We collect your first name, phone number, and social media post links to operate the Service.
+              We collect your first name, email address, and social media post links to operate the Service.
               Your information is handled in accordance with our{" "}
               <Link href="/privacy" className="underline hover:text-gray-900">
                 Privacy Policy
               </Link>
               . We do not share, sell, or rent your personal information to third parties for marketing purposes.
-              We use third-party services including Twilio (SMS delivery), Supabase (data storage), Stripe
+              We use third-party services including Resend (email delivery), Supabase (data storage), Stripe
               (payment processing), and Vercel (hosting).
             </p>
           </section>
@@ -163,7 +149,7 @@ export default function TermsPage() {
             <p className="mt-2">You agree not to:</p>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>Submit fake, misleading, or plagiarized content</li>
-              <li>Use someone else&apos;s identity or phone number</li>
+              <li>Use someone else&apos;s identity or email address</li>
               <li>Attempt to circumvent submission limits or exploit the reward system</li>
               <li>Use the Service for any unlawful purpose</li>
               <li>Interfere with or disrupt the Service&apos;s infrastructure</li>
@@ -174,7 +160,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-gray-900">9. Limitation of Liability</h2>
             <p className="mt-2">
               Astrevix is not liable for any issues arising from participation, including but not limited to lost
-              rewards, content removal by social media platforms, failed SMS delivery, or actions taken by
+              rewards, content removal by social media platforms, failed email delivery, or actions taken by
               individual businesses. The Service is provided &quot;as is&quot; without warranties of any kind.
             </p>
           </section>
@@ -185,7 +171,7 @@ export default function TermsPage() {
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>Honor rewards for approved submissions in a timely manner</li>
               <li>Use customer data only for the purposes described on the platform</li>
-              <li>Comply with all applicable laws and regulations, including those governing promotions and SMS marketing</li>
+              <li>Comply with all applicable laws and regulations, including those governing promotions and email marketing (including CAN-SPAM)</li>
               <li>Not use the platform for deceptive or fraudulent purposes</li>
             </ul>
           </section>

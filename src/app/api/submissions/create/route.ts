@@ -2,9 +2,17 @@ import { supabase } from "@/lib/supabase";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { parsePhoneToE164 } from "@/lib/phone-utils";
-import { sendSms, renderSmsTemplate, DEFAULT_SMS_TEMPLATES } from "@/lib/twilio";
+import { sendEmail } from "@/lib/resend";
+import {
+  DEFAULT_EMAIL_TEMPLATES,
+  DEFAULT_EMAIL_SUBJECTS,
+  renderEmailTemplate,
+  renderEmailSubject,
+} from "@/lib/email";
+import { renderConfirmationEmail } from "@/emails/render";
 import { rateLimit } from "@/lib/rate-limit";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
   // Rate limiting: 5 submissions per IP per minute
@@ -26,28 +34,25 @@ export async function POST(request: Request) {
     post_url,
     detected_platform,
     customer_name,
-    customer_phone,
+    customer_email,
     reward_tier_id,
   } = body;
 
-  // Basic validation
-  if (!business_id || !post_url || !customer_name || !customer_phone) {
+  if (!business_id || !post_url || !customer_name || !customer_email) {
     return NextResponse.json(
       { error: "All fields are required.", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
 
-  // Normalize phone to E.164
-  const normalizedPhone = parsePhoneToE164(customer_phone);
-  if (!normalizedPhone) {
+  const normalizedEmail = String(customer_email).trim().toLowerCase();
+  if (!EMAIL_REGEX.test(normalizedEmail)) {
     return NextResponse.json(
-      { error: "Please enter a valid US phone number.", code: "VALIDATION_ERROR" },
+      { error: "Please enter a valid email address.", code: "VALIDATION_ERROR" },
       { status: 400 }
     );
   }
 
-  // Check if business is suspended
   const { data: business } = await supabase
     .from("businesses")
     .select("id, status, name")
@@ -61,7 +66,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // If a reward tier is specified, look it up to get verification_hours
   let verificationDeadline: string | null = null;
   let verificationStatus: string | null = null;
 
@@ -80,7 +84,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Calculate verification deadline: now + verification_hours
     const deadline = new Date();
     deadline.setHours(deadline.getHours() + tier.verification_hours);
     verificationDeadline = deadline.toISOString();
@@ -89,20 +92,19 @@ export async function POST(request: Request) {
 
   // Insert the submission — the database handles enforcement:
   //   - Unique index on (business_id, post_url) blocks duplicate links
-  //   - BEFORE INSERT trigger checks per-customer submission limit (by phone)
+  //   - BEFORE INSERT trigger checks per-customer submission limit (by email)
   const { error } = await supabase.from("submissions").insert({
     business_id,
     post_url: post_url.trim(),
     detected_platform: detected_platform || null,
     customer_name: customer_name.trim(),
-    customer_phone: normalizedPhone,
+    customer_email: normalizedEmail,
     reward_tier_id: reward_tier_id || null,
     verification_deadline: verificationDeadline,
     verification_status: verificationStatus,
   });
 
   if (error) {
-    // Unique constraint violation — duplicate link
     if (error.code === "23505") {
       return NextResponse.json(
         { error: "This link has already been submitted.", code: "DUPLICATE_LINK" },
@@ -110,7 +112,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Trigger raised LIMIT_REACHED exception
     if (error.message?.includes("LIMIT_REACHED:")) {
       const businessName = error.message.split("LIMIT_REACHED:")[1] || "this business";
       return NextResponse.json(
@@ -129,38 +130,59 @@ export async function POST(request: Request) {
     );
   }
 
-  // Fire-and-forget confirmation SMS
+  // Fire-and-forget confirmation email
   try {
     const admin = getSupabaseAdmin();
-    const { data: smsSettings } = await admin
+    const { data: emailSettings } = await admin
       .from("businesses")
-      .select("sms_confirmation_template, sms_confirmation_enabled")
+      .select(
+        "email_confirmation_template, email_confirmation_enabled, email_confirmation_subject"
+      )
       .eq("id", business_id)
       .single();
 
-    if (smsSettings?.sms_confirmation_enabled !== false) {
+    if (emailSettings?.email_confirmation_enabled !== false) {
       const template =
-        smsSettings?.sms_confirmation_template ||
-        DEFAULT_SMS_TEMPLATES.confirmation;
-      const rendered = renderSmsTemplate(template, {
+        emailSettings?.email_confirmation_template ||
+        DEFAULT_EMAIL_TEMPLATES.confirmation;
+      const subjectTemplate =
+        emailSettings?.email_confirmation_subject ||
+        DEFAULT_EMAIL_SUBJECTS.confirmation;
+
+      const renderedBody = renderEmailTemplate(template, {
+        businessName: business.name,
+        customerName: customer_name.trim(),
+      });
+      const subject = renderEmailSubject(subjectTemplate, {
         businessName: business.name,
         customerName: customer_name.trim(),
       });
 
-      const result = await sendSms(normalizedPhone, rendered);
+      const { html, text } = await renderConfirmationEmail({
+        businessName: business.name,
+        body: renderedBody,
+      });
 
-      await admin.from("sms_log").insert({
+      const result = await sendEmail({
+        to: normalizedEmail,
+        subject,
+        html,
+        text,
+        fromName: business.name,
+      });
+
+      await admin.from("email_log").insert({
         business_id,
-        customer_phone: normalizedPhone,
+        customer_email: normalizedEmail,
         message_type: "confirmation",
-        message_body: rendered,
-        twilio_sid: result.sid,
-        status: result.status,
+        subject,
+        message_body: renderedBody,
+        resend_id: result.emailId || null,
+        status: result.success ? "sent" : "failed",
       });
     }
-  } catch (smsErr) {
-    // Don't block submission if SMS fails
-    console.error("[submissions/create] Confirmation SMS failed:", smsErr);
+  } catch (emailErr) {
+    console.error("[submissions/create] Confirmation email failed:", emailErr);
   }
 
   return NextResponse.json({ success: true });

@@ -58,8 +58,8 @@ export default function PrivacyPage() {
                 <strong>Customer name</strong> &mdash; Used to personalize reward messages and identify submissions.
               </li>
               <li>
-                <strong>Phone number</strong> &mdash; Used solely to send SMS notifications about submission status
-                (confirmation, approval with reward details, rejection). Phone numbers are used exclusively for
+                <strong>Email address</strong> &mdash; Used solely to send email notifications about submission status
+                (confirmation, approval with reward details, rejection). Email addresses are used exclusively for
                 transactional communication related to the customer&apos;s submission.
               </li>
               <li>
@@ -97,8 +97,8 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-gray-900">3. How We Use Your Information</h2>
             <ul className="mt-2 list-disc space-y-2 pl-5">
               <li>To process and track content submissions</li>
-              <li>To send SMS messages about submission status and reward delivery</li>
-              <li>To enforce submission limits (one reward per person per business, based on phone number)</li>
+              <li>To send emails about submission status and reward delivery</li>
+              <li>To enforce submission limits (one reward per person per business, based on email address)</li>
               <li>To enable businesses to review submissions and issue rewards</li>
               <li>To generate and deliver coupon codes for approved submissions</li>
               <li>To improve our services and prevent fraud or abuse</li>
@@ -106,32 +106,30 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-gray-900">4. SMS Messaging</h2>
+            <h2 className="text-lg font-semibold text-gray-900">4. Email Communications</h2>
             <p className="mt-2">
-              By providing your phone number and checking the consent box, you agree to receive SMS messages from
+              By providing your email address and checking the consent box, you agree to receive emails from
               Astrevix on behalf of the business. These messages may include:
             </p>
             <ul className="mt-3 list-disc space-y-2 pl-5">
-              <li>A confirmation message when you submit your content</li>
-              <li>An approval message with your reward details and coupon code when your submission is approved</li>
+              <li>A confirmation email when you submit your content</li>
+              <li>An approval email with your reward details and coupon code when your submission is approved</li>
               <li>A rejection notice if your submission is not approved</li>
             </ul>
             <p className="mt-3">
-              <strong>Message frequency:</strong> You may receive up to 3 SMS messages per submission
+              <strong>Message frequency:</strong> You may receive up to 3 emails per submission
               (confirmation, status update, and reward delivery).
             </p>
             <p className="mt-2">
-              <strong>Message and data rates may apply.</strong>
+              <strong>Sender:</strong> Emails are sent from contact@astrevix.com via Resend, a third-party email
+              delivery provider.
             </p>
             <p className="mt-2">
-              <strong>Opt-out:</strong> Reply <strong>STOP</strong> to any message to opt out of all future SMS
-              communications from this number. You will receive a confirmation message upon opting out.
-            </p>
-            <p className="mt-2">
-              <strong>Help:</strong> Reply <strong>HELP</strong> for support or contact us at{" "}
+              <strong>Opt-out:</strong> You can unsubscribe at any time by contacting us at{" "}
               <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
                 contact@astrevix.com
-              </a>.
+              </a>
+              . For support, reach out to the same address.
             </p>
           </section>
 
@@ -139,7 +137,7 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-gray-900">5. Information Sharing</h2>
             <p className="mt-2">
               <strong>
-                We do not share, sell, or rent your phone number or personal information to third parties for
+                We do not share, sell, or rent your email address or personal information to third parties for
                 marketing purposes.
               </strong>
             </p>
@@ -155,15 +153,15 @@ export default function PrivacyPage() {
             <p className="mt-2">We use the following third-party services to operate our platform:</p>
             <ul className="mt-3 list-disc space-y-2 pl-5">
               <li>
-                <strong>Twilio</strong> &mdash; For sending SMS messages. Your phone number and message content are
-                shared with Twilio to deliver text messages. See{" "}
+                <strong>Resend</strong> &mdash; For sending transactional emails. Your email address and message
+                content are shared with Resend to deliver emails. See{" "}
                 <a
-                  href="https://www.twilio.com/en-us/legal/privacy"
+                  href="https://resend.com/legal/privacy-policy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline hover:text-gray-900"
                 >
-                  Twilio&apos;s Privacy Policy
+                  Resend&apos;s Privacy Policy
                 </a>.
               </li>
               <li>
@@ -191,9 +189,9 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-semibold text-gray-900">7. Data Retention</h2>
             <p className="mt-2">
-              We retain customer submission data (name, phone number, post link, coupon codes) for as long as the
+              We retain customer submission data (name, email address, post link, coupon codes) for as long as the
               associated business account is active or for up to 2 years after account deletion, whichever is shorter.
-              SMS logs are retained for up to 1 year for operational and compliance purposes. If you wish to have
+              Email logs are retained for up to 1 year for operational and compliance purposes. If you wish to have
               your data deleted sooner, please contact us at{" "}
               <a href="mailto:contact@astrevix.com" className="underline hover:text-gray-900">
                 contact@astrevix.com
@@ -214,7 +212,7 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-gray-900">9. Your Rights</h2>
             <p className="mt-2">You have the right to:</p>
             <ul className="mt-3 list-disc space-y-2 pl-5">
-              <li>Opt out of SMS messages at any time by replying STOP to any message</li>
+              <li>Opt out of emails at any time by contacting us at contact@astrevix.com</li>
               <li>Request access to the personal data we hold about you</li>
               <li>Request deletion of your personal data</li>
               <li>Withdraw consent for data processing</li>

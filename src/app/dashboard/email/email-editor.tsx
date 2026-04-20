@@ -4,7 +4,10 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Business } from "@/types/database";
-import { countSmsSegments } from "@/lib/phone-utils";
+import {
+  DEFAULT_EMAIL_TEMPLATES,
+  DEFAULT_EMAIL_SUBJECTS,
+} from "@/lib/email";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 16 },
@@ -17,30 +20,8 @@ const sectionVariants = {
 
 const SECTION_COLORS = ["#059669", "#2563EB", "#e11d48"];
 
-const DEFAULT_TEMPLATES = {
-  confirmation:
-    "Thanks for submitting your post to [Business Name]! We'll review it and get back to you shortly.",
-  approval:
-    "Great news! Your post for [Business Name] has been approved! Your coupon code is: [Coupon Code]. Here's your reward: [Reward Details]. Thank you for your support!",
-  rejection:
-    "Thanks for your submission to [Business Name]. Unfortunately, we weren't able to approve this one. Feel free to try again with a new post!",
-};
-
-interface SmsEditorProps {
+interface EmailEditorProps {
   readonly business: Business;
-}
-
-function SegmentCounter({ text }: { text: string }) {
-  const { characters, segments } = countSmsSegments(text);
-  const isWarning = segments > 2;
-  return (
-    <p
-      className={`mt-1.5 text-xs ${isWarning ? "text-amber-600 font-medium" : "text-gray-400"}`}
-    >
-      {characters}/160 chars ({segments} segment{segments !== 1 ? "s" : ""})
-      {isWarning && " — Consider shortening to reduce SMS costs"}
-    </p>
-  );
 }
 
 function VariableChips({
@@ -76,7 +57,6 @@ function VariableChips({
     const end = textarea.selectionEnd;
     const newValue = value.slice(0, start) + variable + value.slice(end);
     onChange(newValue);
-    // Restore cursor position after the inserted variable
     requestAnimationFrame(() => {
       textarea.focus();
       const pos = start + variable.length;
@@ -110,50 +90,62 @@ function renderPreview(template: string, businessName: string, rewardDescription
     .replace(/\[Reward Link\]/g, "https://example.com/reward");
 }
 
-export default function SmsEditor({ business }: SmsEditorProps) {
+function renderSubject(subject: string, businessName: string): string {
+  return subject
+    .replace(/\[Business Name\]/g, businessName)
+    .replace(/\[Customer Name\]/g, "Sarah");
+}
+
+export default function EmailEditor({ business }: EmailEditorProps) {
   const router = useRouter();
 
-  // Template state
+  const [confirmationSubject, setConfirmationSubject] = useState(
+    business.email_confirmation_subject || DEFAULT_EMAIL_SUBJECTS.confirmation
+  );
   const [confirmationTemplate, setConfirmationTemplate] = useState(
-    business.sms_confirmation_template || DEFAULT_TEMPLATES.confirmation
+    business.email_confirmation_template || DEFAULT_EMAIL_TEMPLATES.confirmation
   );
   const [confirmationEnabled, setConfirmationEnabled] = useState(
-    business.sms_confirmation_enabled ?? true
-  );
-  const [approvalTemplate, setApprovalTemplate] = useState(
-    business.sms_approval_template || DEFAULT_TEMPLATES.approval
-  );
-  const [approvalEnabled, setApprovalEnabled] = useState(
-    business.sms_approval_enabled ?? true
-  );
-  const [rejectionTemplate, setRejectionTemplate] = useState(
-    business.sms_rejection_template || DEFAULT_TEMPLATES.rejection
-  );
-  const [rejectionEnabled, setRejectionEnabled] = useState(
-    business.sms_rejection_enabled ?? false
+    business.email_confirmation_enabled ?? true
   );
 
-  // Coupon settings
+  const [approvalSubject, setApprovalSubject] = useState(
+    business.email_approval_subject || DEFAULT_EMAIL_SUBJECTS.approval
+  );
+  const [approvalTemplate, setApprovalTemplate] = useState(
+    business.email_approval_template || DEFAULT_EMAIL_TEMPLATES.approval
+  );
+  const [approvalEnabled, setApprovalEnabled] = useState(
+    business.email_approval_enabled ?? true
+  );
+
+  const [rejectionSubject, setRejectionSubject] = useState(
+    business.email_rejection_subject || DEFAULT_EMAIL_SUBJECTS.rejection
+  );
+  const [rejectionTemplate, setRejectionTemplate] = useState(
+    business.email_rejection_template || DEFAULT_EMAIL_TEMPLATES.rejection
+  );
+  const [rejectionEnabled, setRejectionEnabled] = useState(
+    business.email_rejection_enabled ?? false
+  );
+
   const [couponExpiryDays, setCouponExpiryDays] = useState<number | null>(
     business.default_coupon_expiry_days ?? 30
   );
 
-  // Active preview
   const [activePreview, setActivePreview] = useState<
     "confirmation" | "approval" | "rejection"
   >("confirmation");
 
-  // UI state
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
-  // Textarea refs
   const confirmationRef = useRef<HTMLTextAreaElement>(null);
   const approvalRef = useRef<HTMLTextAreaElement>(null);
   const rejectionRef = useRef<HTMLTextAreaElement>(null);
 
   const inputClasses =
-    "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-all focus:border-blue-300 focus:ring-2 focus:ring-blue-100 resize-none";
+    "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition-all focus:border-blue-300 focus:ring-2 focus:ring-blue-100";
 
   async function handleSave() {
     setSaving(true);
@@ -164,18 +156,21 @@ export default function SmsEditor({ business }: SmsEditorProps) {
         body: JSON.stringify({
           name: business.name,
           reward_description: business.reward_description,
-          sms_confirmation_template: confirmationTemplate,
-          sms_confirmation_enabled: confirmationEnabled,
-          sms_approval_template: approvalTemplate,
-          sms_approval_enabled: approvalEnabled,
-          sms_rejection_template: rejectionTemplate,
-          sms_rejection_enabled: rejectionEnabled,
+          email_confirmation_template: confirmationTemplate,
+          email_confirmation_enabled: confirmationEnabled,
+          email_confirmation_subject: confirmationSubject,
+          email_approval_template: approvalTemplate,
+          email_approval_enabled: approvalEnabled,
+          email_approval_subject: approvalSubject,
+          email_rejection_template: rejectionTemplate,
+          email_rejection_enabled: rejectionEnabled,
+          email_rejection_subject: rejectionSubject,
           default_coupon_expiry_days: couponExpiryDays,
         }),
       });
 
       if (res.ok) {
-        setToast("SMS templates saved!");
+        setToast("Email templates saved");
         setTimeout(() => setToast(null), 3000);
         router.refresh();
       } else {
@@ -190,13 +185,19 @@ export default function SmsEditor({ business }: SmsEditorProps) {
     }
   }
 
-  // Get the current preview text
-  const previewText =
+  const previewBody =
     activePreview === "confirmation"
       ? renderPreview(confirmationTemplate, business.name, business.reward_description)
       : activePreview === "approval"
         ? renderPreview(approvalTemplate, business.name, business.reward_description)
         : renderPreview(rejectionTemplate, business.name, business.reward_description);
+
+  const previewSubject =
+    activePreview === "confirmation"
+      ? renderSubject(confirmationSubject, business.name)
+      : activePreview === "approval"
+        ? renderSubject(approvalSubject, business.name)
+        : renderSubject(rejectionSubject, business.name);
 
   const previewLabel =
     activePreview === "confirmation"
@@ -210,6 +211,8 @@ export default function SmsEditor({ business }: SmsEditorProps) {
       key: "confirmation" as const,
       title: "Submission Confirmation",
       description: "Sent immediately when a customer submits content",
+      subject: confirmationSubject,
+      setSubject: setConfirmationSubject,
       template: confirmationTemplate,
       setTemplate: setConfirmationTemplate,
       enabled: confirmationEnabled,
@@ -222,6 +225,8 @@ export default function SmsEditor({ business }: SmsEditorProps) {
       key: "approval" as const,
       title: "Reward / Approval Message",
       description: "Sent when you approve a submission",
+      subject: approvalSubject,
+      setSubject: setApprovalSubject,
       template: approvalTemplate,
       setTemplate: setApprovalTemplate,
       enabled: approvalEnabled,
@@ -234,6 +239,8 @@ export default function SmsEditor({ business }: SmsEditorProps) {
       key: "rejection" as const,
       title: "Rejection Message",
       description: "Sent when you reject a submission",
+      subject: rejectionSubject,
+      setSubject: setRejectionSubject,
       template: rejectionTemplate,
       setTemplate: setRejectionTemplate,
       enabled: rejectionEnabled,
@@ -243,6 +250,8 @@ export default function SmsEditor({ business }: SmsEditorProps) {
       colorIndex: 2,
     },
   ];
+
+  const avatarInitial = business.name.trim().charAt(0).toUpperCase() || "A";
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_auto]">
@@ -291,22 +300,38 @@ export default function SmsEditor({ business }: SmsEditorProps) {
               </button>
             </div>
 
-            <div className={`mt-4 ${!t.enabled ? "opacity-50 pointer-events-none" : ""}`}>
-              <textarea
-                ref={t.ref}
-                value={t.template}
-                onChange={(e) => t.setTemplate(e.target.value)}
-                rows={3}
-                className={inputClasses}
-                onFocus={() => setActivePreview(t.key)}
-              />
-              <SegmentCounter text={t.template} />
-              <VariableChips
-                textareaRef={t.ref}
-                value={t.template}
-                onChange={t.setTemplate}
-                showReward={t.showReward}
-              />
+            <div className={`mt-4 space-y-3 ${!t.enabled ? "opacity-50 pointer-events-none" : ""}`}>
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-500">
+                  Subject line
+                </label>
+                <input
+                  type="text"
+                  value={t.subject}
+                  onChange={(e) => t.setSubject(e.target.value)}
+                  className={inputClasses}
+                  onFocus={() => setActivePreview(t.key)}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-gray-500">
+                  Body
+                </label>
+                <textarea
+                  ref={t.ref}
+                  value={t.template}
+                  onChange={(e) => t.setTemplate(e.target.value)}
+                  className={`${inputClasses} min-h-32 resize-y`}
+                  onFocus={() => setActivePreview(t.key)}
+                />
+                <VariableChips
+                  textareaRef={t.ref}
+                  value={t.template}
+                  onChange={t.setTemplate}
+                  showReward={t.showReward}
+                />
+              </div>
             </div>
           </motion.section>
         ))}
@@ -333,7 +358,7 @@ export default function SmsEditor({ business }: SmsEditorProps) {
             Coupon Settings
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            Auto-generated coupon codes are included in approval messages
+            Auto-generated coupon codes are included in approval emails
           </p>
 
           <div className="mt-4">
@@ -351,7 +376,6 @@ export default function SmsEditor({ business }: SmsEditorProps) {
                 setCouponExpiryDays(val === 0 ? null : val);
               }}
               className={inputClasses}
-              style={{ resize: "none" }}
             >
               <option value={7}>7 days</option>
               <option value={14}>14 days</option>
@@ -366,7 +390,6 @@ export default function SmsEditor({ business }: SmsEditorProps) {
           </div>
         </motion.section>
 
-        {/* Save button */}
         <motion.button
           onClick={handleSave}
           disabled={saving}
@@ -377,82 +400,47 @@ export default function SmsEditor({ business }: SmsEditorProps) {
         </motion.button>
       </div>
 
-      {/* Right — iPhone SMS Preview */}
+      {/* Right — Email inbox preview */}
       <div className="hidden lg:block">
         <div className="sticky top-6 flex flex-col items-center">
           <p className="mb-3 text-sm font-medium text-gray-500">
-            SMS Preview — {previewLabel}
+            Email Preview — {previewLabel}
           </p>
 
-          {/* iPhone frame */}
           <div
-            style={{ width: "320px" }}
-            className="overflow-hidden rounded-[2.5rem] border-[3px] border-gray-800 bg-gray-900 shadow-2xl"
+            style={{ width: "380px" }}
+            className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl"
           >
-            {/* Status bar */}
-            <div className="flex items-center justify-between bg-gray-900 px-7 pb-1 pt-3">
-              <span className="text-xs font-medium text-white">9:41</span>
-              <div className="flex items-center gap-1">
-                <svg className="h-3.5 w-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 18c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6zm0-10c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4z" />
-                </svg>
-                <svg className="h-3.5 w-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M2 22h20V2z" />
-                </svg>
+            {/* Inbox header */}
+            <div className="flex items-center gap-3 border-b border-gray-100 px-5 py-4">
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+                style={{ backgroundColor: "#2563EB" }}
+              >
+                {avatarInitial}
               </div>
-            </div>
-
-            {/* Notch */}
-            <div className="mx-auto h-6 w-32 rounded-b-2xl bg-gray-900" />
-
-            {/* Chat screen */}
-            <div className="bg-[#F2F2F7] px-0" style={{ minHeight: "420px" }}>
-              {/* Chat header */}
-              <div className="bg-[#F8F8FA] px-4 py-3 text-center border-b border-gray-200/60">
-                <p className="text-[10px] text-gray-400 uppercase tracking-wider">
-                  Text Message
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[11px] text-gray-500">
+                  From: <span className="text-gray-700">{business.name} &lt;contact@astrevix.com&gt;</span>
                 </p>
-                <p className="text-sm font-semibold text-gray-900 mt-0.5">
-                  {business.name}
-                </p>
-              </div>
-
-              {/* Messages area */}
-              <div className="px-4 py-4 space-y-2">
-                {/* Timestamp */}
-                <p className="text-center text-[10px] text-gray-400 mb-3">
-                  Today 2:34 PM
-                </p>
-
-                {/* SMS bubble */}
-                <div className="flex justify-start">
-                  <div
-                    className="max-w-[85%] rounded-2xl rounded-tl-md px-4 py-2.5"
-                    style={{ backgroundColor: "#E9E9EB" }}
-                  >
-                    <p className="text-[13px] leading-relaxed text-gray-900 whitespace-pre-wrap">
-                      {previewText}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Delivered indicator */}
-                <p className="text-right text-[10px] text-gray-400 pr-1 mt-1">
-                  Delivered
+                <p className="truncate text-[11px] text-gray-500">
+                  To: <span className="text-gray-700">customer@example.com</span>
                 </p>
               </div>
             </div>
 
-            {/* Bottom bar */}
-            <div className="flex items-center gap-2 bg-[#F8F8FA] px-4 py-3 border-t border-gray-200/60">
-              <div className="flex-1 rounded-full bg-white border border-gray-200 px-4 py-2">
-                <p className="text-xs text-gray-300">iMessage</p>
-              </div>
+            {/* Subject */}
+            <div className="border-b border-gray-100 px-5 py-3">
+              <p className="text-sm font-semibold text-gray-900">
+                {previewSubject}
+              </p>
             </div>
 
-            {/* Home indicator */}
-            <div className="flex justify-center bg-[#F8F8FA] pb-2 pt-1">
-              <div className="h-1 w-28 rounded-full bg-gray-800" />
+            {/* Body */}
+            <div className="px-5 py-5" style={{ minHeight: "280px" }}>
+              <p className="whitespace-pre-line text-[13px] leading-relaxed text-gray-800">
+                {previewBody}
+              </p>
             </div>
           </div>
 

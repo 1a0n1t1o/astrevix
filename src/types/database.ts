@@ -35,13 +35,16 @@ export interface Business {
   email_brand_color: string | null;
   reward_file_url: string | null;
   reward_file_name: string | null;
-  // SMS templates
-  sms_confirmation_template: string | null;
-  sms_confirmation_enabled: boolean | null;
-  sms_approval_template: string | null;
-  sms_approval_enabled: boolean | null;
-  sms_rejection_template: string | null;
-  sms_rejection_enabled: boolean | null;
+  // Email templates
+  email_confirmation_template: string | null;
+  email_confirmation_enabled: boolean | null;
+  email_confirmation_subject: string | null;
+  email_approval_template: string | null;
+  email_approval_enabled: boolean | null;
+  email_approval_subject: string | null;
+  email_rejection_template: string | null;
+  email_rejection_enabled: boolean | null;
+  email_rejection_subject: string | null;
   // Coupon settings
   default_coupon_expiry_days: number | null;
   // Terms & Conditions
@@ -60,7 +63,6 @@ export interface Submission {
   detected_platform: string | null;
   customer_name: string;
   customer_email: string | null;
-  customer_phone: string | null;
   status: "pending" | "approved" | "rejected";
   reviewed_at: string | null;
   reward_given: string | null;
@@ -118,19 +120,19 @@ export interface RewardSent {
   business_id: string;
   submission_id: string;
   customer_email: string | null;
-  customer_phone: string | null;
   reward_type: string | null;
   sent_at: string;
 }
 
-export interface SmsLog {
+export interface EmailLog {
   id: string;
   business_id: string;
   submission_id: string | null;
-  customer_phone: string;
+  customer_email: string;
   message_type: "confirmation" | "approval" | "rejection";
+  subject: string | null;
   message_body: string;
-  twilio_sid: string | null;
+  resend_id: string | null;
   status: string;
   created_at: string;
 }
@@ -142,11 +144,11 @@ export interface CouponCode {
   reward_tier_id: string | null;
   code: string;
   customer_name: string;
-  customer_phone: string;
+  customer_email: string;
   reward_description: string;
   status: "active" | "used" | "expired";
-  sms_sent: boolean;
-  sms_sent_at: string | null;
+  email_sent: boolean;
+  email_sent_at: string | null;
   used_at: string | null;
   expires_at: string | null;
   created_at: string;

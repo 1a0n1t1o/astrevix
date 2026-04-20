@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import {
   LayoutDashboard,
   ClipboardList,
-  MessageSquare,
+  Mail,
   Palette,
   Settings,
   TrendingUp,
@@ -180,7 +180,7 @@ const RECENT = [
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", active: true },
   { icon: ClipboardList, label: "Submissions", active: false },
-  { icon: MessageSquare, label: "SMS", active: false },
+  { icon: Mail, label: "Email", active: false },
   { icon: Palette, label: "Customize", active: false },
   { icon: Settings, label: "Settings", active: false },
 ];
