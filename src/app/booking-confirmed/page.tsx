@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 
@@ -15,6 +15,14 @@ const UUID_REGEX =
 const FIRED_KEY = "astrevix_booking_fired_uuids";
 
 export default function BookingConfirmedPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#0A0E27]" />}>
+      <BookingConfirmedContent />
+    </Suspense>
+  );
+}
+
+function BookingConfirmedContent() {
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
 
