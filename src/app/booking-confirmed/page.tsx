@@ -4,15 +4,8 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 
-declare global {
-  interface Window {
-    fbq?: (...args: unknown[]) => void;
-  }
-}
-
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const FIRED_KEY = "astrevix_booking_fired_uuids";
 
 export default function BookingConfirmedPage() {
   return (
@@ -33,45 +26,39 @@ function BookingConfirmedContent() {
 
     if (!inviteeUuid || !UUID_REGEX.test(inviteeUuid)) {
       console.warn(
-        "[booking-confirmed] Visited without a valid Calendly invitee_uuid — not firing pixel.",
+        "[Pixel] Invalid or missing UUID, not firing Schedule event",
       );
       return;
     }
 
-    let firedUuids: string[] = [];
-    try {
-      const stored = sessionStorage.getItem(FIRED_KEY);
-      if (stored) firedUuids = JSON.parse(stored) as string[];
-    } catch {
-      firedUuids = [];
-    }
-
-    if (firedUuids.includes(inviteeUuid)) {
-      console.log(
-        "[booking-confirmed] UUID already recorded this session — skipping duplicate fire.",
-      );
+    const firedKey = `fired_${inviteeUuid}`;
+    if (sessionStorage.getItem(firedKey)) {
+      console.log("[Pixel] Already fired for this UUID");
       return;
     }
 
-    try {
-      if (typeof window !== "undefined" && typeof window.fbq === "function") {
-        window.fbq("track", "Schedule");
-        window.fbq("trackCustom", "BookingConfirmed", {
-          value: 97,
-          currency: "USD",
-        });
-        console.log(
-          "[booking-confirmed] Meta Pixel fired: Schedule + BookingConfirmed ($97 USD)",
-        );
+    const fireEvent = (attempts = 0) => {
+      if (typeof window === "undefined") return;
 
-        firedUuids.push(inviteeUuid);
-        sessionStorage.setItem(FIRED_KEY, JSON.stringify(firedUuids));
+      if (typeof window.fbq === "function") {
+        try {
+          window.fbq("track", "Schedule", {
+            value: 97,
+            currency: "USD",
+          });
+          sessionStorage.setItem(firedKey, "true");
+          console.log("[Pixel] Schedule event fired for UUID:", inviteeUuid);
+        } catch (err) {
+          console.error("[Pixel] Error firing Schedule event:", err);
+        }
+      } else if (attempts < 20) {
+        setTimeout(() => fireEvent(attempts + 1), 250);
       } else {
-        console.warn("[booking-confirmed] fbq not available on window.");
+        console.error("[Pixel] fbq never became available");
       }
-    } catch (err) {
-      console.error("[booking-confirmed] Pixel fire failed:", err);
-    }
+    };
+
+    fireEvent();
   }, [searchParams]);
 
   return (
