@@ -2,10 +2,9 @@ import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import BuiltFor from "@/components/landing/BuiltFor";
 import Problem from "@/components/landing/Problem";
-import TrustBar from "@/components/landing/TrustBar";
-import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
 import PhoneShowcase from "@/components/landing/PhoneShowcase";
+import Features from "@/components/landing/Features";
 import FAQ from "@/components/landing/FAQ";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
@@ -17,10 +16,9 @@ export default function Home() {
       <Hero />
       <BuiltFor />
       <Problem />
-      <TrustBar />
-      <Features />
       <HowItWorks />
       <PhoneShowcase />
+      <Features />
       <FAQ />
       <CTASection />
       <Footer />
