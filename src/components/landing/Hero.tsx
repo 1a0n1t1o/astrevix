@@ -306,15 +306,15 @@ export default function Hero() {
                   {/* Business icon */}
                   <div className="mt-4 flex justify-center">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg md:h-14 md:w-14 md:text-xl">
-                      S
+                      P
                     </div>
                   </div>
                   {/* Name */}
                   <p className="mt-3 text-center text-base font-bold text-gray-900 md:text-lg">
-                    Sunrise Cafe
+                    Prestige Auto Detailing
                   </p>
                   <p className="mt-0.5 text-center text-[10px] text-gray-500 md:text-[11px]">
-                    The best coffee in town
+                    OC&apos;s #1 mobile detail
                   </p>
                   {/* Reward card */}
                   <div
@@ -325,10 +325,10 @@ export default function Hero() {
                       Your Reward
                     </p>
                     <p className="mt-1.5 text-sm font-bold text-gray-900 md:text-base">
-                      Free coffee on us
+                      $25 OFF your next detail
                     </p>
                     <p className="mt-1 text-[10px] text-gray-500 md:text-[11px]">
-                      Create an Instagram Reel
+                      Post your car on Instagram
                     </p>
                   </div>
                   {/* Steps mini */}
