@@ -3,9 +3,6 @@
 import { motion } from "framer-motion";
 import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
 
-const CALENDLY_URL =
-  "https://calendly.com/contact-astrevix/new-meeting";
-
 type FloatingBadge = {
   icon: React.ReactNode;
   label: string;
@@ -159,20 +156,22 @@ export default function Hero() {
             100+ real customer posts every month. They scan, post on Instagram, and get rewarded automatically. No app downloads. No follow-ups. No begging.
           </motion.p>
 
-          {/* CTA buttons */}
+          {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-            className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            className="mt-10 flex flex-col items-center justify-center"
           >
-            <a
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() =>
+                document
+                  .querySelector("#how-it-works")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
               className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:shadow-2xl hover:shadow-purple-500/30 animate-pulse-glow"
             >
-              Get Started Free
+              See How It Works
               <svg
                 className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
                 fill="none"
@@ -186,17 +185,10 @@ export default function Hero() {
                   d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                 />
               </svg>
-            </a>
-            <button
-              onClick={() =>
-                document
-                  .querySelector("#how-it-works")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/50 px-8 py-4 text-base font-semibold text-gray-700 backdrop-blur-sm transition-all hover:bg-white/80 hover:shadow-lg"
-            >
-              See How It Works
             </button>
+            <p className="mt-4 text-sm text-gray-500">
+              Free 3-week trial • No credit card required
+            </p>
           </motion.div>
         </div>
 
