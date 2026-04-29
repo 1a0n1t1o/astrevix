@@ -1,38 +1,38 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { QrCode, Gift, ClipboardCheck, Palette } from "lucide-react";
+import { QrCode, Gift, CheckCircle2, Palette } from "lucide-react";
 
 const FEATURES = [
   {
     icon: QrCode,
-    title: "QR Code & NFC Scanning",
+    title: "QR Code + NFC Tap Stand",
     description:
-      "Customers scan your QR code, submit their content, and earn rewards. No app downloads needed.",
+      "Customers scan from their phone or tap your counter stand. We ship the physical NFC stand to you for free.",
     iconBg: "bg-blue-50",
     iconColor: "text-blue-600",
   },
   {
     icon: Gift,
-    title: "Custom Rewards",
+    title: "Choose Any Reward",
     description:
-      "Set up your own coupons, discounts, or freebies. Deliver them automatically via email.",
+      "Free service, % off, BOGO, store credit — whatever you want. Customers see it before they post, so they're motivated.",
     iconBg: "bg-purple-50",
     iconColor: "text-purple-600",
   },
   {
-    icon: ClipboardCheck,
-    title: "Submission Review",
+    icon: CheckCircle2,
+    title: "One-Click Approval",
     description:
-      "Approve or reject content before rewards go out. Stay in full control of quality.",
+      "We show you every submitted post. You approve the ones you like in one tap. Bad posts never become rewards.",
     iconBg: "bg-green-50",
     iconColor: "text-green-600",
   },
   {
     icon: Palette,
-    title: "Custom Branding",
+    title: "Your Brand, Your Page",
     description:
-      "Your colors, your logo, your customer experience. Every page matches your brand.",
+      "Custom colors, your logo, your photos. Looks like part of your business, not a third-party tool.",
     iconBg: "bg-amber-50",
     iconColor: "text-amber-600",
   },
@@ -71,26 +71,23 @@ export default function Features() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
-          <motion.span
+          <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm"
+            className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]"
           >
-            Features
-          </motion.span>
+            What&apos;s included
+          </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+            className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
           >
-            Everything you need to grow with{" "}
-            <span className="bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">
-              social proof
-            </span>
+            Everything you need. Nothing you don&apos;t.
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -99,13 +96,13 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-4 text-lg text-gray-600"
           >
-            One platform to collect, review, and reward authentic customer
-            content.
+            Built specifically for local service businesses. No fluff, no
+            features you&apos;ll never use.
           </motion.p>
         </div>
 
         {/* Feature grid */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2">
+        <div className="mt-16 grid gap-8 sm:grid-cols-2">
           {FEATURES.map((feature, i) => {
             const Icon = feature.icon;
             return (
@@ -115,7 +112,7 @@ export default function Features() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group feature-card rounded-2xl border border-gray-200 bg-white p-8"
+                className="group feature-card rounded-2xl border border-gray-100 bg-white p-8"
               >
                 <div
                   className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${feature.iconBg}`}
