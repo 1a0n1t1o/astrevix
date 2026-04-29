@@ -14,13 +14,6 @@ import {
   BarChart3,
 } from "lucide-react";
 
-/* ───── stat badges at bottom ───── */
-const STATS = [
-  { value: "98%", label: "Reward delivery rate", delay: 0.6 },
-  { value: "2 min", label: "Average setup time", delay: 0.9 },
-  { value: "500+", label: "Submissions processed", delay: 1.2 },
-];
-
 /* ───── animated SVG area chart ───── */
 function AnimatedChart() {
   const [visible, setVisible] = useState(false);
@@ -624,28 +617,6 @@ export default function PhoneShowcase() {
               Owner Dashboard
             </p>
           </motion.div>
-        </div>
-
-        {/* Stat badges */}
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-6">
-          {STATS.map((stat) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: stat.delay }}
-              className="flex items-center gap-3 rounded-2xl border border-purple-100/60 bg-white/70 px-5 py-3 backdrop-blur-sm"
-              style={{
-                boxShadow: "0 4px 24px -4px rgba(124, 58, 237, 0.08)",
-              }}
-            >
-              <span className="text-xl font-bold bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">
-                {stat.value}
-              </span>
-              <span className="text-sm text-gray-600">{stat.label}</span>
-            </motion.div>
-          ))}
         </div>
       </div>
     </section>
