@@ -1,6 +1,7 @@
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import BuiltFor from "@/components/landing/BuiltFor";
+import Problem from "@/components/landing/Problem";
 import TrustBar from "@/components/landing/TrustBar";
 import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
@@ -15,6 +16,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <BuiltFor />
+      <Problem />
       <TrustBar />
       <Features />
       <HowItWorks />
