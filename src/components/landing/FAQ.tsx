@@ -18,12 +18,20 @@ const FAQS = [
     a: "You can offer anything your business provides — discounts, free items, coupons, or digital rewards. Rewards are delivered automatically via email after you approve the submission.",
   },
   {
+    q: "How is this different from running ads or boosting posts?",
+    a: "Ads tell people you're great. Customer posts SHOW it. People trust friends 8x more than they trust ads (Nielsen 2024). Astrevix isn't anti-ads — it's the layer ads can't replicate. You're not interrupting strangers. You're letting your real customers introduce you to their friends. Same reason a referral closes faster than a cold call.",
+  },
+  {
     q: "How does the QR code/tap work?",
     a: "When you sign up, Astrevix creates a unique branded page for your business. Your QR code and NFC tag link directly to that page. Print the QR code or place the NFC stand anywhere in your store — customers just scan or tap to get started.",
   },
   {
     q: "Can I customize the look of my page?",
     a: "Yes! You can customize your brand colors, logo, tagline, reward description, content requirements, and more. Everything matches your brand identity.",
+  },
+  {
+    q: "Will my customers actually do this?",
+    a: "This is the #1 question every business owner asks. The honest answer: yes, when the reward is right. You're already giving them what they came for — a haircut, a manicure, a clean car. Adding a clear bonus (10% off next visit, free upgrade, BOGO) for a 30-second post is one of the highest-converting offers in local business. Our shops average 30%+ customer participation. Some hit 50%+ with strong rewards.",
   },
 ];
 
