@@ -8,76 +8,82 @@ const CALENDLY_URL =
 export default function CTASection() {
   return (
     <section
-      className="relative overflow-hidden px-0 py-24 md:py-32"
+      className="relative overflow-hidden py-[120px] md:py-[160px]"
       style={{
         background:
           "linear-gradient(180deg, #4F46E5 0%, #7C3AED 40%, #6D28D9 100%)",
       }}
     >
-      {/* Decorative blobs */}
+      {/* Faint grid overlay for depth */}
       <div
-        className="pointer-events-none absolute -left-20 -top-20 h-80 w-80 rounded-full"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.07]"
         style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%)",
-          filter: "blur(40px)",
+          backgroundImage:
+            "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
         }}
       />
+
+      {/* Subtle center radial glow */}
       <div
-        className="pointer-events-none absolute -bottom-20 -right-20 h-80 w-80 rounded-full"
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(99,102,241,0.4) 0%, transparent 60%)",
-          filter: "blur(40px)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute left-1/2 top-0 h-40 w-[600px] -translate-x-1/2 rounded-full"
-        style={{
-          background:
-            "radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%)",
-          filter: "blur(30px)",
+            "radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 30%, transparent 65%)",
+          filter: "blur(60px)",
         }}
       />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="relative mx-auto max-w-4xl text-center"
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative mx-auto max-w-[800px] px-6 text-center"
       >
-        <h2 className="text-3xl font-bold text-white sm:text-4xl">
-          Ready to turn your customers
-          <br className="hidden sm:block" /> into content creators?
+        <p className="mb-6 text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
+          Start your 3-week free trial
+        </p>
+        <h2 className="mb-6 text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl">
+          Stop chasing customer content. Start collecting it.
         </h2>
-        <p className="mt-4 text-lg text-purple-100">
-          Get started free. No credit card required.
+        <p className="mx-auto mb-10 max-w-2xl text-xl text-white/80">
+          Set up takes under 2 minutes. Your custom QR code and NFC stand ship
+          within 24 hours. If you don&apos;t get at least 10 customer posts in
+          week one, we&apos;ll keep helping until you do.
         </p>
 
-        <div className="mt-10">
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-semibold text-purple-700 shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl animate-pulse-glow"
+        <a
+          href={CALENDLY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-5 text-lg font-bold text-purple-700 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
+        >
+          Start My Free Trial
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
           >
-            Start Free Today
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-              />
-            </svg>
-          </a>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+            />
+          </svg>
+        </a>
+
+        <p className="mt-6 text-sm text-white/60">
+          Free 3 weeks • No credit card • Cancel anytime
+        </p>
+        <p className="mt-3 text-xs text-white/50">
+          Built in Southern California. Used by businesses across the OC and
+          LA.
+        </p>
       </motion.div>
     </section>
   );
