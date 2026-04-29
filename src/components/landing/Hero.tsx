@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
 
 type FloatingBadge = {
@@ -62,59 +62,25 @@ const floatingBadges: FloatingBadge[] = [
 ];
 
 export default function Hero() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section
       id="hero"
       className="relative overflow-hidden pb-24 pt-36 md:pb-40 md:pt-44"
       style={{
         background:
-          "linear-gradient(180deg, #EDE9FE 0%, #E0E7FF 25%, #EEE8FC 50%, #F5F3FF 75%, #FFFFFF 100%)",
+          "linear-gradient(180deg, #FFFFFF 0%, #FAFAFD 30%, #F4F1FE 65%, #EAE5FB 100%)",
       }}
     >
-      {/* Background color orbs for depth — slow drifting animation */}
+      {/* Single ambient radial glow behind the phone — Linear-style */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Purple orb - left */}
-        <motion.div
-          animate={{ x: [0, 30, -10, 0], y: [0, -20, 15, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -left-20 top-10 h-[500px] w-[500px] rounded-full"
+        <div
+          className="absolute left-1/2 top-[55%] h-[700px] w-[900px] -translate-x-1/2 rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(139,92,246,0.45) 0%, rgba(139,92,246,0.1) 50%, transparent 70%)",
-            filter: "blur(100px)",
-          }}
-        />
-        {/* Blue orb - right */}
-        <motion.div
-          animate={{ x: [0, -25, 15, 0], y: [0, 20, -10, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -right-20 top-32 h-[450px] w-[450px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(59,130,246,0.4) 0%, rgba(59,130,246,0.08) 50%, transparent 70%)",
-            filter: "blur(100px)",
-          }}
-        />
-        {/* Pink orb - center behind phone */}
-        <motion.div
-          animate={{ x: [0, 15, -15, 0], y: [0, -15, 10, 0] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute left-1/2 top-[55%] h-[400px] w-[400px] -translate-x-1/2 rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(219,39,119,0.3) 0%, rgba(219,39,119,0.08) 50%, transparent 70%)",
+              "radial-gradient(ellipse at center, rgba(124,58,237,0.18) 0%, rgba(99,102,241,0.10) 30%, transparent 65%)",
             filter: "blur(80px)",
-          }}
-        />
-        {/* Soft ambient wash */}
-        <motion.div
-          animate={{ x: [0, -20, 20, 0], y: [0, 10, -10, 0] }}
-          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute left-1/2 top-[60%] h-[600px] w-[800px] -translate-x-1/2 rounded-full"
-          style={{
-            background:
-              "radial-gradient(ellipse, rgba(124,58,237,0.15) 0%, rgba(59,130,246,0.1) 40%, transparent 70%)",
-            filter: "blur(60px)",
           }}
         />
       </div>
@@ -128,7 +94,11 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             className="mb-6 flex justify-center"
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-100 bg-white/60 px-3 py-1.5 text-xs font-medium tracking-wide text-slate-700 backdrop-blur-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-sm font-medium text-slate-700 shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              </span>
               <MapPin className="h-[14px] w-[14px] text-blue-600" />
               Built in Southern California
             </span>
@@ -194,30 +164,46 @@ export default function Hero() {
 
         {/* Phone mockup area */}
         <div className="relative mx-auto mt-16 max-w-3xl md:mt-24">
-          {/* Glowing arc behind phone */}
+          {/* Soft ambient glow behind phone */}
           <div
             className="pointer-events-none absolute bottom-[-20%] left-1/2 h-[500px] w-[800px] -translate-x-1/2 md:h-[600px] md:w-[1000px]"
             style={{
               background:
-                "radial-gradient(ellipse at 50% 80%, rgba(99,102,241,0.5) 0%, rgba(124,58,237,0.35) 20%, rgba(59,130,246,0.2) 40%, transparent 65%)",
+                "radial-gradient(ellipse at 50% 80%, rgba(99,102,241,0.28) 0%, rgba(124,58,237,0.18) 25%, rgba(59,130,246,0.10) 50%, transparent 70%)",
               filter: "blur(40px)",
               borderRadius: "50%",
             }}
           />
 
-          {/* Phone frame — larger, more prominent */}
+          {/* Phone frame — entrance + gentle float loop, respects reduced-motion */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="relative mx-auto w-[300px] md:w-[380px] animate-phone-float"
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: shouldReduceMotion ? 0 : [0, -5, 0],
+            }}
+            transition={{
+              opacity: { duration: 0.8, delay: 0.4, ease: "easeOut" },
+              scale: { duration: 0.8, delay: 0.4, ease: "easeOut" },
+              y: shouldReduceMotion
+                ? { duration: 0 }
+                : {
+                    duration: 3.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1.2,
+                  },
+            }}
+            className="relative mx-auto w-[300px] md:w-[380px]"
           >
-            {/* Deep drop shadow beneath phone */}
+            {/* Soft tinted drop shadow beneath phone */}
             <div
-              className="pointer-events-none absolute inset-x-8 -bottom-6 h-24 rounded-[50%]"
+              className="pointer-events-none absolute inset-x-4 -bottom-8 h-32 rounded-[50%]"
               style={{
-                background: "radial-gradient(ellipse, rgba(0,0,0,0.25) 0%, transparent 70%)",
-                filter: "blur(20px)",
+                background:
+                  "radial-gradient(ellipse, rgba(99,102,241,0.30) 0%, rgba(0,0,0,0.18) 40%, transparent 75%)",
+                filter: "blur(28px)",
               }}
             />
 
