@@ -40,8 +40,8 @@ export default function Testimonial() {
             transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
             className="mt-4 text-lg text-gray-600"
           >
-            Started in my dad&apos;s auto detail shop in Fullerton. Now used by
-            businesses across Southern California.
+            Started by working with an auto detail shop in Fullerton. Now used
+            by businesses across Southern California.
           </motion.p>
         </div>
 
