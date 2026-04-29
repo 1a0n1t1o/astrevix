@@ -143,10 +143,11 @@ export default function Hero() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl md:text-6xl"
           >
-            Turn Your Customers Into{" "}
+            Get Customers{" "}
             <span className="bg-gradient-to-r from-[#2563EB] via-[#7C3AED] to-[#A855F7] bg-clip-text text-transparent">
-              Your Best Marketers
-            </span>
+              Posting
+            </span>{" "}
+            About Your Business — Without Asking Them To
           </motion.h1>
 
           <motion.p
@@ -155,7 +156,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 md:text-xl"
           >
-            Stop paying for ads. Start getting customers to sell for you.
+            100+ real customer posts every month. They scan, post on Instagram, and get rewarded automatically. No app downloads. No follow-ups. No begging.
           </motion.p>
 
           {/* CTA buttons */}
