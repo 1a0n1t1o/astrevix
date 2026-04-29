@@ -42,7 +42,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative py-24 md:py-32"
+      className="relative py-20 md:py-28"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #F8F7FF 30%, #F3F1FE 50%, #F8F7FF 70%, #FFFFFF 100%)",

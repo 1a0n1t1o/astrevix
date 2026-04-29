@@ -11,7 +11,7 @@ const STATS = [
 
 export default function Testimonial() {
   return (
-    <section className="bg-gradient-to-b from-white to-gray-50 py-[100px] md:py-[120px]">
+    <section className="bg-gradient-to-b from-white to-gray-50 py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         {/* Heading */}
         <div className="mx-auto max-w-2xl text-center">

@@ -14,7 +14,7 @@ const BUSINESS_TYPES = [
 
 export default function BuiltFor() {
   return (
-    <section className="relative bg-gradient-to-b from-white via-[#FAFAFC] to-white py-24 md:py-28">
+    <section className="relative bg-gradient-to-b from-white via-[#FAFAFC] to-white py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <motion.p
           initial={{ opacity: 0, y: 10 }}

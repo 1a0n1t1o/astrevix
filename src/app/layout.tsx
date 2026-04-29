@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
+import MotionProvider from "@/components/MotionProvider";
 import "./globals.css";
 
 const META_PIXEL_ID = "1459212742342726";
@@ -54,7 +55,7 @@ export default function RootLayout({
             alt=""
           />
         </noscript>
-        {children}
+        <MotionProvider>{children}</MotionProvider>
         <Analytics />
       </body>
     </html>

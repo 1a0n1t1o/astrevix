@@ -41,7 +41,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="relative py-24 md:py-32"
+      className="relative py-20 md:py-28"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #FBF9FF 30%, #F5F3FF 50%, #FBF9FF 70%, #FFFFFF 100%)",

@@ -8,7 +8,7 @@ const CALENDLY_URL =
 export default function CTASection() {
   return (
     <section
-      className="relative overflow-hidden py-[120px] md:py-[160px]"
+      className="relative overflow-hidden py-[80px] md:py-[140px]"
       style={{
         background:
           "linear-gradient(180deg, #4F46E5 0%, #7C3AED 40%, #6D28D9 100%)",

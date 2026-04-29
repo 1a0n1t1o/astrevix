@@ -13,7 +13,7 @@ const TAGGED_AVATARS = [
 
 export default function Problem() {
   return (
-    <section className="bg-[#FAFAFA] py-[100px] md:py-[120px]">
+    <section className="bg-[#FAFAFA] py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-5 lg:gap-16">
           {/* Left column — 60% */}
