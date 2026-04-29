@@ -44,15 +44,16 @@ export default function CTASection() {
         className="relative mx-auto max-w-[800px] px-6 text-center"
       >
         <p className="mb-6 text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
-          Start your 3-week free trial
+          30 Days Free — No Risk
         </p>
         <h2 className="mb-6 text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl">
           Stop chasing customer content. Start collecting it.
         </h2>
         <p className="mx-auto mb-10 max-w-2xl text-xl text-white/80">
           Set up takes under 2 minutes. Your custom QR code and NFC stand ship
-          within 24 hours. If you don&apos;t get at least 10 customer posts in
-          week one, we&apos;ll keep helping until you do.
+          within 24 hours. Try it free for 30 days — if you&apos;re not getting
+          customer posts, we&apos;ll work with you until you are or you walk
+          away.
         </p>
 
         <a
@@ -61,7 +62,7 @@ export default function CTASection() {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-5 text-lg font-bold text-purple-700 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
         >
-          Start My Free Trial
+          Start My 30 Days Free
           <svg
             className="h-5 w-5"
             fill="none"
@@ -77,12 +78,12 @@ export default function CTASection() {
           </svg>
         </a>
 
-        <p className="mt-6 text-sm text-white/60">
-          Free 3 weeks • No credit card • Cancel anytime
+        <p className="mt-6 text-sm text-white/70">
+          30 days free • Then $97/month • Cancel anytime
         </p>
         <p className="mt-3 text-xs text-white/50">
-          Built in Southern California. Used by businesses across the OC and
-          LA.
+          Built in Southern California. Used by businesses across Orange County
+          and LA.
         </p>
       </motion.div>
     </section>

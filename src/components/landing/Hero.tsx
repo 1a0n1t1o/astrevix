@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
 
 type FloatingBadge = {
@@ -61,8 +62,45 @@ const floatingBadges: FloatingBadge[] = [
   },
 ];
 
+type SubmitState = "idle" | "submitting" | "success";
+
 export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
+  const [email, setEmail] = useState("");
+  const [submitState, setSubmitState] = useState<SubmitState>("idle");
+
+  // Tilt amount changes on small screens so the layout doesn't break.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const baseRotateY = isMobile ? -3 : -8;
+  const baseRotateX = isMobile ? 1 : 2;
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (submitState !== "idle") return;
+    setSubmitState("submitting");
+    try {
+      const res = await fetch("/api/early-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setSubmitState("success");
+      } else {
+        setSubmitState("idle");
+      }
+    } catch {
+      setSubmitState("idle");
+    }
+  }
 
   return (
     <section
@@ -126,38 +164,79 @@ export default function Hero() {
             100+ real customer posts every month. They scan, post on Instagram, and get rewarded automatically. No app downloads. No follow-ups. No begging.
           </motion.p>
 
-          {/* CTA */}
+          {/* CTA — email capture form */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-            className="mt-10 flex flex-col items-center justify-center"
+            className="mx-auto mt-10 w-full max-w-[480px]"
           >
-            <button
-              onClick={() =>
-                document
-                  .querySelector("#how-it-works")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:shadow-2xl hover:shadow-purple-500/30 animate-pulse-glow"
-            >
-              See How It Works
-              <svg
-                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </button>
-            <p className="mt-4 text-sm text-gray-500">
-              Free 3-week trial • No credit card required
+            <AnimatePresence mode="wait" initial={false}>
+              {submitState === "success" ? (
+                <motion.p
+                  key="success"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="text-center text-base font-semibold text-purple-600 md:text-lg"
+                >
+                  ✓ You&apos;re in. Check your email for next steps.
+                </motion.p>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-2"
+                >
+                  <label htmlFor="hero-email" className="sr-only">
+                    Business email
+                  </label>
+                  <input
+                    id="hero-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={submitState === "submitting"}
+                    placeholder="Enter your business email"
+                    className="flex-grow rounded-full border border-gray-200 bg-white px-6 py-4 text-base text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-60"
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitState === "submitting"}
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:shadow-2xl hover:shadow-purple-500/30 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
+                  >
+                    {submitState === "submitting"
+                      ? "Submitting..."
+                      : (
+                        <>
+                          Get Early Access
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                            />
+                          </svg>
+                        </>
+                      )}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+            <p className="mt-4 text-center text-sm text-gray-500">
+              Join 100+ Orange County businesses already using Astrevix
             </p>
           </motion.div>
         </div>
@@ -175,179 +254,217 @@ export default function Hero() {
             }}
           />
 
-          {/* Phone frame — entrance + gentle float loop, respects reduced-motion */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              y: shouldReduceMotion ? 0 : [0, -5, 0],
-            }}
-            transition={{
-              opacity: { duration: 0.8, delay: 0.4, ease: "easeOut" },
-              scale: { duration: 0.8, delay: 0.4, ease: "easeOut" },
-              y: shouldReduceMotion
-                ? { duration: 0 }
-                : {
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1.2,
-                  },
-            }}
+          {/* 3D perspective wrapper */}
+          <div
             className="relative mx-auto w-[300px] md:w-[380px]"
+            style={{ perspective: "1200px" }}
           >
-            {/* Soft tinted drop shadow beneath phone */}
-            <div
-              className="pointer-events-none absolute inset-x-4 -bottom-8 h-32 rounded-[50%]"
-              style={{
-                background:
-                  "radial-gradient(ellipse, rgba(99,102,241,0.30) 0%, rgba(0,0,0,0.18) 40%, transparent 75%)",
-                filter: "blur(28px)",
+            {/* Phone frame — entrance + gentle float + subtle Y-axis oscillation */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, rotateY: baseRotateY, rotateX: baseRotateX }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                rotateX: baseRotateX,
+                y: shouldReduceMotion ? 0 : [0, -5, 0],
+                rotateY: shouldReduceMotion
+                  ? baseRotateY
+                  : [baseRotateY - 0.5, baseRotateY + 0.5, baseRotateY - 0.5],
               }}
-            />
-
-            {/* Side buttons — right side (power) */}
-            <div
-              className="pointer-events-none absolute -right-[3px] top-[28%] z-10 w-[3px] rounded-r-sm md:-right-[3.5px] md:w-[3.5px]"
-              style={{
-                height: "60px",
-                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
-                boxShadow: "1px 0 2px rgba(0,0,0,0.3)",
+              transition={{
+                opacity: { duration: 0.8, delay: 0.4, ease: "easeOut" },
+                scale: { duration: 0.8, delay: 0.4, ease: "easeOut" },
+                y: shouldReduceMotion
+                  ? { duration: 0 }
+                  : {
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: [0.4, 0, 0.6, 1],
+                      delay: 1.2,
+                    },
+                rotateY: shouldReduceMotion
+                  ? { duration: 0 }
+                  : {
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: [0.4, 0, 0.6, 1],
+                      delay: 1.2,
+                    },
               }}
-            />
-
-            {/* Side buttons — left side (volume up) */}
-            <div
-              className="pointer-events-none absolute -left-[3px] top-[22%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
-              style={{
-                height: "36px",
-                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
-                boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
-              }}
-            />
-            {/* Side buttons — left side (volume down) */}
-            <div
-              className="pointer-events-none absolute -left-[3px] top-[32%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
-              style={{
-                height: "36px",
-                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
-                boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
-              }}
-            />
-            {/* Side buttons — left side (mute toggle) */}
-            <div
-              className="pointer-events-none absolute -left-[3px] top-[15%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
-              style={{
-                height: "20px",
-                background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
-                boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
-              }}
-            />
-
-            {/* Outer phone body */}
-            <div
-              className="relative overflow-hidden rounded-[44px] bg-gradient-to-b from-[#2a2a2a] to-[#111111] p-[6px] md:rounded-[48px] md:p-[7px]"
-              style={{
-                boxShadow:
-                  "0 40px 80px -12px rgba(0, 0, 0, 0.4), 0 20px 40px -8px rgba(0, 0, 0, 0.2), 0 0 0 0.5px rgba(255,255,255,0.1) inset, 0 -2px 8px rgba(0,0,0,0.3) inset",
-              }}
+              style={{ transformStyle: "preserve-3d" }}
+              className="relative"
             >
-              {/* Subtle frame shine */}
+              {/* Layered shadow — large soft drop + brand-tinted glow, biased left */}
               <div
-                className="pointer-events-none absolute inset-0 rounded-[44px] md:rounded-[48px]"
+                className="pointer-events-none absolute -bottom-10 left-[-4%] right-[10%] h-32 rounded-[50%]"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.04) 100%)",
+                    "radial-gradient(ellipse, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.12) 45%, transparent 75%)",
+                  filter: "blur(34px)",
+                }}
+              />
+              <div
+                className="pointer-events-none absolute -bottom-8 left-[-8%] right-[14%] h-28 rounded-[50%]"
+                style={{
+                  background:
+                    "radial-gradient(ellipse, rgba(124,58,237,0.30) 0%, rgba(59,130,246,0.18) 40%, transparent 75%)",
+                  filter: "blur(30px)",
                 }}
               />
 
-              {/* Dynamic Island (notch) */}
-              <div className="absolute left-1/2 top-[12px] z-20 h-[22px] w-[90px] -translate-x-1/2 rounded-full bg-black md:h-[24px] md:w-[100px]" />
-
-              {/* Inner screen */}
+              {/* Side buttons — right side (power) */}
               <div
-                className="relative overflow-hidden rounded-[38px] md:rounded-[41px]"
+                className="pointer-events-none absolute -right-[3px] top-[28%] z-10 w-[3px] rounded-r-sm md:-right-[3.5px] md:w-[3.5px]"
                 style={{
-                  aspectRatio: "9/19.5",
-                  background: "linear-gradient(180deg, #EDE9FE 0%, #F3F0FF 15%, #FEFCFA 40%, #FEFCFA 100%)",
+                  height: "60px",
+                  background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                  boxShadow: "1px 0 2px rgba(0,0,0,0.3)",
+                }}
+              />
+
+              {/* Side buttons — left side (volume up) */}
+              <div
+                className="pointer-events-none absolute -left-[3px] top-[22%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
+                style={{
+                  height: "36px",
+                  background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                  boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
+                }}
+              />
+              {/* Side buttons — left side (volume down) */}
+              <div
+                className="pointer-events-none absolute -left-[3px] top-[32%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
+                style={{
+                  height: "36px",
+                  background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                  boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
+                }}
+              />
+              {/* Side buttons — left side (mute toggle) */}
+              <div
+                className="pointer-events-none absolute -left-[3px] top-[15%] z-10 w-[3px] rounded-l-sm md:-left-[3.5px] md:w-[3.5px]"
+                style={{
+                  height: "20px",
+                  background: "linear-gradient(to bottom, #2a2a2a, #1a1a1a, #2a2a2a)",
+                  boxShadow: "-1px 0 2px rgba(0,0,0,0.3)",
+                }}
+              />
+
+              {/* Outer phone body — thicker bezel, darker gradient, metal-edge highlight */}
+              <div
+                className="relative overflow-hidden rounded-[44px] p-[8px] md:rounded-[48px] md:p-[9px]"
+                style={{
+                  background:
+                    "linear-gradient(180deg, #1f2937 0%, #111827 50%, #000000 100%)",
+                  boxShadow:
+                    "0 50px 100px -20px rgba(15,23,42,0.55), 0 25px 50px -12px rgba(15,23,42,0.30), 0 0 0 0.5px rgba(255,255,255,0.18) inset, 0 1px 0 rgba(255,255,255,0.10) inset, 0 -2px 8px rgba(0,0,0,0.4) inset",
                 }}
               >
-                {/* Subtle screen reflection overlay */}
+                {/* Metal-edge inner highlight (top + sides) */}
                 <div
-                  className="pointer-events-none absolute inset-0 z-10"
+                  className="pointer-events-none absolute inset-0 rounded-[44px] md:rounded-[48px]"
                   style={{
-                    background: "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 30%, transparent 70%, rgba(255,255,255,0.08) 100%)",
+                    background:
+                      "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 25%, transparent 45%, transparent 70%, rgba(255,255,255,0.06) 100%)",
                   }}
                 />
-                {/* Phone content mockup */}
-                <div className="relative z-0 p-5 pt-14 md:p-6 md:pt-16">
-                  {/* Powered by badge */}
-                  <div className="flex justify-center">
-                    <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500 md:text-[11px]">
-                      Powered by{" "}
-                      <span className="font-semibold">Astrevix</span>
-                    </div>
-                  </div>
-                  {/* Business icon */}
-                  <div className="mt-4 flex justify-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg md:h-14 md:w-14 md:text-xl">
-                      P
-                    </div>
-                  </div>
-                  {/* Name */}
-                  <p className="mt-3 text-center text-base font-bold text-gray-900 md:text-lg">
-                    Prestige Auto Detailing
-                  </p>
-                  <p className="mt-0.5 text-center text-[10px] text-gray-500 md:text-[11px]">
-                    OC&apos;s #1 mobile detail
-                  </p>
-                  {/* Reward card */}
+
+                {/* Dynamic Island — refined pill, properly proportioned */}
+                <div
+                  className="absolute left-1/2 top-[10px] z-20 h-[20px] w-[78px] -translate-x-1/2 rounded-full md:top-[11px] md:h-[22px] md:w-[88px]"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at 50% 30%, #1a1a1a 0%, #000000 70%)",
+                    boxShadow:
+                      "0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 1px rgba(0,0,0,0.6)",
+                  }}
+                />
+
+                {/* Inner screen */}
+                <div
+                  className="relative overflow-hidden rounded-[36px] md:rounded-[39px]"
+                  style={{
+                    aspectRatio: "9/19.5",
+                    background: "linear-gradient(180deg, #EDE9FE 0%, #F3F0FF 15%, #FEFCFA 40%, #FEFCFA 100%)",
+                  }}
+                >
+                  {/* Diagonal screen highlight — top-right glare */}
                   <div
-                    className="mt-4 rounded-2xl bg-white/80 p-4 text-center shadow-sm"
-                    style={{ border: "1px solid rgba(255,255,255,0.4)" }}
-                  >
-                    <p className="text-[9px] font-semibold uppercase tracking-widest text-blue-600 md:text-[10px]">
-                      Your Reward
-                    </p>
-                    <p className="mt-1.5 text-sm font-bold text-gray-900 md:text-base">
-                      $25 OFF your next detail
-                    </p>
-                    <p className="mt-1 text-[10px] text-gray-500 md:text-[11px]">
-                      Post your car on Instagram
-                    </p>
-                  </div>
-                  {/* Steps mini */}
-                  <div className="mt-4 space-y-2">
-                    {[
-                      "Create content",
-                      "Post publicly",
-                      "Submit link",
-                      "Get rewarded",
-                    ].map((step, i) => (
-                      <div
-                        key={step}
-                        className="flex items-center gap-2.5 rounded-lg bg-white p-2 shadow-sm md:p-2.5"
-                      >
-                        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-gray-100 text-[9px] font-bold text-gray-700 md:h-6 md:w-6 md:text-[10px]">
-                          {i + 1}
-                        </div>
-                        <span className="text-[10px] font-medium text-gray-800 md:text-[11px]">
-                          {step}
-                        </span>
+                    className="pointer-events-none absolute inset-0 z-10"
+                    style={{
+                      background:
+                        "linear-gradient(225deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 22%, transparent 48%)",
+                    }}
+                  />
+                  {/* Phone content mockup */}
+                  <div className="relative z-0 p-5 pt-14 md:p-6 md:pt-16">
+                    {/* Powered by badge */}
+                    <div className="flex justify-center">
+                      <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500 md:text-[11px]">
+                        Powered by{" "}
+                        <span className="font-semibold">Astrevix</span>
                       </div>
-                    ))}
-                  </div>
-                  {/* CTA */}
-                  <div className="mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-2.5 text-center text-xs font-semibold text-white md:py-3 md:text-sm">
-                    Submit Your Post &rarr;
+                    </div>
+                    {/* Business icon */}
+                    <div className="mt-4 flex justify-center">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg md:h-14 md:w-14 md:text-xl">
+                        P
+                      </div>
+                    </div>
+                    {/* Name */}
+                    <p className="mt-3 text-center text-base font-bold text-gray-900 md:text-lg">
+                      Prestige Auto Detailing
+                    </p>
+                    <p className="mt-0.5 text-center text-[10px] text-gray-500 md:text-[11px]">
+                      OC&apos;s #1 mobile detail
+                    </p>
+                    {/* Reward card */}
+                    <div
+                      className="mt-4 rounded-2xl bg-white/80 p-4 text-center shadow-sm"
+                      style={{ border: "1px solid rgba(255,255,255,0.4)" }}
+                    >
+                      <p className="text-[9px] font-semibold uppercase tracking-widest text-blue-600 md:text-[10px]">
+                        Your Reward
+                      </p>
+                      <p className="mt-1.5 text-sm font-bold text-gray-900 md:text-base">
+                        $25 OFF your next detail
+                      </p>
+                      <p className="mt-1 text-[10px] text-gray-500 md:text-[11px]">
+                        Post your car on Instagram
+                      </p>
+                    </div>
+                    {/* Steps mini */}
+                    <div className="mt-4 space-y-2">
+                      {[
+                        "Create content",
+                        "Post publicly",
+                        "Submit link",
+                        "Get rewarded",
+                      ].map((step, i) => (
+                        <div
+                          key={step}
+                          className="flex items-center gap-2.5 rounded-lg bg-white p-2 shadow-sm md:p-2.5"
+                        >
+                          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-gray-100 text-[9px] font-bold text-gray-700 md:h-6 md:w-6 md:text-[10px]">
+                            {i + 1}
+                          </div>
+                          <span className="text-[10px] font-medium text-gray-800 md:text-[11px]">
+                            {step}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* CTA */}
+                    <div className="mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-2.5 text-center text-xs font-semibold text-white md:py-3 md:text-sm">
+                      Submit Your Post &rarr;
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
-          {/* Floating notification badges */}
+          {/* Floating notification badges — sit outside the perspective wrapper so they aren't tilted */}
           {floatingBadges.map((badge) => (
             <motion.div
               key={badge.label}

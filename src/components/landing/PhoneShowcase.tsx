@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -199,6 +199,18 @@ const PHONE_STEPS = [
 ];
 
 export default function PhoneShowcase() {
+  const shouldReduceMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  const baseRotateY = isMobile ? -3 : -8;
+  const baseRotateX = isMobile ? 1 : 2;
+
   return (
     <section
       className="relative py-20 md:py-28"
@@ -333,12 +345,12 @@ export default function PhoneShowcase() {
                       </div>
                       <div className="mt-auto pt-4">
                         <div className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-2 py-1.5">
-                          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-red-500 text-[7px] font-bold text-white">
-                            S
+                          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-500 text-[7px] font-bold text-white">
+                            J
                           </div>
                           <div>
                             <p className="text-[8px] font-semibold text-gray-800">
-                              Stellar Edge
+                              John&apos;s Mobile
                             </p>
                             <p className="text-[7px] text-gray-400">Owner</p>
                           </div>
@@ -349,7 +361,7 @@ export default function PhoneShowcase() {
                     {/* Main content */}
                     <div className="flex-1 p-4 sm:p-5">
                       <p className="text-xs font-bold text-gray-900 sm:text-sm">
-                        Welcome, Stellar Edge Detailing
+                        Welcome, John&apos;s Mobile Detailing
                       </p>
                       <p className="text-[9px] text-gray-400 sm:text-[10px]">
                         Here&apos;s what&apos;s happening with your submissions
@@ -511,146 +523,215 @@ export default function PhoneShowcase() {
               What your customers see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+              <div
                 className="relative shrink-0"
+                style={{ perspective: "1200px" }}
               >
-                <div
-                  className="w-[260px] overflow-hidden rounded-[40px] bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] p-[7px] md:w-[280px]"
-                  style={{
-                    boxShadow:
-                      "0 25px 60px -10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08) inset",
+                <motion.div
+                  initial={{ opacity: 0, x: -30, rotateY: baseRotateY, rotateX: baseRotateX }}
+                  whileInView={{
+                    opacity: 1,
+                    x: 0,
+                    rotateX: baseRotateX,
+                    y: shouldReduceMotion ? 0 : [0, -5, 0],
+                    rotateY: shouldReduceMotion
+                      ? baseRotateY
+                      : [baseRotateY - 0.5, baseRotateY + 0.5, baseRotateY - 0.5],
                   }}
+                  viewport={{ once: true }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+                    x: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+                    y: shouldReduceMotion
+                      ? { duration: 0 }
+                      : {
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: [0.4, 0, 0.6, 1],
+                          delay: 1.0,
+                        },
+                    rotateY: shouldReduceMotion
+                      ? { duration: 0 }
+                      : {
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: [0.4, 0, 0.6, 1],
+                          delay: 1.0,
+                        },
+                  }}
+                  style={{ transformStyle: "preserve-3d" }}
+                  className="relative w-[260px] md:w-[280px]"
                 >
-                  {/* Frame shine */}
+                  {/* Layered shadow — large soft drop + brand-tinted glow, biased left */}
                   <div
-                    className="pointer-events-none absolute inset-0 rounded-[40px]"
+                    className="pointer-events-none absolute -bottom-10 left-[-6%] right-[10%] h-28 rounded-[50%]"
                     style={{
                       background:
-                        "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 40%)",
+                        "radial-gradient(ellipse, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.12) 45%, transparent 75%)",
+                      filter: "blur(30px)",
                     }}
                   />
-                  {/* Dynamic Island */}
-                  <div className="absolute left-1/2 top-[10px] z-20 h-[20px] w-[80px] -translate-x-1/2 rounded-full bg-black" />
+                  <div
+                    className="pointer-events-none absolute -bottom-8 left-[-10%] right-[14%] h-24 rounded-[50%]"
+                    style={{
+                      background:
+                        "radial-gradient(ellipse, rgba(236,72,153,0.28) 0%, rgba(168,85,247,0.18) 40%, transparent 75%)",
+                      filter: "blur(28px)",
+                    }}
+                  />
 
-                  {/* Screen */}
-                  <div className="overflow-hidden rounded-[33px] bg-[#FEFCFA]">
-                    <div className="p-4 pt-12">
-                      {/* Powered by badge */}
-                      <div className="flex justify-center">
-                        <div
-                          className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5"
-                          style={{
-                            backgroundColor: "rgba(0,0,0,0.04)",
-                            fontSize: "8px",
-                            color: "#8B8B9B",
-                          }}
-                        >
-                          Powered by{" "}
-                          <span
-                            className="font-semibold"
-                            style={{ color: "#6B6B7B" }}
-                          >
-                            Astrevix
-                          </span>
-                        </div>
-                      </div>
+                  <div
+                    className="relative overflow-hidden rounded-[40px] p-[8px] md:rounded-[42px] md:p-[9px]"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, #1f2937 0%, #111827 50%, #000000 100%)",
+                      boxShadow:
+                        "0 40px 80px -20px rgba(15,23,42,0.50), 0 20px 40px -12px rgba(15,23,42,0.25), 0 0 0 0.5px rgba(255,255,255,0.18) inset, 0 1px 0 rgba(255,255,255,0.10) inset, 0 -2px 8px rgba(0,0,0,0.4) inset",
+                    }}
+                  >
+                    {/* Metal-edge inner highlight */}
+                    <div
+                      className="pointer-events-none absolute inset-0 rounded-[40px] md:rounded-[42px]"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 25%, transparent 45%, transparent 70%, rgba(255,255,255,0.06) 100%)",
+                      }}
+                    />
+                    {/* Dynamic Island — refined pill */}
+                    <div
+                      className="absolute left-1/2 top-[10px] z-20 h-[18px] w-[72px] -translate-x-1/2 rounded-full md:top-[11px] md:h-[20px] md:w-[80px]"
+                      style={{
+                        background:
+                          "radial-gradient(ellipse at 50% 30%, #1a1a1a 0%, #000000 70%)",
+                        boxShadow:
+                          "0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 1px rgba(0,0,0,0.6)",
+                      }}
+                    />
 
-                      {/* Business logo */}
-                      <div className="mt-3 flex justify-center">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-sm font-bold text-white shadow-md">
-                          S
-                        </div>
-                      </div>
-
-                      {/* Business name + tagline */}
-                      <p className="mt-2 text-center text-sm font-bold text-gray-900">
-                        Stellar Edge Detailing
-                      </p>
-                      <p className="mt-0.5 text-center text-[9px] text-gray-500">
-                        Fullerton&apos;s premium auto detail
-                      </p>
-
-                      {/* Reward card — glassmorphic with brand glow */}
-                      <div className="relative mt-4">
-                        <div
-                          className="absolute inset-0 rounded-[16px] opacity-20 blur-lg"
-                          style={{ backgroundColor: "#EA580C" }}
-                        />
-                        <div
-                          className="relative overflow-hidden rounded-[16px] px-4 py-5 text-center"
-                          style={{
-                            background: "rgba(255,255,255,0.6)",
-                            backdropFilter: "blur(20px)",
-                            WebkitBackdropFilter: "blur(20px)",
-                            border: "1px solid rgba(255,255,255,0.4)",
-                            boxShadow:
-                              "0 6px 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
-                          }}
-                        >
-                          <p
-                            className="text-[8px] font-semibold uppercase tracking-widest"
-                            style={{ color: "#EA580C" }}
-                          >
-                            Your Reward
-                          </p>
-                          <p className="mt-1.5 text-base font-bold text-gray-900">
-                            $25 off your next detail
-                          </p>
-                          <p className="mt-1 text-[9px] text-gray-500">
-                            Create an Instagram Reel or TikTok
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* How it works */}
-                      <div className="mt-4">
-                        <p className="text-[10px] font-bold text-gray-900">
-                          How it works
-                        </p>
-                        <div className="mt-2 space-y-1.5">
-                          {PHONE_STEPS.map((step) => (
-                            <div
-                              key={step.num}
-                              className="flex items-center gap-2.5 rounded-xl bg-white p-2 shadow-sm"
-                            >
-                              <div
-                                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-gray-700"
-                                style={{ backgroundColor: "rgba(0,0,0,0.04)" }}
-                              >
-                                {step.num}
-                              </div>
-                              <span className="text-[9px] font-medium text-gray-800">
-                                {step.label}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* CTA button */}
+                    {/* Screen */}
+                    <div className="relative overflow-hidden rounded-[33px] bg-[#FEFCFA] md:rounded-[35px]">
+                      {/* Diagonal screen highlight — top-right glare */}
                       <div
-                        className="mt-4 rounded-xl py-2.5 text-center text-[10px] font-semibold text-white"
+                        className="pointer-events-none absolute inset-0 z-10"
                         style={{
                           background:
-                            "linear-gradient(135deg, #EA580C, #DC2626)",
-                          boxShadow: "0 4px 12px rgba(234,88,12,0.3)",
+                            "linear-gradient(225deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.05) 22%, transparent 48%)",
                         }}
-                      >
-                        Submit Your Post &rarr;
-                      </div>
+                      />
+                      <div className="relative z-0 p-4 pt-12">
+                        {/* Powered by badge */}
+                        <div className="flex justify-center">
+                          <div
+                            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5"
+                            style={{
+                              backgroundColor: "rgba(0,0,0,0.04)",
+                              fontSize: "8px",
+                              color: "#8B8B9B",
+                            }}
+                          >
+                            Powered by{" "}
+                            <span
+                              className="font-semibold"
+                              style={{ color: "#6B6B7B" }}
+                            >
+                              Astrevix
+                            </span>
+                          </div>
+                        </div>
 
-                      {/* Footer note */}
-                      <p className="mt-2 text-center text-[7px] text-gray-400">
-                        Rewards issued after review. Usually within 24 hours.
-                      </p>
+                        {/* Business logo — pink/rose gradient */}
+                        <div className="mt-3 flex justify-center">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 text-sm font-bold text-white shadow-md">
+                            G
+                          </div>
+                        </div>
+
+                        {/* Business name + tagline */}
+                        <p className="mt-2 text-center text-sm font-bold text-gray-900">
+                          Glow Nail Studio
+                        </p>
+                        <p className="mt-0.5 text-center text-[9px] text-gray-500">
+                          Newport Beach&apos;s modern nail bar
+                        </p>
+
+                        {/* Reward card — glassmorphic with brand glow */}
+                        <div className="relative mt-4">
+                          <div
+                            className="absolute inset-0 rounded-[16px] opacity-20 blur-lg"
+                            style={{ backgroundColor: "#EC4899" }}
+                          />
+                          <div
+                            className="relative overflow-hidden rounded-[16px] px-4 py-5 text-center"
+                            style={{
+                              background: "rgba(255,255,255,0.6)",
+                              backdropFilter: "blur(20px)",
+                              WebkitBackdropFilter: "blur(20px)",
+                              border: "1px solid rgba(255,255,255,0.4)",
+                              boxShadow:
+                                "0 6px 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
+                            }}
+                          >
+                            <p
+                              className="text-[8px] font-semibold uppercase tracking-widest"
+                              style={{ color: "#EC4899" }}
+                            >
+                              Your Reward
+                            </p>
+                            <p className="mt-1.5 text-base font-bold text-gray-900">
+                              Free gel upgrade
+                            </p>
+                            <p className="mt-1 text-[9px] text-gray-500">
+                              Post your manicure on Instagram
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* How it works */}
+                        <div className="mt-4">
+                          <p className="text-[10px] font-bold text-gray-900">
+                            How it works
+                          </p>
+                          <div className="mt-2 space-y-1.5">
+                            {PHONE_STEPS.map((step) => (
+                              <div
+                                key={step.num}
+                                className="flex items-center gap-2.5 rounded-xl bg-white p-2 shadow-sm"
+                              >
+                                <div
+                                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-gray-700"
+                                  style={{ backgroundColor: "rgba(0,0,0,0.04)" }}
+                                >
+                                  {step.num}
+                                </div>
+                                <span className="text-[9px] font-medium text-gray-800">
+                                  {step.label}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* CTA button */}
+                        <div
+                          className="mt-4 rounded-xl py-2.5 text-center text-[10px] font-semibold text-white"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #EC4899, #F43F5E)",
+                            boxShadow: "0 4px 12px rgba(236,72,153,0.3)",
+                          }}
+                        >
+                          Submit Your Post &rarr;
+                        </div>
+
+                        {/* Footer note */}
+                        <p className="mt-2 text-center text-[7px] text-gray-400">
+                          Rewards issued after review. Usually within 24 hours.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
               <ul className="w-full space-y-4 lg:max-w-xs">
                 {PHONE_BULLETS.map((bullet) => (
                   <li key={bullet} className="flex items-start gap-3">

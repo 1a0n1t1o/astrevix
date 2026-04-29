@@ -75,14 +75,14 @@ export default function Testimonial() {
           {/* Attribution — business only, no personal name */}
           <div className="mt-8 flex items-center gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-500 text-lg font-bold text-white">
-              SE
+              JM
             </div>
             <div>
               <p className="text-base font-semibold text-gray-900">
-                Stellar Edge Detailing
+                John&apos;s Mobile Detailing
               </p>
               <p className="text-sm text-gray-500">
-                Auto Detailing • Orange County, CA
+                Mobile Auto Detailing • Orange County, CA
               </p>
             </div>
           </div>
