@@ -10,18 +10,26 @@ type IPhoneMockupProps = Readonly<{
 const FRAME_GRADIENT =
   "linear-gradient(90deg, #8a8780 0%, #b5b2a8 15%, #d4d1c6 50%, #b5b2a8 85%, #8a8780 100%)";
 
+// Top-light radial highlight overlay — suggests an off-camera light source.
+const FRAME_LIGHT_OVERLAY =
+  "radial-gradient(ellipse 80% 40% at 50% -10%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.10) 25%, transparent 60%)";
+
+// Bottom shadow gradient — grounds the frame and suggests body curvature.
+const FRAME_BOTTOM_SHADOW =
+  "linear-gradient(0deg, rgba(0,0,0,0.20) 0%, transparent 18%)";
+
 // Side metal edge — visible during Y-axis rotation, darker than the face.
 const SIDE_EDGE_GRADIENT =
-  "linear-gradient(90deg, #6a6760 0%, #8a8780 100%)";
+  "linear-gradient(90deg, #5a5750 0%, #7a7770 50%, #908d85 100%)";
 
-// Side buttons — titanium tone shifted darker so they read as separate parts.
-const POWER_GRADIENT =
-  "linear-gradient(180deg, #a5a298 0%, #7a7770 50%, #a5a298 100%)";
-const VOLUME_GRADIENT =
-  "linear-gradient(180deg, #a5a298 0%, #7a7770 50%, #a5a298 100%)";
-// Action button — slightly darker so it's distinguishable at a glance.
-const ACTION_GRADIENT =
-  "linear-gradient(180deg, #8a8780 0%, #5a5750 50%, #8a8780 100%)";
+// Side button gradients — vertical so the chamfered top/bottom catches light.
+const POWER_BUTTON_GRADIENT =
+  "linear-gradient(180deg, #c5c2b8 0%, #a5a298 8%, #7a7770 50%, #a5a298 92%, #c5c2b8 100%)";
+const VOLUME_BUTTON_GRADIENT =
+  "linear-gradient(180deg, #c5c2b8 0%, #a5a298 8%, #7a7770 50%, #a5a298 92%, #c5c2b8 100%)";
+// Action button — slightly darker and more saturated so it's distinguishable.
+const ACTION_BUTTON_GRADIENT =
+  "linear-gradient(180deg, #989590 0%, #7a7770 8%, #5a5750 50%, #7a7770 92%, #989590 100%)";
 
 export default function IPhoneMockup({ children }: IPhoneMockupProps) {
   return (
@@ -44,7 +52,8 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           background: SIDE_EDGE_GRADIENT,
           borderTopLeftRadius: "60px",
           borderBottomLeftRadius: "60px",
-          transform: "translateZ(-2px)",
+          transform: "translateZ(-3px)",
+          boxShadow: "inset -1px 0 1px rgba(0,0,0,0.4)",
         }}
       />
 
@@ -55,9 +64,22 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           padding: "6px 8px",
           borderRadius: "60px",
           background: FRAME_GRADIENT,
+          boxShadow:
+            "inset 0 0 0 0.5px rgba(255,255,255,0.25), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.20)",
         }}
       >
-        {/* Top specular highlight — single bright line that sells the metal look. */}
+        {/* Top radial highlight — main light-source reflection on metal. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-20"
+          style={{
+            borderRadius: "60px",
+            background: FRAME_LIGHT_OVERLAY,
+            mixBlendMode: "screen",
+          }}
+        />
+
+        {/* Single bright specular line along the very top edge. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 z-30"
@@ -67,7 +89,17 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             borderTopLeftRadius: "60px",
             borderTopRightRadius: "60px",
             background:
-              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)",
+              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%)",
+          }}
+        />
+
+        {/* Bottom subtle shadow grounding. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-20"
+          style={{
+            borderRadius: "60px",
+            background: FRAME_BOTTOM_SHADOW,
           }}
         />
 
@@ -77,15 +109,19 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           style={{
             padding: "1.5px",
             borderRadius: "53.5px",
+            boxShadow:
+              "inset 0 0 1px rgba(0,0,0,0.8), 0 0 0 0.5px rgba(0,0,0,0.5)",
           }}
         >
-          {/* Screen surface */}
+          {/* Screen surface — beveled glass with subtle inner shadow at perimeter. */}
           <div
             className="relative h-full w-full overflow-hidden"
             style={{
               borderRadius: "52px",
               background:
                 "linear-gradient(180deg, #EDE9FE 0%, #F3F0FF 15%, #FEFCFA 40%, #FEFCFA 100%)",
+              boxShadow:
+                "inset 0 0 0 0.5px rgba(0,0,0,0.10), inset 0 1px 2px rgba(0,0,0,0.06)",
             }}
           >
             {children}
@@ -98,8 +134,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                 top: "11px",
                 width: "124px",
                 height: "35px",
-                background: "#000000",
+                background:
+                  "radial-gradient(ellipse at 50% 30%, #1a1a1a 0%, #000000 70%)",
                 borderRadius: "17.5px",
+                boxShadow:
+                  "inset 0 1px 1px rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(0,0,0,0.4)",
               }}
             >
               {/* Camera dot — 8px circle, 12px from right edge, vertically centered. */}
@@ -109,7 +148,10 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                   right: "12px",
                   width: "8px",
                   height: "8px",
-                  background: "#1a1a1a",
+                  background:
+                    "radial-gradient(circle at 35% 30%, #2a2a3a 0%, #0a0a1a 60%, #000000 100%)",
+                  boxShadow:
+                    "inset 0 0 1px rgba(255,255,255,0.08), 0 0 0 0.5px rgba(0,0,0,0.5)",
                 }}
               >
                 {/* Inner lens — 3px circle. */}
@@ -118,26 +160,27 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                   style={{
                     width: "3px",
                     height: "3px",
-                    background: "#2a2a3a",
+                    background:
+                      "radial-gradient(circle at 30% 30%, #4a4a6a 0%, #1a1a2a 80%)",
                   }}
                 />
               </div>
             </div>
 
-            {/* Soft glass reflection across screen */}
+            {/* Soft glass reflection — diagonal sweep across upper-left. */}
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 z-40"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 30%, transparent 50%)",
+                  "linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 25%, transparent 45%)",
               }}
             />
           </div>
         </div>
       </div>
 
-      {/* Side buttons — protrude 2px from frame edges. */}
+      {/* Side buttons — protrude 2px from frame edges, with chamfered look. */}
 
       {/* Action Button — left, top */}
       <div
@@ -148,10 +191,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           top: "85px",
           width: "4px",
           height: "28px",
-          background: ACTION_GRADIENT,
+          background: ACTION_BUTTON_GRADIENT,
           borderTopLeftRadius: "1.5px",
           borderBottomLeftRadius: "1.5px",
-          boxShadow: "inset -1px 0 0 rgba(0,0,0,0.55)",
+          boxShadow:
+            "inset -1px 0 0 rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.35)",
         }}
       />
       {/* Volume Up — left */}
@@ -163,10 +207,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           top: "130px",
           width: "4px",
           height: "38px",
-          background: VOLUME_GRADIENT,
+          background: VOLUME_BUTTON_GRADIENT,
           borderTopLeftRadius: "1.5px",
           borderBottomLeftRadius: "1.5px",
-          boxShadow: "inset -1px 0 0 rgba(0,0,0,0.55)",
+          boxShadow:
+            "inset -1px 0 0 rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.30)",
         }}
       />
       {/* Volume Down — left */}
@@ -178,10 +223,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           top: "178px",
           width: "4px",
           height: "38px",
-          background: VOLUME_GRADIENT,
+          background: VOLUME_BUTTON_GRADIENT,
           borderTopLeftRadius: "1.5px",
           borderBottomLeftRadius: "1.5px",
-          boxShadow: "inset -1px 0 0 rgba(0,0,0,0.55)",
+          boxShadow:
+            "inset -1px 0 0 rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.30)",
         }}
       />
       {/* Power — right */}
@@ -193,10 +239,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           top: "95px",
           width: "4px",
           height: "65px",
-          background: POWER_GRADIENT,
+          background: POWER_BUTTON_GRADIENT,
           borderTopRightRadius: "1.5px",
           borderBottomRightRadius: "1.5px",
-          boxShadow: "inset 1px 0 0 rgba(0,0,0,0.55)",
+          boxShadow:
+            "inset 1px 0 0 rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.30)",
         }}
       />
     </div>
