@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import IPhoneMockup from "./IPhoneMockup";
 
@@ -8,9 +7,14 @@ type HeroPhoneProps = Readonly<{
   children: React.ReactNode;
 }>;
 
+// Scroll-driven Y-axis tilt for the iPhone mockup. We bind directly to the
+// rotator element via ref and update its transform inside requestAnimationFrame
+// in response to scroll events. Framer Motion's useScroll/useTransform was the
+// natural choice, but its motion-value subscription wasn't firing reliably
+// against this Next 16 / Turbopack setup, so we drive the transform ourselves.
 export default function HeroPhone({ children }: HeroPhoneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
+  const rotatorRef = useRef<HTMLDivElement>(null);
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -21,55 +25,68 @@ export default function HeroPhone({ children }: HeroPhoneProps) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    // 'start start' -> phone top hits viewport top (scroll progress 0)
-    // 'end start'   -> phone bottom hits viewport top (scroll progress 1)
-    offset: ["start start", "end start"],
-  });
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      const r = rotatorRef.current;
+      if (r) r.style.transform = "rotateY(0deg)";
+      return;
+    }
 
-  // Two parallel transforms; we pick the right one for the active breakpoint.
-  // Hooks always run in the same order — only the assignment is conditional.
-  const rotateXDesktop = useTransform(scrollYProgress, [0, 1], [-15, 0]);
-  const rotateXMobile = useTransform(scrollYProgress, [0, 1], [-8, 0]);
-  const rotateYDesktop = useTransform(scrollYProgress, [0, 1], [-3, 0]);
-  const scaleDesktop = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
-  const scaleMobile = useTransform(scrollYProgress, [0, 1], [1, 0.97]);
+    const maxAngle = isMobile ? 10 : 18;
+    let raf = 0;
 
-  const rotateX = isMobile ? rotateXMobile : rotateXDesktop;
-  // Mobile drops rotateY entirely — sideways tilt on small screens reads as
-  // motion sickness rather than depth.
-  const rotateY = isMobile ? 0 : rotateYDesktop;
-  const scale = isMobile ? scaleMobile : scaleDesktop;
+    function paint() {
+      const c = containerRef.current;
+      const r = rotatorRef.current;
+      if (!c || !r) return;
+      const rect = c.getBoundingClientRect();
+      // Progress goes 0 -> 1 as the phone scrolls from "top hits viewport top"
+      // to "bottom hits viewport top" (matches the user-spec'd offsets:
+      // ['start start', 'end start']).
+      const start = rect.top + window.scrollY;
+      const range = rect.height;
+      const p = range > 0
+        ? Math.min(1, Math.max(0, (window.scrollY - start) / range))
+        : 0;
+      const angle = -maxAngle + p * maxAngle;
+      r.style.transform = `rotateY(${angle}deg)`;
+    }
 
-  if (shouldReduceMotion) {
-    return (
-      <div ref={containerRef}>
-        <IPhoneMockup>{children}</IPhoneMockup>
-      </div>
-    );
-  }
+    function onScroll() {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(paint);
+    }
+
+    paint();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", paint);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", paint);
+    };
+  }, [isMobile]);
 
   return (
     <div
       ref={containerRef}
       style={{
-        perspective: isMobile ? "1200px" : "1500px",
+        perspective: "1500px",
         transformStyle: "preserve-3d",
       }}
     >
-      <motion.div
+      <div
+        ref={rotatorRef}
         style={{
-          rotateX,
-          rotateY,
-          scale,
           transformStyle: "preserve-3d",
           transformOrigin: "center center",
           willChange: "transform",
+          transform: `rotateY(${isMobile ? -10 : -18}deg)`,
         }}
       >
         <IPhoneMockup>{children}</IPhoneMockup>
-      </motion.div>
+      </div>
     </div>
   );
 }
