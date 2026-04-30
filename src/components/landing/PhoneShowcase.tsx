@@ -12,6 +12,8 @@ import {
   Clock,
   CheckCircle2,
   BarChart3,
+  Wifi,
+  BatteryFull,
 } from "lucide-react";
 
 /* ───── animated SVG area chart ───── */
@@ -208,8 +210,9 @@ export default function PhoneShowcase() {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
-  const baseRotateY = isMobile ? -3 : -8;
-  const baseRotateX = isMobile ? 1 : 2;
+  const baseRotateY = isMobile ? -5 : -12;
+  const baseRotateX = isMobile ? 2 : 4;
+  const baseRotateZ = isMobile ? 0 : -1;
 
   return (
     <section
@@ -523,215 +526,327 @@ export default function PhoneShowcase() {
               What your customers see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
-              <div
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
                 className="relative shrink-0"
-                style={{ perspective: "1200px" }}
               >
-                <motion.div
-                  initial={{ opacity: 0, x: -30, rotateY: baseRotateY, rotateX: baseRotateX }}
-                  whileInView={{
-                    opacity: 1,
-                    x: 0,
-                    rotateX: baseRotateX,
-                    y: shouldReduceMotion ? 0 : [0, -5, 0],
-                    rotateY: shouldReduceMotion
-                      ? baseRotateY
-                      : [baseRotateY - 0.5, baseRotateY + 0.5, baseRotateY - 0.5],
-                  }}
-                  viewport={{ once: true }}
-                  transition={{
-                    opacity: { duration: 0.6, delay: 0.2, ease: "easeOut" },
-                    x: { duration: 0.6, delay: 0.2, ease: "easeOut" },
-                    y: shouldReduceMotion
-                      ? { duration: 0 }
-                      : {
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: [0.4, 0, 0.6, 1],
-                          delay: 1.0,
-                        },
-                    rotateY: shouldReduceMotion
-                      ? { duration: 0 }
-                      : {
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: [0.4, 0, 0.6, 1],
-                          delay: 1.0,
-                        },
-                  }}
-                  style={{ transformStyle: "preserve-3d" }}
+                <div
                   className="relative w-[260px] md:w-[280px]"
+                  style={{ perspective: isMobile ? "1200px" : "1500px" }}
                 >
-                  {/* Layered shadow — large soft drop + brand-tinted glow, biased left */}
-                  <div
-                    className="pointer-events-none absolute -bottom-10 left-[-6%] right-[10%] h-28 rounded-[50%]"
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.92, rotateZ: baseRotateZ }}
+                    animate={
+                      shouldReduceMotion
+                        ? { opacity: 1, scale: 1, rotateZ: baseRotateZ }
+                        : {
+                            opacity: 1,
+                            scale: 1,
+                            y: [0, -8, 0],
+                            rotateZ: isMobile ? [0, 0, 0] : [-1, -0.5, -1],
+                          }
+                    }
                     style={{
-                      background:
-                        "radial-gradient(ellipse, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.12) 45%, transparent 75%)",
-                      filter: "blur(30px)",
+                      rotateY: baseRotateY,
+                      rotateX: baseRotateX,
+                      transformStyle: "preserve-3d",
                     }}
-                  />
-                  <div
-                    className="pointer-events-none absolute -bottom-8 left-[-10%] right-[14%] h-24 rounded-[50%]"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse, rgba(236,72,153,0.28) 0%, rgba(168,85,247,0.18) 40%, transparent 75%)",
-                      filter: "blur(28px)",
+                    transition={{
+                      opacity: { duration: 0.6, delay: 0.3, ease: "easeOut" },
+                      scale: { duration: 0.6, delay: 0.3, ease: "easeOut" },
+                      y: shouldReduceMotion
+                        ? { duration: 0 }
+                        : {
+                            duration: 5,
+                            repeat: Infinity,
+                            ease: [0.4, 0, 0.6, 1],
+                            delay: 1.0,
+                          },
+                      rotateZ: shouldReduceMotion
+                        ? { duration: 0 }
+                        : {
+                            duration: 5,
+                            repeat: Infinity,
+                            ease: [0.4, 0, 0.6, 1],
+                            delay: 1.0,
+                          },
                     }}
-                  />
-
-                  <div
-                    className="relative overflow-hidden rounded-[40px] p-[8px] md:rounded-[42px] md:p-[9px]"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, #1f2937 0%, #111827 50%, #000000 100%)",
-                      boxShadow:
-                        "0 40px 80px -20px rgba(15,23,42,0.50), 0 20px 40px -12px rgba(15,23,42,0.25), 0 0 0 0.5px rgba(255,255,255,0.18) inset, 0 1px 0 rgba(255,255,255,0.10) inset, 0 -2px 8px rgba(0,0,0,0.4) inset",
-                    }}
+                    className="relative"
                   >
-                    {/* Metal-edge inner highlight */}
+                    {/* Side buttons */}
                     <div
-                      className="pointer-events-none absolute inset-0 rounded-[40px] md:rounded-[42px]"
+                      className="pointer-events-none absolute -right-[2px] top-[28%] z-30 h-[52px] w-[3px] rounded-r-[2px]"
                       style={{
                         background:
-                          "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 25%, transparent 45%, transparent 70%, rgba(255,255,255,0.06) 100%)",
+                          "linear-gradient(to right, #18181b 0%, #09090b 60%, #000000 100%)",
+                        boxShadow:
+                          "1px 0 1px rgba(0,0,0,0.4), inset 0 1px 1px rgba(0,0,0,0.5)",
                       }}
                     />
-                    {/* Dynamic Island — refined pill */}
                     <div
-                      className="absolute left-1/2 top-[10px] z-20 h-[18px] w-[72px] -translate-x-1/2 rounded-full md:top-[11px] md:h-[20px] md:w-[80px]"
+                      className="pointer-events-none absolute -left-[2px] top-[14%] z-30 h-[16px] w-[3px] rounded-l-[2px]"
                       style={{
                         background:
-                          "radial-gradient(ellipse at 50% 30%, #1a1a1a 0%, #000000 70%)",
+                          "linear-gradient(to left, #18181b 0%, #09090b 60%, #000000 100%)",
                         boxShadow:
-                          "0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 1px rgba(0,0,0,0.6)",
+                          "-1px 0 1px rgba(0,0,0,0.4), inset 0 1px 1px rgba(0,0,0,0.5)",
+                      }}
+                    />
+                    <div
+                      className="pointer-events-none absolute -left-[2px] top-[22%] z-30 h-[32px] w-[3px] rounded-l-[2px]"
+                      style={{
+                        background:
+                          "linear-gradient(to left, #18181b 0%, #09090b 60%, #000000 100%)",
+                        boxShadow:
+                          "-1px 0 1px rgba(0,0,0,0.4), inset 0 1px 1px rgba(0,0,0,0.5)",
+                      }}
+                    />
+                    <div
+                      className="pointer-events-none absolute -left-[2px] top-[32%] z-30 h-[32px] w-[3px] rounded-l-[2px]"
+                      style={{
+                        background:
+                          "linear-gradient(to left, #18181b 0%, #09090b 60%, #000000 100%)",
+                        boxShadow:
+                          "-1px 0 1px rgba(0,0,0,0.4), inset 0 1px 1px rgba(0,0,0,0.5)",
                       }}
                     />
 
-                    {/* Screen */}
-                    <div className="relative overflow-hidden rounded-[33px] bg-[#FEFCFA] md:rounded-[35px]">
-                      {/* Diagonal screen highlight — top-right glare */}
+                    {/* Outer titanium body */}
+                    <div
+                      className="relative rounded-[2.25rem] p-[10px] md:rounded-[2.5rem] md:p-[12px]"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, #3f3f46 0%, #27272a 35%, #18181b 65%, #000000 100%)",
+                        boxShadow: [
+                          "0 25px 50px -12px rgba(0,0,0,0.40)",
+                          "0 60px 120px -20px rgba(0,0,0,0.25)",
+                          "-12px 40px 80px -20px rgba(99,102,241,0.30)",
+                          "0 0 0 0.5px rgba(255,255,255,0.18) inset",
+                          "0 1px 0 rgba(255,255,255,0.20) inset",
+                        ].join(", "),
+                      }}
+                    >
+                      {/* Left edge titanium highlight */}
                       <div
-                        className="pointer-events-none absolute inset-0 z-10"
+                        className="pointer-events-none absolute left-0 top-0 h-full w-[3px] rounded-l-[2.25rem] md:rounded-l-[2.5rem]"
                         style={{
                           background:
-                            "linear-gradient(225deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.05) 22%, transparent 48%)",
+                            "linear-gradient(to right, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 60%, transparent 100%)",
                         }}
                       />
-                      <div className="relative z-0 p-4 pt-12">
-                        {/* Powered by badge */}
-                        <div className="flex justify-center">
-                          <div
-                            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5"
-                            style={{
-                              backgroundColor: "rgba(0,0,0,0.04)",
-                              fontSize: "8px",
-                              color: "#8B8B9B",
-                            }}
-                          >
-                            Powered by{" "}
-                            <span
-                              className="font-semibold"
-                              style={{ color: "#6B6B7B" }}
-                            >
-                              Astrevix
-                            </span>
-                          </div>
-                        </div>
+                      {/* Right edge subtle highlight */}
+                      <div
+                        className="pointer-events-none absolute right-0 top-0 h-full w-[2px] rounded-r-[2.25rem] md:rounded-r-[2.5rem]"
+                        style={{
+                          background:
+                            "linear-gradient(to left, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 55%, transparent 100%)",
+                        }}
+                      />
 
-                        {/* Business logo — pink/rose gradient */}
-                        <div className="mt-3 flex justify-center">
-                          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 text-sm font-bold text-white shadow-md">
-                            G
-                          </div>
-                        </div>
-
-                        {/* Business name + tagline */}
-                        <p className="mt-2 text-center text-sm font-bold text-gray-900">
-                          Glow Nail Studio
-                        </p>
-                        <p className="mt-0.5 text-center text-[9px] text-gray-500">
-                          Newport Beach&apos;s modern nail bar
-                        </p>
-
-                        {/* Reward card — glassmorphic with brand glow */}
-                        <div className="relative mt-4">
-                          <div
-                            className="absolute inset-0 rounded-[16px] opacity-20 blur-lg"
-                            style={{ backgroundColor: "#EC4899" }}
-                          />
-                          <div
-                            className="relative overflow-hidden rounded-[16px] px-4 py-5 text-center"
-                            style={{
-                              background: "rgba(255,255,255,0.6)",
-                              backdropFilter: "blur(20px)",
-                              WebkitBackdropFilter: "blur(20px)",
-                              border: "1px solid rgba(255,255,255,0.4)",
-                              boxShadow:
-                                "0 6px 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
-                            }}
-                          >
-                            <p
-                              className="text-[8px] font-semibold uppercase tracking-widest"
-                              style={{ color: "#EC4899" }}
-                            >
-                              Your Reward
-                            </p>
-                            <p className="mt-1.5 text-base font-bold text-gray-900">
-                              Free gel upgrade
-                            </p>
-                            <p className="mt-1 text-[9px] text-gray-500">
-                              Post your manicure on Instagram
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* How it works */}
-                        <div className="mt-4">
-                          <p className="text-[10px] font-bold text-gray-900">
-                            How it works
-                          </p>
-                          <div className="mt-2 space-y-1.5">
-                            {PHONE_STEPS.map((step) => (
-                              <div
-                                key={step.num}
-                                className="flex items-center gap-2.5 rounded-xl bg-white p-2 shadow-sm"
-                              >
-                                <div
-                                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-gray-700"
-                                  style={{ backgroundColor: "rgba(0,0,0,0.04)" }}
-                                >
-                                  {step.num}
-                                </div>
-                                <span className="text-[9px] font-medium text-gray-800">
-                                  {step.label}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* CTA button */}
+                      {/* Inner black bezel ring */}
+                      <div className="relative overflow-hidden rounded-[1.85rem] bg-black p-[3px] md:rounded-[2rem] md:p-[4px]">
+                        {/* Screen */}
                         <div
-                          className="mt-4 rounded-xl py-2.5 text-center text-[10px] font-semibold text-white"
+                          className="relative overflow-hidden rounded-[1.55rem] md:rounded-[1.7rem]"
                           style={{
+                            aspectRatio: "9/19.5",
                             background:
-                              "linear-gradient(135deg, #EC4899, #F43F5E)",
-                            boxShadow: "0 4px 12px rgba(236,72,153,0.3)",
+                              "linear-gradient(180deg, #FFFFFF 0%, #FEFCFA 12%, #FEFCFA 100%)",
                           }}
                         >
-                          Submit Your Post &rarr;
-                        </div>
+                          {/* iOS Status Bar with Dynamic Island */}
+                          <div className="relative z-20 h-[34px] md:h-[36px]">
+                            <div className="flex h-full items-center justify-between px-4 md:px-5">
+                              <span
+                                className="text-[11px] font-semibold leading-none tracking-tight text-black md:text-[12px]"
+                                style={{
+                                  fontFamily:
+                                    "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+                                }}
+                              >
+                                9:41
+                              </span>
+                              <div className="flex items-center gap-[4px] leading-none">
+                                {/* Signal bars */}
+                                <div className="flex items-end gap-[1.5px]">
+                                  <div className="h-[2px] w-[2.5px] rounded-[1px] bg-black" />
+                                  <div className="h-[3px] w-[2.5px] rounded-[1px] bg-black" />
+                                  <div className="h-[5px] w-[2.5px] rounded-[1px] bg-black" />
+                                  <div className="h-[7px] w-[2.5px] rounded-[1px] bg-black" />
+                                </div>
+                                <Wifi
+                                  size={11}
+                                  strokeWidth={2.5}
+                                  className="text-black"
+                                />
+                                <BatteryFull
+                                  size={14}
+                                  strokeWidth={1.8}
+                                  className="text-black"
+                                />
+                              </div>
+                            </div>
 
-                        {/* Footer note */}
-                        <p className="mt-2 text-center text-[7px] text-gray-400">
-                          Rewards issued after review. Usually within 24 hours.
-                        </p>
+                            {/* Dynamic Island — pill, centered over status bar */}
+                            <div
+                              className="absolute left-1/2 top-1/2 z-30 h-[22px] w-[78px] -translate-x-1/2 -translate-y-1/2 rounded-full md:h-[24px] md:w-[90px]"
+                              style={{
+                                background: "#000000",
+                                boxShadow:
+                                  "0 0 0 0.5px rgba(255,255,255,0.04), inset 0 1px 1px rgba(0,0,0,0.4)",
+                              }}
+                            >
+                              {/* Top inner highlight */}
+                              <div
+                                className="pointer-events-none absolute inset-x-2 top-0 h-[1.5px] rounded-full"
+                                style={{
+                                  background:
+                                    "linear-gradient(to bottom, rgba(63,63,70,0.7), transparent)",
+                                }}
+                              />
+                              {/* Camera lens dot */}
+                              <div
+                                className="absolute right-[6px] top-1/2 h-[4px] w-[4px] -translate-y-1/2 rounded-full md:h-[5px] md:w-[5px]"
+                                style={{
+                                  background:
+                                    "radial-gradient(circle at 30% 30%, #1e1b4b 0%, #000000 70%)",
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* App content — Glow Nail Studio */}
+                          <div className="relative z-0 px-4 pb-4 pt-2 md:px-5 md:pb-5">
+                            {/* Powered by badge */}
+                            <div className="flex justify-center">
+                              <div
+                                className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5"
+                                style={{
+                                  backgroundColor: "rgba(0,0,0,0.04)",
+                                  fontSize: "8px",
+                                  color: "#8B8B9B",
+                                }}
+                              >
+                                Powered by{" "}
+                                <span
+                                  className="font-semibold"
+                                  style={{ color: "#6B6B7B" }}
+                                >
+                                  Astrevix
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Business logo — pink/rose gradient */}
+                            <div className="mt-3 flex justify-center">
+                              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 text-sm font-bold text-white shadow-md">
+                                G
+                              </div>
+                            </div>
+
+                            {/* Business name + tagline */}
+                            <p className="mt-2 text-center text-sm font-bold text-gray-900">
+                              Glow Nail Studio
+                            </p>
+                            <p className="mt-0.5 text-center text-[9px] text-gray-500">
+                              Newport Beach&apos;s modern nail bar
+                            </p>
+
+                            {/* Reward card */}
+                            <div className="relative mt-4">
+                              <div
+                                className="absolute inset-0 rounded-[16px] opacity-20 blur-lg"
+                                style={{ backgroundColor: "#EC4899" }}
+                              />
+                              <div
+                                className="relative overflow-hidden rounded-[16px] px-4 py-5 text-center"
+                                style={{
+                                  background: "rgba(255,255,255,0.6)",
+                                  backdropFilter: "blur(20px)",
+                                  WebkitBackdropFilter: "blur(20px)",
+                                  border: "1px solid rgba(255,255,255,0.4)",
+                                  boxShadow:
+                                    "0 6px 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.5)",
+                                }}
+                              >
+                                <p
+                                  className="text-[8px] font-semibold uppercase tracking-widest"
+                                  style={{ color: "#EC4899" }}
+                                >
+                                  Your Reward
+                                </p>
+                                <p className="mt-1.5 text-base font-bold text-gray-900">
+                                  Free gel upgrade
+                                </p>
+                                <p className="mt-1 text-[9px] text-gray-500">
+                                  Post your manicure on Instagram
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* How it works */}
+                            <div className="mt-4">
+                              <p className="text-[10px] font-bold text-gray-900">
+                                How it works
+                              </p>
+                              <div className="mt-2 space-y-1.5">
+                                {PHONE_STEPS.map((step) => (
+                                  <div
+                                    key={step.num}
+                                    className="flex items-center gap-2.5 rounded-xl bg-white p-2 shadow-sm"
+                                  >
+                                    <div
+                                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-gray-700"
+                                      style={{
+                                        backgroundColor: "rgba(0,0,0,0.04)",
+                                      }}
+                                    >
+                                      {step.num}
+                                    </div>
+                                    <span className="text-[9px] font-medium text-gray-800">
+                                      {step.label}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* CTA button */}
+                            <div
+                              className="mt-4 rounded-xl py-2.5 text-center text-[10px] font-semibold text-white"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #EC4899, #F43F5E)",
+                                boxShadow: "0 4px 12px rgba(236,72,153,0.3)",
+                              }}
+                            >
+                              Submit Your Post &rarr;
+                            </div>
+
+                            {/* Footer note */}
+                            <p className="mt-2 text-center text-[7px] text-gray-400">
+                              Rewards issued after review. Usually within 24
+                              hours.
+                            </p>
+                          </div>
+
+                          {/* Glass reflection — above content, below status bar/island */}
+                          <div
+                            className="pointer-events-none absolute inset-0 z-10"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 30%, transparent 50%, transparent 100%)",
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              </div>
+                  </motion.div>
+                </div>
+              </motion.div>
               <ul className="w-full space-y-4 lg:max-w-xs">
                 {PHONE_BULLETS.map((bullet) => (
                   <li key={bullet} className="flex items-start gap-3">
