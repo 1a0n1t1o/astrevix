@@ -10,10 +10,6 @@ type IPhoneMockupProps = Readonly<{
 const FRAME_GRADIENT =
   "linear-gradient(90deg, #76736c 0%, #a8a59c 12%, #c8c5bc 35%, #d8d5cc 50%, #c8c5bc 65%, #a8a59c 88%, #76736c 100%)";
 
-// Brushed metal — fine repeating vertical streaks that catch light.
-const BRUSHED_METAL =
-  "repeating-linear-gradient(90deg, transparent 0, transparent 1px, rgba(255,255,255,0.06) 1px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px)";
-
 // Top-light radial highlight overlay — suggests an off-camera light source.
 const FRAME_LIGHT_OVERLAY =
   "radial-gradient(ellipse 70% 35% at 50% -5%, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 25%, transparent 60%)";
@@ -170,17 +166,6 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
               "inset 0 0 0 0.5px rgba(255,255,255,0.30), inset 0 1.5px 0 rgba(255,255,255,0.45), inset 0 -1.5px 0 rgba(0,0,0,0.30), inset 1px 0 0 rgba(255,255,255,0.18), inset -1px 0 0 rgba(0,0,0,0.22)",
           }}
         >
-          {/* Brushed metal texture overlay — fine vertical streaks. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-10"
-            style={{
-              borderRadius: "60px",
-              background: BRUSHED_METAL,
-              opacity: 0.7,
-            }}
-          />
-
           {/* Top radial highlight — main light-source reflection on metal. */}
           <div
             aria-hidden
@@ -293,13 +278,50 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                 </div>
               </div>
 
-              {/* Soft glass reflection — diagonal sweep across upper-left. */}
+              {/* Glass — main diagonal reflection from the upper-left
+                  (window/key-light catching the surface). */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 z-40"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 25%, transparent 45%)",
+                    "linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.10) 18%, rgba(255,255,255,0.02) 35%, transparent 50%)",
+                  borderRadius: "52px",
+                }}
+              />
+
+              {/* Glass — soft overhead light pooling near the top of the glass. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 z-40"
+                style={{
+                  height: "55%",
+                  background:
+                    "radial-gradient(ellipse 75% 100% at 50% 0%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 35%, transparent 75%)",
+                  borderTopLeftRadius: "52px",
+                  borderTopRightRadius: "52px",
+                }}
+              />
+
+              {/* Glass — subtle bottom-right counter-reflection. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-40"
+                style={{
+                  background:
+                    "linear-gradient(315deg, rgba(255,255,255,0.06) 0%, transparent 25%)",
+                  borderRadius: "52px",
+                }}
+              />
+
+              {/* Glass — soft inner shadow at the perimeter for curvature. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-40"
+                style={{
+                  borderRadius: "52px",
+                  boxShadow:
+                    "inset 0 0 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               />
             </div>
