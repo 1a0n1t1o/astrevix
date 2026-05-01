@@ -27,7 +27,7 @@ export default function Footer() {
               height={24}
             />
             <p className="mt-2 text-xs font-medium text-white/60">
-              Made in Southern California &middot; Fullerton, CA
+              Made in Southern California
             </p>
           </div>
 

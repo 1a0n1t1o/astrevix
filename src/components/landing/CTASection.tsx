@@ -62,7 +62,7 @@ export default function CTASection() {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-5 text-lg font-bold text-purple-700 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
         >
-          Start My 30 Days Free
+          Book a Demo
           <svg
             className="h-5 w-5"
             fill="none"
@@ -77,14 +77,6 @@ export default function CTASection() {
             />
           </svg>
         </a>
-
-        <p className="mt-6 text-sm text-white/70">
-          30 days free • Then $97/month • Cancel anytime
-        </p>
-        <p className="mt-3 text-xs text-white/50">
-          Built in Southern California. Used by businesses across Orange County
-          and LA.
-        </p>
       </motion.div>
     </section>
   );
