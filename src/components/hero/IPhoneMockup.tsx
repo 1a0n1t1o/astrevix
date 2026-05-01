@@ -8,15 +8,19 @@ type IPhoneMockupProps = Readonly<{
 
 // Frame face — natural titanium, lighter in the middle, darker on the edges.
 const FRAME_GRADIENT =
-  "linear-gradient(90deg, #8a8780 0%, #b5b2a8 15%, #d4d1c6 50%, #b5b2a8 85%, #8a8780 100%)";
+  "linear-gradient(90deg, #76736c 0%, #a8a59c 12%, #c8c5bc 35%, #d8d5cc 50%, #c8c5bc 65%, #a8a59c 88%, #76736c 100%)";
+
+// Brushed metal — fine repeating vertical streaks that catch light.
+const BRUSHED_METAL =
+  "repeating-linear-gradient(90deg, transparent 0, transparent 1px, rgba(255,255,255,0.06) 1px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px)";
 
 // Top-light radial highlight overlay — suggests an off-camera light source.
 const FRAME_LIGHT_OVERLAY =
-  "radial-gradient(ellipse 80% 40% at 50% -10%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.10) 25%, transparent 60%)";
+  "radial-gradient(ellipse 70% 35% at 50% -5%, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 25%, transparent 60%)";
 
 // Bottom shadow gradient — grounds the frame and suggests body curvature.
 const FRAME_BOTTOM_SHADOW =
-  "linear-gradient(0deg, rgba(0,0,0,0.20) 0%, transparent 18%)";
+  "linear-gradient(0deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.05) 12%, transparent 22%)";
 
 // Side metal edge — visible during Y-axis rotation, darker than the face.
 const SIDE_EDGE_GRADIENT =
@@ -65,9 +69,20 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
           borderRadius: "60px",
           background: FRAME_GRADIENT,
           boxShadow:
-            "inset 0 0 0 0.5px rgba(255,255,255,0.25), inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.20)",
+            "inset 0 0 0 0.5px rgba(255,255,255,0.30), inset 0 1.5px 0 rgba(255,255,255,0.45), inset 0 -1.5px 0 rgba(0,0,0,0.30), inset 1px 0 0 rgba(255,255,255,0.18), inset -1px 0 0 rgba(0,0,0,0.22)",
         }}
       >
+        {/* Brushed metal texture overlay — fine vertical streaks. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-10"
+          style={{
+            borderRadius: "60px",
+            background: BRUSHED_METAL,
+            opacity: 0.7,
+          }}
+        />
+
         {/* Top radial highlight — main light-source reflection on metal. */}
         <div
           aria-hidden
@@ -89,7 +104,20 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             borderTopLeftRadius: "60px",
             borderTopRightRadius: "60px",
             background:
-              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%)",
+              "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%)",
+          }}
+        />
+
+        {/* Chamfer — thin darker line just inside the top highlight, 2px down. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-1 z-30"
+          style={{
+            top: "2px",
+            height: "1px",
+            borderRadius: "60px",
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.18) 50%, transparent 100%)",
           }}
         />
 

@@ -37,19 +37,18 @@ export default function HeroPhone({ children }: HeroPhoneProps) {
     let raf = 0;
 
     function paint() {
+      const c = containerRef.current;
       const r = rotatorRef.current;
-      if (!r) return;
-      // Track the whole hero section, not the phone wrapper alone — that way
-      // the rotation animates throughout the hero scroll (visible while the
-      // phone is still on screen), instead of only firing while the phone is
-      // leaving the viewport at the top.
-      const hero = document.getElementById("hero") ?? containerRef.current;
-      if (!hero) return;
-      const rect = hero.getBoundingClientRect();
-      const start = rect.top + window.scrollY;
-      const range = rect.height;
+      if (!c || !r) return;
+      // Drive progress from "page top" -> "phone top hits viewport top".
+      // That packs the entire -18deg -> 0deg sweep into the scroll distance
+      // BEFORE the phone leaves the screen, so the user actually sees the
+      // rotation while looking at the phone.
+      const phoneRect = c.getBoundingClientRect();
+      const phoneAbsTop = phoneRect.top + window.scrollY;
+      const range = phoneAbsTop;
       const p = range > 0
-        ? Math.min(1, Math.max(0, (window.scrollY - start) / range))
+        ? Math.min(1, Math.max(0, window.scrollY / range))
         : 0;
       const angle = -maxAngle + p * maxAngle;
       r.style.transform = `rotateY(${angle}deg)`;
