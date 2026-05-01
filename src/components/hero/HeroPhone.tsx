@@ -5,14 +5,30 @@ import IPhoneMockup from "./IPhoneMockup";
 
 type HeroPhoneProps = Readonly<{
   children: React.ReactNode;
+  /**
+   * Y-axis rotation (degrees) at scroll start. Negative tilts the phone to
+   * show the right edge; positive tilts to show the left. Settles to 0
+   * (flat) as the user scrolls past. Defaults to -18 desktop / -10 mobile
+   * to preserve the previous hero behavior. Pass +15 in a paired layout to
+   * mirror the tilt direction.
+   */
+  initialRotation?: number;
 }>;
+
+const DEFAULT_DESKTOP_ANGLE = -18;
+const DEFAULT_MOBILE_ANGLE = -10;
+// Mobile feels less nauseating when the tilt is dampened relative to desktop.
+const MOBILE_DAMPEN = 10 / 18;
 
 // Scroll-driven Y-axis tilt for the iPhone mockup. We bind directly to the
 // rotator element via ref and update its transform inside requestAnimationFrame
 // in response to scroll events. Framer Motion's useScroll/useTransform was the
 // natural choice, but its motion-value subscription wasn't firing reliably
 // against this Next 16 / Turbopack setup, so we drive the transform ourselves.
-export default function HeroPhone({ children }: HeroPhoneProps) {
+export default function HeroPhone({
+  children,
+  initialRotation,
+}: HeroPhoneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rotatorRef = useRef<HTMLDivElement>(null);
 
@@ -25,6 +41,13 @@ export default function HeroPhone({ children }: HeroPhoneProps) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
+  const desktopAngle = initialRotation ?? DEFAULT_DESKTOP_ANGLE;
+  const mobileAngle =
+    initialRotation === undefined
+      ? DEFAULT_MOBILE_ANGLE
+      : initialRotation * MOBILE_DAMPEN;
+  const startAngle = isMobile ? mobileAngle : desktopAngle;
+
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
@@ -33,24 +56,20 @@ export default function HeroPhone({ children }: HeroPhoneProps) {
       return;
     }
 
-    const maxAngle = isMobile ? 10 : 18;
     let raf = 0;
 
     function paint() {
       const c = containerRef.current;
       const r = rotatorRef.current;
       if (!c || !r) return;
-      // Drive progress from "page top" -> "phone top hits viewport top".
-      // That packs the entire -18deg -> 0deg sweep into the scroll distance
-      // BEFORE the phone leaves the screen, so the user actually sees the
-      // rotation while looking at the phone.
-      const phoneRect = c.getBoundingClientRect();
-      const phoneAbsTop = phoneRect.top + window.scrollY;
-      const range = phoneAbsTop;
-      const p = range > 0
-        ? Math.min(1, Math.max(0, window.scrollY / range))
-        : 0;
-      const angle = -maxAngle + p * maxAngle;
+      // Section-relative trigger: progress goes 0 -> 1 as the phone scrolls
+      // from "appearing at the bottom of the viewport" to "top of viewport".
+      // This means each instance animates while it's actually on screen,
+      // regardless of where it sits in the page.
+      const rect = c.getBoundingClientRect();
+      const viewportH = window.innerHeight || 1;
+      const p = Math.min(1, Math.max(0, 1 - rect.top / viewportH));
+      const angle = startAngle * (1 - p);
       r.style.transform = `rotateY(${angle}deg)`;
     }
 
@@ -67,7 +86,7 @@ export default function HeroPhone({ children }: HeroPhoneProps) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", paint);
     };
-  }, [isMobile]);
+  }, [startAngle]);
 
   return (
     // Filter wrapper sits OUTSIDE the 3D context so the multi-layer
@@ -93,7 +112,7 @@ export default function HeroPhone({ children }: HeroPhoneProps) {
             transformStyle: "preserve-3d",
             transformOrigin: "center center",
             willChange: "transform",
-            transform: `rotateY(${isMobile ? -10 : -18}deg)`,
+            transform: `rotateY(${startAngle}deg)`,
           }}
         >
           <IPhoneMockup>{children}</IPhoneMockup>
