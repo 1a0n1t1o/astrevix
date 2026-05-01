@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
-import HeroPhone from "@/components/hero/HeroPhoneClient";
+import HeroPhone from "@/components/hero/HeroPhone";
 
 type FloatingBadge = {
   icon: React.ReactNode;
@@ -88,6 +88,64 @@ export default function Hero() {
       setSubmitState("idle");
     }
   }
+
+  const screenContent = (
+    <div className="relative z-0 px-5 pb-5 pt-[68px] md:px-6 md:pb-6 md:pt-[72px]">
+      <div className="flex justify-center">
+        <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500 md:text-[11px]">
+          Powered by <span className="font-semibold">Astrevix</span>
+        </div>
+      </div>
+      <div className="mt-4 flex justify-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg md:h-14 md:w-14 md:text-xl">
+          P
+        </div>
+      </div>
+      <p className="mt-3 text-center text-base font-bold text-gray-900 md:text-lg">
+        Prestige Auto Detailing
+      </p>
+      <p className="mt-0.5 text-center text-[10px] text-gray-500 md:text-[11px]">
+        OC&apos;s #1 mobile detail
+      </p>
+
+      <div
+        className="mt-4 rounded-2xl bg-white/80 p-4 text-center shadow-sm"
+        style={{ border: "1px solid rgba(255,255,255,0.4)" }}
+      >
+        <p className="text-[9px] font-semibold uppercase tracking-widest text-blue-600 md:text-[10px]">
+          Your Reward
+        </p>
+        <p className="mt-1.5 text-sm font-bold text-gray-900 md:text-base">
+          $25 OFF your next detail
+        </p>
+        <p className="mt-1 text-[10px] text-gray-500 md:text-[11px]">
+          Post your car on Instagram
+        </p>
+      </div>
+
+      <div className="mt-4 space-y-2">
+        {["Create content", "Post publicly", "Submit link", "Get rewarded"].map(
+          (step, i) => (
+            <div
+              key={step}
+              className="flex items-center gap-2.5 rounded-lg bg-white p-2 shadow-sm md:p-2.5"
+            >
+              <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-gray-100 text-[9px] font-bold text-gray-700 md:h-6 md:w-6 md:text-[10px]">
+                {i + 1}
+              </div>
+              <span className="text-[10px] font-medium text-gray-800 md:text-[11px]">
+                {step}
+              </span>
+            </div>
+          ),
+        )}
+      </div>
+
+      <div className="mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-2.5 text-center text-xs font-semibold text-white md:py-3 md:text-sm">
+        Submit Your Post &rarr;
+      </div>
+    </div>
+  );
 
   return (
     <section
@@ -241,9 +299,9 @@ export default function Hero() {
             }}
           />
 
-          {/* Spline 3D iPhone scene */}
-          <div className="relative mx-auto w-full max-w-[600px]">
-            <HeroPhone />
+          {/* Photoreal iPhone 17 Pro with scroll-driven 3D rotation */}
+          <div className="relative mx-auto w-[300px] md:w-[380px]">
+            <HeroPhone>{screenContent}</HeroPhone>
           </div>
 
           {/* Floating notification badges — sit OUTSIDE the rotating wrapper so they stay 2D */}

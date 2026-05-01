@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "@react-email/components": "^1.0.12",
-    "@splinetool/react-spline": "^4.1.0",
-    "@splinetool/runtime": "^1.12.90",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.98.0",
     "@vercel/analytics": "^1.6.1",
