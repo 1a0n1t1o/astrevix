@@ -1,104 +1,85 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import IPhoneMockup from "./IPhoneMockup";
+// We import the base (client) entry rather than '/next' because '/next' is
+// an async Server Component, which can't be rendered inside a 'use client'
+// boundary. Since we're already lazy-loading this with ssr:false, we don't
+// need the Next.js SSR variant.
+import Spline from "@splinetool/react-spline";
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { Suspense, useRef, useState } from "react";
+import type { Application } from "@splinetool/runtime";
 
-type HeroPhoneProps = Readonly<{
-  children: React.ReactNode;
-}>;
+const SPLINE_SCENE_URL =
+  "https://prod.spline.design/LnvzhublXtzOAggA/scene.splinecode";
 
-// Scroll-driven Y-axis tilt for the iPhone mockup. We bind directly to the
-// rotator element via ref and update its transform inside requestAnimationFrame
-// in response to scroll events. Framer Motion's useScroll/useTransform was the
-// natural choice, but its motion-value subscription wasn't firing reliably
-// against this Next 16 / Turbopack setup, so we drive the transform ourselves.
-export default function HeroPhone({ children }: HeroPhoneProps) {
+export function HeroPhone() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const rotatorRef = useRef<HTMLDivElement>(null);
+  const [splineApp, setSplineApp] = useState<Application | null>(null);
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
 
-  useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      const r = rotatorRef.current;
-      if (r) r.style.transform = "rotateY(0deg)";
-      return;
+  // Visual polish on the wrapper. These always apply, regardless of whether
+  // the Spline scene has its own scroll trigger wired up.
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  const opacity = useTransform(scrollYProgress, [0, 0.85, 1], [1, 1, 0.6]);
+
+  // If the Spline scene doesn't drive its own rotation, do it from React.
+  // Tries common object names; if the scene uses a different name, the user
+  // can read it from the [Spline] console log on load and we'll target it.
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (!splineApp) return;
+    const phone =
+      splineApp.findObjectByName("Phone") ||
+      splineApp.findObjectByName("iPhone") ||
+      splineApp.findObjectByName("iPhone 17 Pro") ||
+      splineApp.findObjectByName("Group");
+    if (phone) {
+      // Rotate from ~-17deg (-0.3 rad) at scroll start to 0 at scroll end.
+      phone.rotation.y = -0.3 * (1 - latest);
     }
+  });
 
-    const maxAngle = isMobile ? 10 : 18;
-    let raf = 0;
-
-    function paint() {
-      const c = containerRef.current;
-      const r = rotatorRef.current;
-      if (!c || !r) return;
-      // Drive progress from "page top" -> "phone top hits viewport top".
-      // That packs the entire -18deg -> 0deg sweep into the scroll distance
-      // BEFORE the phone leaves the screen, so the user actually sees the
-      // rotation while looking at the phone.
-      const phoneRect = c.getBoundingClientRect();
-      const phoneAbsTop = phoneRect.top + window.scrollY;
-      const range = phoneAbsTop;
-      const p = range > 0
-        ? Math.min(1, Math.max(0, window.scrollY / range))
-        : 0;
-      const angle = -maxAngle + p * maxAngle;
-      r.style.transform = `rotateY(${angle}deg)`;
+  function handleSplineLoad(app: Application) {
+    setSplineApp(app);
+    // Intentional: the user needs to know what objects exist in the scene
+    // so we can target the right one for rotation if the defaults miss.
+    if (typeof window !== "undefined") {
+      console.log("[Spline] Scene loaded. Available objects:", app);
     }
-
-    function onScroll() {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(paint);
-    }
-
-    paint();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", paint);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", paint);
-    };
-  }, [isMobile]);
+  }
 
   return (
-    // Filter wrapper sits OUTSIDE the 3D context so the multi-layer
-    // drop shadow gets applied to the rendered 3D output without
-    // flattening the side faces. (filter on a preserve-3d element
-    // captures children to a 2D buffer first, killing the 3D pass-through.)
     <div
-      style={{
-        filter:
-          "drop-shadow(0 20px 25px rgba(15, 15, 35, 0.15)) drop-shadow(0 40px 50px rgba(15, 15, 35, 0.12)) drop-shadow(0 60px 80px rgba(15, 15, 35, 0.08))",
-      }}
+      ref={containerRef}
+      className="relative mx-auto w-full max-w-[600px]"
+      style={{ aspectRatio: "1 / 1" }}
     >
-      <div
-        ref={containerRef}
-        style={{
-          perspective: "1500px",
-          transformStyle: "preserve-3d",
-        }}
-      >
-        <div
-          ref={rotatorRef}
-          style={{
-            transformStyle: "preserve-3d",
-            transformOrigin: "center center",
-            willChange: "transform",
-            transform: `rotateY(${isMobile ? -10 : -18}deg)`,
-          }}
-        >
-          <IPhoneMockup>{children}</IPhoneMockup>
-        </div>
-      </div>
+      <motion.div style={{ scale, opacity }} className="h-full w-full">
+        <Suspense fallback={<PhonePlaceholder />}>
+          <Spline
+            scene={SPLINE_SCENE_URL}
+            onLoad={handleSplineLoad}
+            style={{ width: "100%", height: "100%" }}
+          />
+        </Suspense>
+      </motion.div>
     </div>
+  );
+}
+
+function PhonePlaceholder() {
+  return (
+    <div
+      className="h-full w-full animate-pulse bg-gradient-to-br from-gray-100 to-gray-200"
+      style={{ borderRadius: "60px" }}
+    />
   );
 }
