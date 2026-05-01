@@ -61,15 +61,17 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
         }}
       />
 
-      {/* LEFT SIDE FACE — perpendicular to the front face, visible during -Y tilt. */}
+      {/* LEFT SIDE FACE — perpendicular to the front face, visible during -Y tilt.
+          Clipped to the straight middle of the phone (top:60px / height -120px)
+          so it doesn't poke out past the front face's 60px rounded corners. */}
       <div
         aria-hidden
         className="pointer-events-none absolute overflow-hidden"
         style={{
           left: 0,
-          top: 0,
+          top: "60px",
           width: "12px",
-          height: "100%",
+          height: "calc(100% - 120px)",
           background: SIDE_LEFT_GRADIENT,
           transform: "rotateY(-90deg) translateX(-6px)",
           transformOrigin: "left center",
@@ -78,11 +80,13 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             "inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.35)",
         }}
       >
-        {/* Action button */}
+        {/* Buttons positions are relative to the side face top (which is 60px
+            from phone top), so subtract 60 from the original phone-top offsets. */}
+        {/* Action button (phone y=85) */}
         <div
           style={{
             position: "absolute",
-            top: "85px",
+            top: "25px",
             left: 0,
             width: "12px",
             height: "28px",
@@ -90,11 +94,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             boxShadow: SIDE_BUTTON_SHADOW,
           }}
         />
-        {/* Volume Up */}
+        {/* Volume Up (phone y=130) */}
         <div
           style={{
             position: "absolute",
-            top: "130px",
+            top: "70px",
             left: 0,
             width: "12px",
             height: "38px",
@@ -102,11 +106,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             boxShadow: SIDE_BUTTON_SHADOW,
           }}
         />
-        {/* Volume Down */}
+        {/* Volume Down (phone y=178) */}
         <div
           style={{
             position: "absolute",
-            top: "178px",
+            top: "118px",
             left: 0,
             width: "12px",
             height: "38px",
@@ -116,15 +120,15 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
         />
       </div>
 
-      {/* RIGHT SIDE FACE — only visible if the phone tilts the other direction. */}
+      {/* RIGHT SIDE FACE — clipped to the straight middle just like the left. */}
       <div
         aria-hidden
         className="pointer-events-none absolute overflow-hidden"
         style={{
           right: 0,
-          top: 0,
+          top: "60px",
           width: "12px",
-          height: "100%",
+          height: "calc(100% - 120px)",
           background: SIDE_RIGHT_GRADIENT,
           transform: "rotateY(90deg) translateX(6px)",
           transformOrigin: "right center",
@@ -133,11 +137,11 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             "inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -1px 0 rgba(0,0,0,0.35)",
         }}
       >
-        {/* Power button */}
+        {/* Power button (phone y=95) */}
         <div
           style={{
             position: "absolute",
-            top: "95px",
+            top: "35px",
             left: 0,
             width: "12px",
             height: "65px",
