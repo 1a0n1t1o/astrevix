@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { BatteryFull, Camera, Gift, MapPin, Star, TrendingUp, Wifi, Zap } from "lucide-react";
+import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
 import HeroPhone from "@/components/hero/HeroPhone";
 
 type FloatingBadge = {
@@ -91,33 +91,8 @@ export default function Hero() {
 
   const screenContent = (
     <>
-      {/* iOS Status Bar — sits beneath the Dynamic Island, time on left, system icons on right */}
-      <div className="relative z-20 h-[40px] md:h-[44px]">
-        <div className="flex h-full items-center justify-between px-6 md:px-7">
-          <span
-            className="text-[13px] font-semibold leading-none tracking-tight text-black md:text-[14px]"
-            style={{
-              fontFamily:
-                "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            }}
-          >
-            9:41
-          </span>
-          <div className="flex items-center gap-[5px] leading-none">
-            <div className="flex items-end gap-[2px]">
-              <div className="h-[3px] w-[3px] rounded-[1px] bg-black" />
-              <div className="h-[5px] w-[3px] rounded-[1px] bg-black" />
-              <div className="h-[7px] w-[3px] rounded-[1px] bg-black" />
-              <div className="h-[9px] w-[3px] rounded-[1px] bg-black" />
-            </div>
-            <Wifi size={14} strokeWidth={2.5} className="text-black" />
-            <BatteryFull size={18} strokeWidth={1.8} className="text-black" />
-          </div>
-        </div>
-      </div>
-
-      {/* App content */}
-      <div className="relative z-0 px-5 pb-5 pt-2 md:px-6 md:pb-6 md:pt-3">
+      {/* App content — sits ~24px below the Dynamic Island (which ends at ~46px). */}
+      <div className="relative z-0 px-5 pb-5 pt-[68px] md:px-6 md:pb-6 md:pt-[72px]">
         <div className="flex justify-center">
           <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500 md:text-[11px]">
             Powered by <span className="font-semibold">Astrevix</span>

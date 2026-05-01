@@ -70,23 +70,34 @@ export default function HeroPhone({ children }: HeroPhoneProps) {
   }, [isMobile]);
 
   return (
+    // Filter wrapper sits OUTSIDE the 3D context so the multi-layer
+    // drop shadow gets applied to the rendered 3D output without
+    // flattening the side faces. (filter on a preserve-3d element
+    // captures children to a 2D buffer first, killing the 3D pass-through.)
     <div
-      ref={containerRef}
       style={{
-        perspective: "1500px",
-        transformStyle: "preserve-3d",
+        filter:
+          "drop-shadow(0 20px 25px rgba(15, 15, 35, 0.15)) drop-shadow(0 40px 50px rgba(15, 15, 35, 0.12)) drop-shadow(0 60px 80px rgba(15, 15, 35, 0.08))",
       }}
     >
       <div
-        ref={rotatorRef}
+        ref={containerRef}
         style={{
+          perspective: "1500px",
           transformStyle: "preserve-3d",
-          transformOrigin: "center center",
-          willChange: "transform",
-          transform: `rotateY(${isMobile ? -10 : -18}deg)`,
         }}
       >
-        <IPhoneMockup>{children}</IPhoneMockup>
+        <div
+          ref={rotatorRef}
+          style={{
+            transformStyle: "preserve-3d",
+            transformOrigin: "center center",
+            willChange: "transform",
+            transform: `rotateY(${isMobile ? -10 : -18}deg)`,
+          }}
+        >
+          <IPhoneMockup>{children}</IPhoneMockup>
+        </div>
       </div>
     </div>
   );
