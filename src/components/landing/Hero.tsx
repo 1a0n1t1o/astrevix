@@ -196,8 +196,6 @@ export default function Hero() {
               </svg>
             </QualifyButton>
           </motion.div>
-
-          <HeroBusinessGrid />
         </div>
 
         {/* Phone mockup area */}
@@ -266,6 +264,8 @@ export default function Hero() {
             </motion.div>
           ))}
         </div>
+
+        <HeroBusinessGrid />
       </div>
     </section>
   );
