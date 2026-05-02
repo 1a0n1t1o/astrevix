@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Camera, Gift, Star, TrendingUp, Zap } from "lucide-react";
 import HeroPhone from "@/components/hero/HeroPhone";
-import { SocialProofMarquee } from "@/components/hero/SocialProofMarquee";
+import { HeroBusinessGrid } from "@/components/hero/HeroBusinessGrid";
 import { QualifyButton } from "@/components/qualify/QualifyButton";
 
 type FloatingBadge = {
@@ -195,8 +195,9 @@ export default function Hero() {
                 />
               </svg>
             </QualifyButton>
-            <SocialProofMarquee />
           </motion.div>
+
+          <HeroBusinessGrid />
         </div>
 
         {/* Phone mockup area */}
