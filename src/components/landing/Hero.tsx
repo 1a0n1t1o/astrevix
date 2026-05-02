@@ -90,7 +90,10 @@ export default function Hero() {
   }
 
   const screenContent = (
-    <div className="relative z-0 px-5 pb-5 pt-[68px] md:px-6 md:pb-6 md:pt-[72px]">
+    <div
+      className="relative z-0 px-5 pb-5 md:px-6 md:pb-6"
+      style={{ paddingTop: "72px" }}
+    >
       <div className="flex justify-center">
         <div className="rounded-full bg-gray-100 px-3 py-1 text-[10px] text-gray-500 md:text-[11px]">
           Powered by <span className="font-semibold">Astrevix</span>

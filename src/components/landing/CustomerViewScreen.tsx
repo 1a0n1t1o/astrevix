@@ -11,7 +11,10 @@ const PHONE_STEPS = [
 // at a tighter scale that fits the smaller frame.
 export default function CustomerViewScreen() {
   return (
-    <div className="relative z-0 px-4 pb-3 pt-[58px]">
+    <div
+      className="relative z-0 px-4 pb-3"
+      style={{ paddingTop: "52px" }}
+    >
       {/* Powered by badge */}
       <div className="flex justify-center">
         <div className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-[9px] text-gray-500">

@@ -237,40 +237,44 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             >
               {children}
 
-              {/* Dynamic Island — pill, 124 x 35, 11px from top, perfectly centered. */}
+              {/* Dynamic Island — sized as a percentage of the phone so it
+                  scales correctly at any phone width (was previously fixed at
+                  124x35px, which read as oversized on the smaller customer
+                  phone). 28% width / 3.8% height matches iPhone 17 Pro
+                  proportions reasonably closely. */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute left-1/2 z-50 -translate-x-1/2"
                 style={{
-                  top: "11px",
-                  width: "124px",
-                  height: "35px",
+                  top: "2.5%",
+                  width: "28%",
+                  height: "3.8%",
                   background:
                     "radial-gradient(ellipse at 50% 30%, #1a1a1a 0%, #000000 70%)",
-                  borderRadius: "17.5px",
+                  borderRadius: "9999px",
                   boxShadow:
                     "inset 0 1px 1px rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(0,0,0,0.4)",
                 }}
               >
-                {/* Camera dot — 8px circle, 12px from right edge, vertically centered. */}
+                {/* Camera dot — sized relative to the pill so it scales too. */}
                 <div
                   className="absolute top-1/2 -translate-y-1/2 rounded-full"
                   style={{
-                    right: "12px",
-                    width: "8px",
-                    height: "8px",
+                    right: "8%",
+                    width: "8%",
+                    aspectRatio: "1 / 1",
                     background:
                       "radial-gradient(circle at 35% 30%, #2a2a3a 0%, #0a0a1a 60%, #000000 100%)",
                     boxShadow:
                       "inset 0 0 1px rgba(255,255,255,0.08), 0 0 0 0.5px rgba(0,0,0,0.5)",
                   }}
                 >
-                  {/* Inner lens — 3px circle. */}
+                  {/* Inner lens — ~37% of the camera dot. */}
                   <div
                     className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
                     style={{
-                      width: "3px",
-                      height: "3px",
+                      width: "37%",
+                      aspectRatio: "1 / 1",
                       background:
                         "radial-gradient(circle at 30% 30%, #4a4a6a 0%, #1a1a2a 80%)",
                     }}
