@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
+import { Camera, Gift, Star, TrendingUp, Zap } from "lucide-react";
 import HeroPhone from "@/components/hero/HeroPhone";
+import { SocialProofMarquee } from "@/components/hero/SocialProofMarquee";
 import { QualifyButton } from "@/components/qualify/QualifyButton";
 
 type FloatingBadge = {
@@ -149,22 +150,6 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Text */}
         <div className="mx-auto max-w-3xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            className="mb-6 flex justify-center"
-          >
-            <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-sm font-medium text-slate-700 shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-              </span>
-              <MapPin className="h-[14px] w-[14px] text-blue-600" />
-              Built in Southern California
-            </span>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -210,9 +195,7 @@ export default function Hero() {
                 />
               </svg>
             </QualifyButton>
-            <p className="mt-4 text-center text-sm text-gray-500">
-              Trusted by local businesses across Southern California
-            </p>
+            <SocialProofMarquee />
           </motion.div>
         </div>
 
