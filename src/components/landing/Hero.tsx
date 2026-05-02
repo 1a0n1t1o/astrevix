@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Camera, Gift, Star, TrendingUp, Zap } from "lucide-react";
 import HeroPhone from "@/components/hero/HeroPhone";
-import { HeroBusinessGrid } from "@/components/hero/HeroBusinessGrid";
 import { QualifyButton } from "@/components/qualify/QualifyButton";
 
 type FloatingBadge = {
@@ -264,8 +263,6 @@ export default function Hero() {
             </motion.div>
           ))}
         </div>
-
-        <HeroBusinessGrid />
       </div>
     </section>
   );

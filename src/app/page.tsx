@@ -1,5 +1,6 @@
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
+import { BusinessTypesMarquee } from "@/components/sections/BusinessTypesMarquee";
 import Problem from "@/components/landing/Problem";
 import HowItWorks from "@/components/landing/HowItWorks";
 import PhoneShowcase from "@/components/landing/PhoneShowcase";
@@ -14,6 +15,7 @@ export default function Home() {
     <div className="min-h-screen bg-white font-sans">
       <Navbar />
       <Hero />
+      <BusinessTypesMarquee />
       <Problem />
       <HowItWorks />
       <PhoneShowcase />
