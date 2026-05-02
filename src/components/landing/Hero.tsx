@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Camera, Gift, MapPin, Star, TrendingUp, Zap } from "lucide-react";
 import HeroPhone from "@/components/hero/HeroPhone";
+import { QualifyButton } from "@/components/qualify/QualifyButton";
 
 type FloatingBadge = {
   icon: React.ReactNode;
@@ -63,32 +63,7 @@ const floatingBadges: FloatingBadge[] = [
   },
 ];
 
-type SubmitState = "idle" | "submitting" | "success";
-
 export default function Hero() {
-  const [email, setEmail] = useState("");
-  const [submitState, setSubmitState] = useState<SubmitState>("idle");
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (submitState !== "idle") return;
-    setSubmitState("submitting");
-    try {
-      const res = await fetch("/api/early-access", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      if (res.ok) {
-        setSubmitState("success");
-      } else {
-        setSubmitState("idle");
-      }
-    } catch {
-      setSubmitState("idle");
-    }
-  }
-
   const screenContent = (
     <div
       className="relative z-0 px-5 pb-5 md:px-6 md:pb-6"
@@ -212,79 +187,31 @@ export default function Hero() {
             100+ real customer posts every month. They scan, post on Instagram, and get rewarded automatically. No app downloads. No follow-ups. No begging.
           </motion.p>
 
-          {/* CTA — email capture form */}
+          {/* CTA — qualification flow */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-            className="mx-auto mt-10 w-full max-w-[480px]"
+            className="mx-auto mt-10 flex w-full max-w-[480px] flex-col items-center"
           >
-            <AnimatePresence mode="wait" initial={false}>
-              {submitState === "success" ? (
-                <motion.p
-                  key="success"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="text-center text-base font-semibold text-purple-600 md:text-lg"
-                >
-                  ✓ You&apos;re in. Check your email for next steps.
-                </motion.p>
-              ) : (
-                <motion.form
-                  key="form"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-2"
-                >
-                  <label htmlFor="hero-email" className="sr-only">
-                    Business email
-                  </label>
-                  <input
-                    id="hero-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={submitState === "submitting"}
-                    placeholder="Enter your business email"
-                    className="flex-grow rounded-full border border-gray-200 bg-white px-6 py-4 text-base text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-60"
-                  />
-                  <button
-                    type="submit"
-                    disabled={submitState === "submitting"}
-                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:shadow-2xl hover:shadow-purple-500/30 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
-                  >
-                    {submitState === "submitting"
-                      ? "Submitting..."
-                      : (
-                        <>
-                          Get Early Access
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                            />
-                          </svg>
-                        </>
-                      )}
-                  </button>
-                </motion.form>
-              )}
-            </AnimatePresence>
+            <QualifyButton className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/30">
+              I&apos;m Ready to Scale
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </QualifyButton>
             <p className="mt-4 text-center text-sm text-gray-500">
-              Join 100+ Orange County businesses already using Astrevix
+              Trusted by local businesses across Southern California
             </p>
           </motion.div>
         </div>

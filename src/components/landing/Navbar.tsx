@@ -5,9 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-
-const CALENDLY_URL =
-  "https://calendly.com/contact-astrevix/new-meeting";
+import { QualifyButton } from "@/components/qualify/QualifyButton";
 
 const NAV_LINKS = [
   { label: "Home", href: "#hero" },
@@ -88,14 +86,9 @@ export default function Navbar() {
             >
               Log in
             </Link>
-            <a
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30"
-            >
-              Book a Demo
-            </a>
+            <QualifyButton className="rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30">
+              I&apos;m Ready to Scale
+            </QualifyButton>
           </div>
 
           {/* Mobile hamburger */}
@@ -136,14 +129,9 @@ export default function Navbar() {
               >
                 Log in
               </Link>
-              <a
-                href={CALENDLY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-4 py-3 text-center text-sm font-semibold text-white"
-              >
-                Book a Demo
-              </a>
+              <QualifyButton className="rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-4 py-3 text-center text-sm font-semibold text-white">
+                I&apos;m Ready to Scale
+              </QualifyButton>
             </div>
           </motion.div>
         )}

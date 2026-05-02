@@ -1,9 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const CALENDLY_URL =
-  "https://calendly.com/contact-astrevix/new-meeting";
+import { QualifyButton } from "@/components/qualify/QualifyButton";
 
 export default function CTASection() {
   return (
@@ -56,13 +54,8 @@ export default function CTASection() {
           away.
         </p>
 
-        <a
-          href={CALENDLY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-5 text-lg font-bold text-purple-700 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
-        >
-          Book a Demo
+        <QualifyButton className="inline-flex items-center gap-2 rounded-full bg-white px-10 py-5 text-lg font-bold text-purple-700 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+          I&apos;m Ready to Scale
           <svg
             className="h-5 w-5"
             fill="none"
@@ -76,7 +69,7 @@ export default function CTASection() {
               d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
             />
           </svg>
-        </a>
+        </QualifyButton>
       </motion.div>
     </section>
   );
