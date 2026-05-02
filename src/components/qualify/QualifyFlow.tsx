@@ -223,12 +223,25 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                     transition={{ duration: 0.25 }}
                   >
                     <div className="mb-6">
-                      <div className="mb-3 text-4xl">🎉</div>
+                      <motion.div
+                        className="mb-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 px-3 py-1"
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{
+                          duration: 0.3,
+                          ease: [0.34, 1.56, 0.64, 1],
+                        }}
+                      >
+                        <span className="text-base">✅</span>
+                        <span className="text-xs font-semibold uppercase tracking-wide text-green-700">
+                          You qualified
+                        </span>
+                      </motion.div>
                       <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
-                        Almost there
+                        Let&apos;s get you set up
                       </h2>
                       <p className="text-gray-500">
-                        Where should we send your demo confirmation?
+                        Drop your details and pick a time that works.
                       </p>
                     </div>
                     <form onSubmit={handleSubmitContact} className="space-y-4">
