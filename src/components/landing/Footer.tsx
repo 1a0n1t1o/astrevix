@@ -26,7 +26,7 @@ export default function Footer() {
               width={120}
               height={24}
             />
-            <p className="mt-2 text-xs font-medium text-white/60">
+            <p className="mt-2 text-xs font-medium text-white/80">
               Made in Southern California
             </p>
           </div>

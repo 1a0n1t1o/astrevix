@@ -14,15 +14,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white font-sans">
       <Navbar />
-      <Hero />
-      <BusinessTypesMarquee />
-      <Problem />
-      <HowItWorks />
-      <PhoneShowcase />
-      <Features />
-      <Testimonial />
-      <FAQ />
-      <CTASection />
+      <main>
+        <Hero />
+        <BusinessTypesMarquee />
+        <Problem />
+        <HowItWorks />
+        <PhoneShowcase />
+        <Features />
+        <Testimonial />
+        <FAQ />
+        <CTASection />
+      </main>
       <Footer />
     </div>
   );

@@ -31,7 +31,7 @@ export function BusinessTypesMarquee() {
     <section className="bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4">
         {/* Label */}
-        <p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.15em] text-gray-400">
+        <p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.15em] text-gray-500">
           Built for service-based businesses
         </p>
 
@@ -59,8 +59,8 @@ export function BusinessTypesMarquee() {
                 key={`${label}-${i}`}
                 className="flex shrink-0 items-center gap-3"
               >
-                <Icon className="h-5 w-5 text-gray-400" strokeWidth={1.5} />
-                <span className="text-base font-medium text-gray-500">
+                <Icon className="h-5 w-5 text-gray-500" strokeWidth={1.5} />
+                <span className="text-base font-medium text-gray-600">
                   {label}
                 </span>
               </div>

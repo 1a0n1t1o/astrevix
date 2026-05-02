@@ -41,7 +41,7 @@ export default function CTASection() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative mx-auto max-w-[800px] px-6 text-center"
       >
-        <p className="mb-6 text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
+        <p className="mb-6 text-sm font-semibold uppercase tracking-[0.2em] text-white/85">
           30 Days Free — No Risk
         </p>
         <h2 className="mb-6 text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl">
