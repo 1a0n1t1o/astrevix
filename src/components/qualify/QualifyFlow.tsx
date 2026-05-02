@@ -9,31 +9,24 @@ const STEPS = [
   {
     id: "business",
     question: "What best describes your business?",
+    emoji: "✨",
     options: [
-      "Nail Salon",
-      "Barbershop / Hair Salon",
-      "Auto Detailing / Tint / Wrap",
-      "Lash Studio / Med Spa / Tattoo",
-      "Other Local Business",
+      { label: "Nail Salon", emoji: "💅" },
+      { label: "Barbershop / Hair Salon", emoji: "✂️" },
+      { label: "Auto Detailing / Tint / Wrap", emoji: "🚗" },
+      { label: "Lash Studio / Med Spa / Tattoo", emoji: "💆" },
+      { label: "Other Local Business", emoji: "🏪" },
     ],
   },
   {
     id: "challenge",
     question: "What's your biggest challenge right now?",
+    emoji: "🎯",
     options: [
-      "Not enough customer content or reviews",
-      "Customers don't post about us",
-      "Low foot traffic / need more visibility",
-      "Tried marketing, nothing's working",
-    ],
-  },
-  {
-    id: "ads",
-    question: "Have you tried running paid ads before?",
-    options: [
-      "Yes — they work for me",
-      "Yes — they don't work for me",
-      "No — never tried",
+      { label: "Not enough customer content or reviews", emoji: "📸" },
+      { label: "Customers don't post about us", emoji: "🤐" },
+      { label: "Low foot traffic / need more visibility", emoji: "👀" },
+      { label: "Tried marketing, nothing's working", emoji: "😩" },
     ],
   },
 ] as const;
@@ -98,7 +91,9 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
   }
 
   const totalSteps = STEPS.length + 1;
-  const progress = ((currentStep + (submitted ? 1 : 0)) / totalSteps) * 100;
+  const progress = submitted
+    ? 100
+    : ((currentStep + 1) / (totalSteps + 1)) * 100;
 
   return (
     <AnimatePresence>
@@ -117,25 +112,22 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
             exit={{ opacity: 0, y: 20, scale: 0.96 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+            className={`relative w-full overflow-hidden rounded-2xl bg-white shadow-2xl transition-[max-width] duration-500 ease-out ${
+              submitted ? "max-w-5xl" : "max-w-2xl"
+            }`}
           >
             {/* Progress bar */}
-            <div className="h-1 bg-gray-100">
+            <div className="h-1.5 bg-gray-100">
               <motion.div
-                className="h-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED]"
+                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
                 initial={false}
                 animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-              <div className="text-sm text-gray-500">
-                {submitted
-                  ? "Pick a time that works"
-                  : `Step ${Math.min(currentStep + 1, totalSteps)} of ${totalSteps}`}
-              </div>
+            <div className="flex items-center justify-end px-6 py-3">
               <button
                 onClick={handleClose}
                 className="rounded-full p-1 transition-colors hover:bg-gray-100"
@@ -156,41 +148,66 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <h2 className="mb-6 text-2xl font-bold text-gray-900 sm:text-3xl">
-                      {STEPS[currentStep].question}
-                    </h2>
+                    <div className="mb-8">
+                      <div className="mb-3 text-4xl">
+                        {STEPS[currentStep].emoji}
+                      </div>
+                      <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+                        {STEPS[currentStep].question}
+                      </h2>
+                    </div>
                     <div className="space-y-3">
                       {STEPS[currentStep].options.map((option) => {
                         const isSelected =
-                          answers[STEPS[currentStep].id] === option;
+                          answers[STEPS[currentStep].id] === option.label;
                         return (
-                          <button
-                            key={option}
+                          <motion.button
+                            key={option.label}
                             onClick={() =>
                               handleSelectAnswer(
                                 STEPS[currentStep].id,
-                                option,
+                                option.label,
                               )
                             }
+                            whileHover={{ scale: 1.01 }}
+                            whileTap={{ scale: 0.99 }}
                             className={`w-full rounded-xl border-2 px-5 py-4 text-left transition-all ${
                               isSelected
-                                ? "border-[#2563EB] bg-blue-50 text-blue-900"
-                                : "border-gray-200 text-gray-900 hover:border-gray-300 hover:bg-gray-50"
+                                ? "border-transparent bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 shadow-md"
+                                : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50"
                             }`}
                           >
                             <div className="flex items-center justify-between">
-                              <span className="font-medium">{option}</span>
+                              <div className="flex items-center gap-3">
+                                <span className="text-2xl">{option.emoji}</span>
+                                <span
+                                  className={`font-medium ${
+                                    isSelected
+                                      ? "text-gray-900"
+                                      : "text-gray-700"
+                                  }`}
+                                >
+                                  {option.label}
+                                </span>
+                              </div>
                               {isSelected && (
                                 <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  transition={{ duration: 0.2 }}
+                                  initial={{ scale: 0, rotate: -180 }}
+                                  animate={{ scale: 1, rotate: 0 }}
+                                  transition={{
+                                    duration: 0.25,
+                                    ease: [0.34, 1.56, 0.64, 1],
+                                  }}
+                                  className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600"
                                 >
-                                  <Check className="h-5 w-5 text-[#2563EB]" />
+                                  <Check
+                                    className="h-4 w-4 text-white"
+                                    strokeWidth={3}
+                                  />
                                 </motion.div>
                               )}
                             </div>
-                          </button>
+                          </motion.button>
                         );
                       })}
                     </div>
@@ -205,12 +222,15 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
-                      Almost there
-                    </h2>
-                    <p className="mb-6 text-gray-500">
-                      Where should we send your demo confirmation?
-                    </p>
+                    <div className="mb-6">
+                      <div className="mb-3 text-4xl">🎉</div>
+                      <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
+                        Almost there
+                      </h2>
+                      <p className="text-gray-500">
+                        Where should we send your demo confirmation?
+                      </p>
+                    </div>
                     <form onSubmit={handleSubmitContact} className="space-y-4">
                       <div>
                         <label className="mb-1.5 block text-sm font-medium text-gray-700">
@@ -259,7 +279,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                       </div>
                       <button
                         type="submit"
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-6 py-3.5 font-semibold text-white shadow-lg shadow-purple-500/25 transition-opacity hover:opacity-90"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-purple-500/25 transition-opacity hover:opacity-90"
                       >
                         See Available Times
                         <ArrowRight className="h-4 w-4" />
@@ -279,12 +299,12 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                     transition={{ duration: 0.3 }}
                   >
                     <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
-                      Pick a time that works
+                      Pick a time that works 📅
                     </h2>
                     <p className="mb-4 text-gray-500">
                       Looking forward to chatting, {contact.name.split(" ")[0]}.
                     </p>
-                    <div className="-mx-6 -mb-6 sm:-mx-8 sm:-mb-8">
+                    <div className="overflow-hidden rounded-xl border border-gray-100">
                       <InlineWidget
                         url="https://calendly.com/contact-astrevix/new-meeting"
                         prefill={{
@@ -294,13 +314,16 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                             a1: contact.phone,
                           },
                         }}
-                        styles={{ height: "600px" }}
+                        styles={{
+                          height: "720px",
+                          minWidth: "320px",
+                        }}
                         pageSettings={{
                           backgroundColor: "ffffff",
-                          primaryColor: "7C3AED",
+                          primaryColor: "6366f1",
                           textColor: "1f2937",
                           hideEventTypeDetails: false,
-                          hideLandingPageDetails: false,
+                          hideLandingPageDetails: true,
                         }}
                       />
                     </div>
