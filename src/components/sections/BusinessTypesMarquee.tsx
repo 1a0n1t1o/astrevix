@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import {
   Car,
   Eye,
-  Flower2,
   Heart,
   Palette,
   Scissors,
   Sparkles,
+  SprayCan,
   Wrench,
 } from "lucide-react";
 
@@ -20,7 +20,7 @@ const BUSINESSES = [
   { label: "Lash Studios", Icon: Eye },
   { label: "Tattoo Studios", Icon: Palette },
   { label: "Tint Shops", Icon: Wrench },
-  { label: "Hair Salons", Icon: Flower2 },
+  { label: "Hair Salons", Icon: SprayCan },
 ];
 
 export function BusinessTypesMarquee() {
