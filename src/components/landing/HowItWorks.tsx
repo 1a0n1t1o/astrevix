@@ -54,7 +54,7 @@ function StepNumber({
           observer.disconnect();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0, rootMargin: "0px 0px 200px 0px" }
     );
 
     observer.observe(el);
@@ -112,7 +112,7 @@ export default function HowItWorks() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5 }}
             className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]"
           >
@@ -121,7 +121,7 @@ export default function HowItWorks() {
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
           >
@@ -149,8 +149,8 @@ export default function HowItWorks() {
                   key={step.num}
                   initial={{ opacity: 0, y: 40, scale: 0.95 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.6, delay: i * 0.2, ease: "easeOut" }}
+                  viewport={{ once: true, margin: "0px 0px 200px 0px" }}
+                  transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
                   className="group relative text-center transition-transform duration-300 hover:-translate-y-1"
                 >
                   {/* Number badge with bounce-in */}

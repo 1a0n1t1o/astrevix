@@ -31,7 +31,7 @@ function AnimatedChart() {
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0, rootMargin: "0px 0px 200px 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -226,7 +226,7 @@ export default function PhoneShowcase() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5 }}
             className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]"
           >
@@ -235,7 +235,7 @@ export default function PhoneShowcase() {
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
           >
@@ -244,7 +244,7 @@ export default function PhoneShowcase() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-4 text-lg text-gray-600"
           >
@@ -264,7 +264,7 @@ export default function PhoneShowcase() {
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="relative w-full max-w-[680px]"
               >
@@ -516,7 +516,7 @@ export default function PhoneShowcase() {
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
                 className="relative shrink-0"
               >

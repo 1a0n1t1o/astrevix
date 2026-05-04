@@ -65,7 +65,7 @@ export default function FAQ() {
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5 }}
             className="inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm"
           >
@@ -74,7 +74,7 @@ export default function FAQ() {
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
           >
@@ -91,7 +91,7 @@ export default function FAQ() {
                 key={i}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 className={`overflow-hidden rounded-2xl border transition-colors ${
                   isOpen

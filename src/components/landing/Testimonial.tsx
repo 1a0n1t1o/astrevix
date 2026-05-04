@@ -18,7 +18,7 @@ export default function Testimonial() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]"
           >
@@ -27,7 +27,7 @@ export default function Testimonial() {
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
             className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl"
           >
@@ -36,7 +36,7 @@ export default function Testimonial() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
             className="mt-4 text-lg text-gray-600"
           >
@@ -49,7 +49,7 @@ export default function Testimonial() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "0px 0px 200px 0px" }}
           transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
           className="mx-auto mt-16 max-w-[800px] rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-purple-500/10 md:p-12"
         >
@@ -95,7 +95,7 @@ export default function Testimonial() {
               key={stat.label}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{
                 duration: 0.5,
                 delay: 0.4 + i * 0.1,

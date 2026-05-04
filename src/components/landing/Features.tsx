@@ -74,7 +74,7 @@ export default function Features() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5 }}
             className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]"
           >
@@ -83,7 +83,7 @@ export default function Features() {
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
           >
@@ -92,7 +92,7 @@ export default function Features() {
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-4 text-lg text-gray-600"
           >
@@ -110,7 +110,7 @@ export default function Features() {
                 key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="group feature-card rounded-2xl border border-gray-100 bg-white p-8"
               >
