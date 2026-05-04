@@ -49,7 +49,7 @@ export default function Features() {
       }}
     >
       {/* Background accents */}
-      <div className="pointer-events-none absolute inset-0">
+      <div className="gpu-layer pointer-events-none absolute inset-0">
         <div
           className="absolute right-0 top-0 h-[500px] w-[500px] -translate-y-1/4 translate-x-1/4 rounded-full"
           style={{

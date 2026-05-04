@@ -135,7 +135,7 @@ export default function Hero() {
       }}
     >
       {/* Single ambient radial glow behind the phone — Linear-style */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden gpu-layer">
         <div
           className="absolute left-1/2 top-[55%] h-[700px] w-[900px] -translate-x-1/2 rounded-full"
           style={{
@@ -201,7 +201,7 @@ export default function Hero() {
         <div className="relative mx-auto mt-16 max-w-3xl md:mt-24">
           {/* Soft ambient glow behind phone */}
           <div
-            className="pointer-events-none absolute bottom-[-20%] left-1/2 h-[500px] w-[800px] -translate-x-1/2 md:h-[600px] md:w-[1000px]"
+            className="gpu-layer pointer-events-none absolute bottom-[-20%] left-1/2 h-[500px] w-[800px] -translate-x-1/2 md:h-[600px] md:w-[1000px]"
             style={{
               background:
                 "radial-gradient(ellipse at 50% 80%, rgba(99,102,241,0.28) 0%, rgba(124,58,237,0.18) 25%, rgba(59,130,246,0.10) 50%, transparent 70%)",

@@ -87,7 +87,7 @@ export default function HowItWorks() {
       }}
     >
       {/* Decorative blobs */}
-      <div className="pointer-events-none absolute inset-0">
+      <div className="gpu-layer pointer-events-none absolute inset-0">
         <div
           className="absolute left-1/4 top-10 h-[350px] w-[350px] rounded-full"
           style={{

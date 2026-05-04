@@ -50,7 +50,11 @@ export default function HeroPhone({
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
+    // Skip the scroll-driven rotation on mobile: the per-frame
+    // getBoundingClientRect + rotateY repaint (combined with the multi-layer
+    // drop-shadow filter on the wrapper) is the main source of scroll jank on
+    // phones, and the rotation effect is barely perceptible at that size.
+    if (reduced || isMobile) {
       const r = rotatorRef.current;
       if (r) r.style.transform = "rotateY(0deg)";
       return;
@@ -62,10 +66,6 @@ export default function HeroPhone({
       const c = containerRef.current;
       const r = rotatorRef.current;
       if (!c || !r) return;
-      // Section-relative trigger: progress goes 0 -> 1 as the phone scrolls
-      // from "appearing at the bottom of the viewport" to "top of viewport".
-      // This means each instance animates while it's actually on screen,
-      // regardless of where it sits in the page.
       const rect = c.getBoundingClientRect();
       const viewportH = window.innerHeight || 1;
       const p = Math.min(1, Math.max(0, 1 - rect.top / viewportH));
@@ -86,7 +86,7 @@ export default function HeroPhone({
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", paint);
     };
-  }, [startAngle]);
+  }, [startAngle, isMobile]);
 
   return (
     // Filter wrapper sits OUTSIDE the 3D context so the multi-layer

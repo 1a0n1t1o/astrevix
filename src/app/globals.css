@@ -44,6 +44,8 @@ html {
 
 html, body {
   overflow-x: hidden;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -56,6 +58,17 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), "Inter", sans-serif;
+}
+
+/*
+  Promote a heavy decorative element (large blurred radial gradient) to its
+  own GPU compositor layer so it doesn't trigger paint during scroll. Used on
+  the absolutely-positioned blob containers behind landing-page sections.
+*/
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 /* ===== Dashboard Animations (CSS-only for Server Components) ===== */
