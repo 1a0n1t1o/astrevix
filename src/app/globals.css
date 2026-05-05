@@ -45,7 +45,6 @@ html {
 html, body {
   overflow-x: hidden;
   overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
 }
 
 @media (prefers-reduced-motion: reduce) {
