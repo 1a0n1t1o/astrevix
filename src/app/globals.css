@@ -44,7 +44,15 @@ html {
 
 html, body {
   overflow-x: hidden;
-  overscroll-behavior-y: none;
+}
+
+/* Touch-device only: suppress scroll-chaining/bounce. On desktop this can
+   absorb mouse wheel events on Windows Chromium, so we keep it scoped to
+   pointers without hover (phones/tablets). */
+@media (hover: none) and (pointer: coarse) {
+  html, body {
+    overscroll-behavior-y: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
