@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { QrCode, Gift, CheckCircle2, Palette } from "lucide-react";
 
 const FEATURES = [
@@ -71,34 +68,16 @@ export default function Features() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5 }}
-            className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]"
-          >
+          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
             What&apos;s included
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
-          >
+          </p>
+          <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Everything you need. Nothing you don&apos;t.
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-4 text-lg text-gray-600"
-          >
+          </h2>
+          <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
             Built specifically for local service businesses. No fluff, no
             features you&apos;ll never use.
-          </motion.p>
+          </p>
         </div>
 
         {/* Feature grid */}
@@ -106,13 +85,9 @@ export default function Features() {
           {FEATURES.map((feature, i) => {
             const Icon = feature.icon;
             return (
-              <motion.div
+              <div
                 key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group feature-card rounded-2xl border border-gray-100 bg-white p-8"
+                className={`reveal reveal-up reveal-d${i + 1} group feature-card rounded-2xl border border-gray-100 bg-white p-8`}
               >
                 <div
                   className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${feature.iconBg}`}
@@ -128,7 +103,7 @@ export default function Features() {
                 <p className="mt-2 text-sm leading-relaxed text-gray-600">
                   {feature.description}
                 </p>
-              </motion.div>
+              </div>
             );
           })}
         </div>

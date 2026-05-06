@@ -9,6 +9,7 @@ import Testimonial from "@/components/landing/Testimonial";
 import FAQ from "@/components/landing/FAQ";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
+import RevealObserver from "@/components/landing/RevealObserver";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
         <CTASection />
       </main>
       <Footer />
+      <RevealObserver />
     </div>
   );
 }

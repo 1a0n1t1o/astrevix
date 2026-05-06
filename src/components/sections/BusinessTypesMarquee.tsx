@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import {
   Car,
   Eye,
@@ -45,15 +42,7 @@ export function BusinessTypesMarquee() {
               "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
           }}
         >
-          <motion.div
-            className="flex gap-12 whitespace-nowrap sm:gap-16"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              duration: 30,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          >
+          <div className="marquee-track flex gap-12 whitespace-nowrap sm:gap-16">
             {items.map(({ label, Icon }, i) => (
               <div
                 key={`${label}-${i}`}
@@ -65,7 +54,7 @@ export function BusinessTypesMarquee() {
                 </span>
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

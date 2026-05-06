@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 const FAQS = [
@@ -62,24 +61,12 @@ export default function FAQ() {
       <div className="relative mx-auto max-w-3xl px-6">
         {/* Header */}
         <div className="text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm"
-          >
+          <span className="reveal reveal-up-sm mobile-no-blur inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm">
             FAQ
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
-          >
+          </span>
+          <h2 className="reveal reveal-up-sm reveal-d1 mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Frequently asked questions
-          </motion.h2>
+          </h2>
         </div>
 
         {/* Accordion */}
@@ -87,13 +74,9 @@ export default function FAQ() {
           {FAQS.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className={`overflow-hidden rounded-2xl border transition-colors ${
+                className={`reveal reveal-up-sm reveal-d${Math.min(i + 1, 5)} overflow-hidden rounded-2xl border transition-colors ${
                   isOpen
                     ? "border-purple-200 bg-purple-50/40"
                     : "border-purple-100/40 bg-white/70 hover:bg-white"
@@ -112,21 +95,17 @@ export default function FAQ() {
                     }`}
                   />
                 </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                    >
-                      <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
-                        {faq.a}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                <div
+                  className="grid transition-[grid-template-rows] duration-300 ease-out"
+                  style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+                >
+                  <div className="overflow-hidden">
+                    <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
+                      {faq.a}
+                    </p>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>

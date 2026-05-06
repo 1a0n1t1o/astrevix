@@ -1,7 +1,3 @@
-"use client";
-
-import { useRef, useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -15,108 +11,7 @@ import {
 } from "lucide-react";
 import HeroPhone from "@/components/hero/HeroPhone";
 import CustomerViewScreen from "@/components/landing/CustomerViewScreen";
-
-/* ───── animated SVG area chart ───── */
-function AnimatedChart() {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0, rootMargin: "0px 0px 200px 0px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  const points = [
-    [0, 58],
-    [25, 48],
-    [50, 52],
-    [75, 35],
-    [100, 40],
-    [125, 25],
-    [150, 30],
-    [175, 15],
-    [200, 20],
-  ];
-
-  const linePath = points
-    .map((p, i) => `${i === 0 ? "M" : "L"}${p[0]},${p[1]}`)
-    .join(" ");
-  const areaPath = `${linePath} L200,80 L0,80 Z`;
-
-  return (
-    <div ref={ref} className="relative h-full w-full">
-      <svg
-        viewBox="0 0 200 80"
-        className="h-full w-full"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2563EB" stopOpacity={0.2} />
-            <stop offset="100%" stopColor="#2563EB" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        {[20, 40, 60].map((y) => (
-          <line
-            key={y}
-            x1="0"
-            y1={y}
-            x2="200"
-            y2={y}
-            stroke="rgba(0,0,0,0.04)"
-            strokeDasharray="3 3"
-          />
-        ))}
-        <path
-          d={areaPath}
-          fill="url(#chartGrad)"
-          className="transition-opacity duration-1000"
-          style={{ opacity: visible ? 1 : 0 }}
-        />
-        <path
-          d={linePath}
-          fill="none"
-          stroke="#2563EB"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{
-            strokeDasharray: 400,
-            strokeDashoffset: visible ? 0 : 400,
-            transition: "stroke-dashoffset 1.8s ease-out",
-          }}
-        />
-        {points.map((p, i) => (
-          <circle
-            key={i}
-            cx={p[0]}
-            cy={p[1]}
-            r="2"
-            fill="#2563EB"
-            stroke="white"
-            strokeWidth="1"
-            className="transition-opacity duration-500"
-            style={{
-              opacity: visible ? 1 : 0,
-              transitionDelay: `${0.8 + i * 0.1}s`,
-            }}
-          />
-        ))}
-      </svg>
-    </div>
-  );
-}
+import AnimatedChart from "@/components/landing/AnimatedChart";
 
 /* ───── dashboard stat cards ───── */
 const DASH_STATS = [
@@ -157,30 +52,10 @@ const PHONE_BULLETS = [
 
 /* ───── recent submissions ───── */
 const RECENT = [
-  {
-    name: "Sarah M.",
-    platform: "Instagram",
-    status: "approved",
-    time: "2m ago",
-  },
-  {
-    name: "Alex T.",
-    platform: "TikTok",
-    status: "pending",
-    time: "15m ago",
-  },
-  {
-    name: "Jordan K.",
-    platform: "Instagram",
-    status: "approved",
-    time: "1h ago",
-  },
-  {
-    name: "Maria L.",
-    platform: "TikTok",
-    status: "approved",
-    time: "2h ago",
-  },
+  { name: "Sarah M.", platform: "Instagram", status: "approved", time: "2m ago" },
+  { name: "Alex T.", platform: "TikTok", status: "pending", time: "15m ago" },
+  { name: "Jordan K.", platform: "Instagram", status: "approved", time: "1h ago" },
+  { name: "Maria L.", platform: "TikTok", status: "approved", time: "2h ago" },
 ];
 
 /* ───── sidebar nav items ───── */
@@ -190,14 +65,6 @@ const NAV_ITEMS = [
   { icon: Mail, label: "Email", active: false },
   { icon: Palette, label: "Customize", active: false },
   { icon: Settings, label: "Settings", active: false },
-];
-
-/* ───── customer page steps ───── */
-const PHONE_STEPS = [
-  { num: "1", label: "Create your content" },
-  { num: "2", label: "Post it publicly" },
-  { num: "3", label: "Submit your link" },
-  { num: "4", label: "Get rewarded" },
 ];
 
 export default function PhoneShowcase() {
@@ -223,34 +90,16 @@ export default function PhoneShowcase() {
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5 }}
-            className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]"
-          >
+          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
             For you and your customers
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
-          >
+          </p>
+          <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             One tool. Two beautiful experiences.
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-4 text-lg text-gray-600"
-          >
+          </h2>
+          <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
             A polished page your customers actually want to use. A clean
             dashboard that respects your time.
-          </motion.p>
+          </p>
         </div>
 
         {/* Mockups stacked: dashboard first, then customer phone */}
@@ -261,13 +110,7 @@ export default function PhoneShowcase() {
               What you see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative w-full max-w-[680px]"
-              >
+              <div className="reveal reveal-left reveal-d2 relative w-full max-w-[680px]">
                 {/* Laptop body */}
                 <div
                   className="overflow-hidden rounded-xl border border-gray-200/60 bg-white"
@@ -492,7 +335,7 @@ export default function PhoneShowcase() {
                       "linear-gradient(180deg, #D1D5DB 0%, #C0C4CA 100%)",
                   }}
                 />
-              </motion.div>
+              </div>
               <ul className="w-full space-y-4 lg:max-w-xs">
                 {DASHBOARD_BULLETS.map((bullet) => (
                   <li key={bullet} className="flex items-start gap-3">
@@ -513,19 +356,13 @@ export default function PhoneShowcase() {
               What your customers see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-                className="relative shrink-0"
-              >
+              <div className="reveal reveal-left reveal-d2 relative shrink-0">
                 <div className="relative w-[260px] md:w-[280px]">
                   <HeroPhone initialRotation={15}>
                     <CustomerViewScreen />
                   </HeroPhone>
                 </div>
-              </motion.div>
+              </div>
               <ul className="w-full space-y-4 lg:max-w-xs">
                 {PHONE_BULLETS.map((bullet) => (
                   <li key={bullet} className="flex items-start gap-3">

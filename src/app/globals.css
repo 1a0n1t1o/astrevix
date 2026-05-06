@@ -163,10 +163,14 @@ body {
   animation: pulse-glow 2.5s ease-in-out infinite;
 }
 
-/* Infinite marquee scroll — loops 1/3 of tripled list for seamless repeat */
+/* Infinite marquee scroll — loops 1/2 of doubled list for seamless repeat */
 @keyframes marquee-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-33.333%); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee-scroll 30s linear infinite;
+  width: max-content;
 }
 
 /* Step number bounce in (used with IntersectionObserver) */
@@ -195,4 +199,103 @@ body {
 .feature-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12), 0 8px 16px -6px rgba(0,0,0,0.06);
+}
+
+/* ===== Hero entrance animations (server-rendered, fire on page load) =====
+   Replaces framer-motion `initial/animate` opacity+y for the hero headline,
+   subhead, CTA, and floating badges. */
+
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-fade-up {
+  animation: hero-fade-up 0.6s ease-out both;
+}
+.hero-fade-d1 { animation-delay: 0.2s; }
+.hero-fade-d2 { animation-delay: 0.3s; }
+
+@keyframes hero-badge-in {
+  from { opacity: 0; transform: translateX(var(--badge-from, -30px)); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.hero-badge {
+  animation: hero-badge-in 0.6s ease-out both;
+}
+.hero-badge-from-right {
+  --badge-from: 30px;
+}
+
+@keyframes hero-badge-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.hero-badge-bob {
+  animation: hero-badge-bob 3s ease-in-out infinite;
+}
+
+/* Navbar slide-in on page load (replaces motion.nav) */
+@keyframes navbar-enter {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.navbar-enter {
+  animation: navbar-enter 0.5s ease-out both;
+}
+
+/* Mobile menu drop-in (replaces AnimatePresence motion.div) */
+@keyframes mobile-menu-enter {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mobile-menu-enter {
+  animation: mobile-menu-enter 0.2s ease-out both;
+}
+
+/* ===== Reveal-on-scroll utilities (replaces framer-motion whileInView) =====
+   Usage: <div class="reveal reveal-up">…</div>. JS adds .is-visible when the
+   element enters the viewport (see useReveal hook). Runs entirely in CSS;
+   the only JS cost is one shared IntersectionObserver. */
+
+.reveal { opacity: 0; will-change: opacity, transform; }
+.reveal-up      { transform: translateY(20px); }
+.reveal-up-sm   { transform: translateY(10px); }
+.reveal-left    { transform: translateX(-30px); }
+.reveal-scale   { transform: translateY(40px) scale(0.95); }
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.reveal-up-sm.is-visible      { transition-duration: 0.45s; }
+.reveal-left.is-visible       { transition-duration: 0.6s; }
+.reveal-scale.is-visible      { transition-duration: 0.55s; }
+
+/* Stagger delays — apply alongside .reveal */
+.reveal-d1 { transition-delay: 80ms; }
+.reveal-d2 { transition-delay: 160ms; }
+.reveal-d3 { transition-delay: 240ms; }
+.reveal-d4 { transition-delay: 320ms; }
+.reveal-d5 { transition-delay: 400ms; }
+
+/* Honor user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ===== Mobile performance: drop expensive GPU effects on phones =====
+   backdrop-filter and large blur radii are the main causes of jank on
+   lower-end mobile GPUs. Disable on touch-only pointer devices. */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-no-blur,
+  .mobile-no-blur * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* Tame the giant 40-80px blur radii on decorative blob containers.
+     Keep the color, lose most of the GPU work. */
+  .gpu-layer > * {
+    filter: blur(20px) !important;
+  }
 }

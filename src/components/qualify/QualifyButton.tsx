@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { QualifyFlow } from "./QualifyFlow";
+import dynamic from "next/dynamic";
+
+// Lazy-load QualifyFlow + react-calendly only when the user actually opens
+// the modal. Keeps ~76KB of react-calendly + the modal JS out of the initial
+// landing-page bundle.
+const QualifyFlow = dynamic(
+  () => import("./QualifyFlow").then((m) => m.QualifyFlow),
+  { ssr: false },
+);
 
 interface QualifyButtonProps {
   children: ReactNode;
@@ -16,7 +24,7 @@ export function QualifyButton({ children, className }: QualifyButtonProps) {
       <button onClick={() => setOpen(true)} className={className}>
         {children}
       </button>
-      <QualifyFlow open={open} onClose={() => setOpen(false)} />
+      {open && <QualifyFlow open={open} onClose={() => setOpen(false)} />}
     </>
   );
 }
