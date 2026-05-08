@@ -75,8 +75,7 @@ export default function Features() {
             Everything you need. Nothing you don&apos;t.
           </h2>
           <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
-            Built specifically for local service businesses. No fluff, no
-            features you&apos;ll never use.
+            Built specifically for local service businesses.
           </p>
         </div>
 

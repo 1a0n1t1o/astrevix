@@ -127,14 +127,6 @@ export default function HowItWorks() {
             })}
           </div>
         </div>
-
-        {/* Bottom divider + setup-time line */}
-        <div className="mx-auto mt-20 max-w-3xl">
-          <div className="border-t border-gray-200" />
-          <p className="mt-6 text-center text-sm italic text-gray-500">
-            Average setup time across all customers: 1 minute, 47 seconds.
-          </p>
-        </div>
       </div>
     </section>
   );

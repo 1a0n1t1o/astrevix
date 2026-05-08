@@ -10,7 +10,7 @@ export default function Testimonial() {
             Real results
           </p>
           <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
-            Built and tested by real local businesses.
+            Built and tested by local businesses.
           </h2>
           <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
             Used by service businesses across Orange County. From auto
