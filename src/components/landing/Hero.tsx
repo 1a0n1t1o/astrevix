@@ -145,15 +145,18 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Text — server-rendered with CSS fade-up animations */}
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="hero-fade-up text-2xl font-bold leading-tight tracking-tight text-gray-900 sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="hero-fade-up text-[clamp(2.25rem,8vw,3rem)] font-bold leading-[1.05] tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
             Get Customers{" "}
             <span className="bg-gradient-to-r from-[#2563EB] via-[#7C3AED] to-[#A855F7] bg-clip-text text-transparent">
               Posting
             </span>{" "}
-            About Your Business — Without Asking Them To
+            About Your Business
+            <br className="sm:hidden" />
+            <span className="hidden sm:inline"> — </span>
+            Without Asking Them To
           </h1>
 
-          <p className="hero-fade-up hero-fade-d1 mx-auto mt-6 max-w-2xl text-lg text-gray-600 md:text-xl">
+          <p className="hero-fade-up hero-fade-d1 mx-auto mt-6 max-w-2xl text-base text-gray-600 md:text-xl">
             Customers scan a QR code, post about you on Instagram, and get the reward you set.
           </p>
 

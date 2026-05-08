@@ -33,14 +33,14 @@ export default function CTASection() {
 
       <div className="reveal reveal-up relative mx-auto max-w-[800px] px-6 text-center">
         <p className="mb-6 text-sm font-semibold uppercase tracking-[0.2em] text-white/85">
-          30 Days Free — No Risk
+          30 days free, no risk
         </p>
         <h2 className="mb-6 text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl">
           Stop chasing customer content. Start collecting it.
         </h2>
         <p className="mx-auto mb-10 max-w-2xl text-xl text-white/80">
           Set up takes under 2 minutes. Your custom QR code and NFC stand ship
-          within 24 hours. Try it free for 30 days — if you&apos;re not getting
+          within 24 hours. Try it free for 30 days. If you&apos;re not getting
           customer posts, we&apos;ll work with you until you are or you walk
           away.
         </p>

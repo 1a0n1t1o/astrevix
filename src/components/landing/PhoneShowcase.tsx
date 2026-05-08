@@ -12,6 +12,7 @@ import {
 import HeroPhone from "@/components/hero/HeroPhone";
 import CustomerViewScreen from "@/components/landing/CustomerViewScreen";
 import AnimatedChart from "@/components/landing/AnimatedChart";
+import { ExperienceToggle } from "@/components/sections/ExperienceToggle";
 
 /* ───── dashboard stat cards ───── */
 const DASH_STATS = [
@@ -90,23 +91,22 @@ export default function PhoneShowcase() {
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
-            For you and your customers
-          </p>
           <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             One tool. Two beautiful experiences.
           </h2>
           <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
-            A polished page your customers actually want to use. A clean
-            dashboard that respects your time.
+            A polished page your customers want to use. A dashboard that
+            doesn&apos;t get in your way.
           </p>
         </div>
 
-        {/* Mockups stacked: dashboard first, then customer phone */}
-        <div className="mt-16 space-y-16 lg:space-y-24">
+        {/* Mockups: mobile shows one at a time via toggle (the previous
+            stacked layout was the section's biggest scroll offender); desktop
+            keeps both visible. */}
+        <ExperienceToggle>
           {/* ─── Owner dashboard block ─── */}
           <div>
-            <p className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
+            <p className="hidden text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED] md:block">
               What you see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
@@ -352,7 +352,7 @@ export default function PhoneShowcase() {
 
           {/* ─── Customer phone block ─── */}
           <div>
-            <p className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
+            <p className="hidden text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED] md:block">
               What your customers see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
@@ -376,7 +376,7 @@ export default function PhoneShowcase() {
               </ul>
             </div>
           </div>
-        </div>
+        </ExperienceToggle>
       </div>
     </section>
   );
