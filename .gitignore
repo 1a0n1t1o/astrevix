@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# polish pass revert anchor (safety SHA file, kept locally only)
+.polish-pass-revert-sha.txt
+
+# lighthouse audit reports (kept locally only)
+lighthouse-*.json

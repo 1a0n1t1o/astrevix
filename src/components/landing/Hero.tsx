@@ -124,7 +124,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden pb-24 pt-36 md:pb-40 md:pt-44"
+      className="relative overflow-hidden pb-14 pt-28 md:pb-40 md:pt-44"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #FAFAFD 30%, #F4F1FE 65%, #EAE5FB 100%)",
@@ -145,7 +145,7 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Text — server-rendered with CSS fade-up animations */}
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="hero-fade-up text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+          <h1 className="hero-fade-up text-2xl font-bold leading-tight tracking-tight text-gray-900 sm:text-4xl md:text-5xl lg:text-6xl">
             Get Customers{" "}
             <span className="bg-gradient-to-r from-[#2563EB] via-[#7C3AED] to-[#A855F7] bg-clip-text text-transparent">
               Posting
@@ -154,11 +154,11 @@ export default function Hero() {
           </h1>
 
           <p className="hero-fade-up hero-fade-d1 mx-auto mt-6 max-w-2xl text-lg text-gray-600 md:text-xl">
-            100+ real customer posts every month. They scan, post on Instagram, and get rewarded automatically. No app downloads. No follow-ups. No begging.
+            Customers scan a QR code, post about you on Instagram, and get the reward you set.
           </p>
 
           <div className="hero-fade-up hero-fade-d2 mx-auto mt-10 flex w-full max-w-[480px] flex-col items-center">
-            <QualifyButton className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/30">
+            <QualifyButton className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/30 sm:w-auto sm:shrink-0">
               I&apos;m Ready to Scale
               <svg
                 className="h-4 w-4"
@@ -191,7 +191,7 @@ export default function Hero() {
           />
 
           {/* Photoreal iPhone 17 Pro with scroll-driven 3D rotation */}
-          <div className="relative mx-auto w-[300px] md:w-[380px]">
+          <div className="animate-phone-float relative mx-auto w-[300px] md:w-[380px]">
             <HeroPhone>{screenContent}</HeroPhone>
           </div>
 

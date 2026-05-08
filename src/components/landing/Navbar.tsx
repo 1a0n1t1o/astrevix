@@ -114,11 +114,11 @@ export default function Navbar() {
           <div className="mt-4 flex flex-col gap-3">
             <Link
               href="/login"
-              className="rounded-xl border border-gray-200 px-4 py-3 text-center text-sm font-medium text-gray-700"
+              className="rounded-xl border border-gray-200 px-4 py-4 text-center text-sm font-medium text-gray-700"
             >
               Log in
             </Link>
-            <QualifyButton className="rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-4 py-3 text-center text-sm font-semibold text-white">
+            <QualifyButton className="rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-4 py-4 text-center text-sm font-semibold text-white">
               I&apos;m Ready to Scale
             </QualifyButton>
           </div>

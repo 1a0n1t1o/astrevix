@@ -1,30 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import IPhoneMockup from "./IPhoneMockup";
 
 type HeroPhoneProps = Readonly<{
   children: React.ReactNode;
   /**
-   * Y-axis rotation (degrees) at scroll start. Negative tilts the phone to
-   * show the right edge; positive tilts to show the left. Settles to 0
-   * (flat) as the user scrolls past. Defaults to -18 desktop / -10 mobile
-   * to preserve the previous hero behavior. Pass +15 in a paired layout to
-   * mirror the tilt direction.
+   * Y-axis rotation (degrees) at scroll start on desktop. Negative tilts the
+   * phone to show the right edge; positive tilts to show the left. Settles to
+   * 0 (flat) as the user scrolls past. Mobile and `prefers-reduced-motion`
+   * always render flat (0deg) — see `.hero-phone-rotator` rules in
+   * globals.css.
    */
   initialRotation?: number;
 }>;
 
 const DEFAULT_DESKTOP_ANGLE = -18;
-const DEFAULT_MOBILE_ANGLE = -10;
-// Mobile feels less nauseating when the tilt is dampened relative to desktop.
-const MOBILE_DAMPEN = 10 / 18;
 
-// Scroll-driven Y-axis tilt for the iPhone mockup. We bind directly to the
-// rotator element via ref and update its transform inside requestAnimationFrame
-// in response to scroll events. Framer Motion's useScroll/useTransform was the
-// natural choice, but its motion-value subscription wasn't firing reliably
-// against this Next 16 / Turbopack setup, so we drive the transform ourselves.
+// Scroll-driven Y-axis tilt for the iPhone mockup.
+//
+// Initial angle is applied via CSS custom properties + media queries
+// (`.hero-phone-rotator` in globals.css). This way SSR renders an angle
+// that already matches the device — no hydration flash from desktop tilt
+// to mobile tilt. JS only runs scroll-driven rotation on desktop without
+// `prefers-reduced-motion`; mobile and reduced-motion stay flat.
 export default function HeroPhone({
   children,
   initialRotation,
@@ -32,33 +31,18 @@ export default function HeroPhone({
   const containerRef = useRef<HTMLDivElement>(null);
   const rotatorRef = useRef<HTMLDivElement>(null);
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
   const desktopAngle = initialRotation ?? DEFAULT_DESKTOP_ANGLE;
-  const mobileAngle =
-    initialRotation === undefined
-      ? DEFAULT_MOBILE_ANGLE
-      : initialRotation * MOBILE_DAMPEN;
-  const startAngle = isMobile ? mobileAngle : desktopAngle;
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Skip the scroll-driven rotation on mobile: the per-frame
-    // getBoundingClientRect + rotateY repaint (combined with the multi-layer
-    // drop-shadow filter on the wrapper) is the main source of scroll jank on
-    // phones, and the rotation effect is barely perceptible at that size.
-    if (reduced || isMobile) {
-      const r = rotatorRef.current;
-      if (r) r.style.transform = "rotateY(0deg)";
-      return;
-    }
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    // Mobile + reduced-motion: CSS already keeps `--phone-angle` at 0deg.
+    // Skip listeners — the rotation effect is barely perceptible at phone
+    // sizes and the per-frame getBoundingClientRect is the main source of
+    // scroll jank on phones.
+    if (reduced || isMobile) return;
 
     let raf = 0;
 
@@ -69,8 +53,8 @@ export default function HeroPhone({
       const rect = c.getBoundingClientRect();
       const viewportH = window.innerHeight || 1;
       const p = Math.min(1, Math.max(0, 1 - rect.top / viewportH));
-      const angle = startAngle * (1 - p);
-      r.style.transform = `rotateY(${angle}deg)`;
+      const angle = desktopAngle * (1 - p);
+      r.style.setProperty("--phone-angle", `${angle}deg`);
     }
 
     function onScroll() {
@@ -86,7 +70,7 @@ export default function HeroPhone({
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", paint);
     };
-  }, [startAngle, isMobile]);
+  }, [desktopAngle]);
 
   return (
     // Filter wrapper sits OUTSIDE the 3D context so the multi-layer
@@ -108,12 +92,17 @@ export default function HeroPhone({
       >
         <div
           ref={rotatorRef}
-          style={{
-            transformStyle: "preserve-3d",
-            transformOrigin: "center center",
-            willChange: "transform",
-            transform: `rotateY(${startAngle}deg)`,
-          }}
+          className="hero-phone-rotator"
+          style={
+            {
+              transformStyle: "preserve-3d",
+              transformOrigin: "center center",
+              willChange: "transform",
+              "--phone-desktop-angle": `${desktopAngle}deg`,
+              transform:
+                "rotateY(var(--phone-angle, var(--phone-desktop-angle)))",
+            } as CSSProperties
+          }
         >
           <IPhoneMockup>{children}</IPhoneMockup>
         </div>

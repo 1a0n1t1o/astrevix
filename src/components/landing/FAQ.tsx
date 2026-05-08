@@ -2,35 +2,42 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import {
+  AnimatePresence,
+  LazyMotion,
+  MotionConfig,
+  domAnimation,
+  m,
+} from "framer-motion";
 
 const FAQS = [
   {
     q: "What is Astrevix?",
-    a: "Astrevix is a platform that helps local businesses collect authentic social media content from their customers. Customers scan a QR code, post about your business, submit their link, and receive a reward automatically.",
+    a: "Astrevix helps local businesses collect customer posts. Customers scan a QR code, post on Instagram or TikTok, submit the link, and get a reward.",
   },
   {
     q: "How do customers submit content?",
-    a: "One tap or scan is all it takes. Customers tap your NFC stand or scan your QR code, land on your branded page, post on TikTok or Instagram, and submit their link. Reward gets sent automatically. The whole thing takes under 2 minutes — for them and for you.",
+    a: "Customers tap your NFC stand or scan your QR code, land on your branded page, post on TikTok or Instagram, and submit their link. We send the reward. Takes about 2 minutes.",
   },
   {
     q: "What kind of rewards can I offer?",
-    a: "You can offer anything your business provides — discounts, free items, coupons, or digital rewards. Rewards are delivered automatically via email after you approve the submission.",
+    a: "Anything you sell: discounts, free items, coupons, digital rewards. We email it after you approve the submission.",
   },
   {
     q: "How is this different from running ads or boosting posts?",
-    a: "Ads tell people you're great. Customer posts SHOW it. People trust friends 8x more than they trust ads (Nielsen 2024). Astrevix isn't anti-ads — it's the layer ads can't replicate. You're not interrupting strangers. You're letting your real customers introduce you to their friends. Same reason a referral closes faster than a cold call.",
+    a: "Ads tell people you're great. Customer posts show it. Astrevix lets your customers introduce you to their friends, the way a referral closes faster than a cold call.",
   },
   {
     q: "How does the QR code/tap work?",
-    a: "When you sign up, Astrevix creates a unique branded page for your business. Your QR code and NFC tag link directly to that page. Print the QR code or place the NFC stand anywhere in your store — customers just scan or tap to get started.",
+    a: "We give you a branded page. Your QR code and NFC tag link to that page. Print the QR or place the NFC stand anywhere in your store. Customers scan or tap to start.",
   },
   {
     q: "Can I customize the look of my page?",
-    a: "Yes! You can customize your brand colors, logo, tagline, reward description, content requirements, and more. Everything matches your brand identity.",
+    a: "Yes. Customize colors, logo, tagline, reward description, content requirements, and photos.",
   },
   {
     q: "Will my customers actually do this?",
-    a: "This is the #1 question every business owner asks. The honest answer: yes, when the reward is right. You're already giving them what they came for — a haircut, a manicure, a clean car. Adding a clear bonus (10% off next visit, free upgrade, BOGO) for a 30-second post is one of the highest-converting offers in local business. Our shops average 30%+ customer participation. Some hit 50%+ with strong rewards.",
+    a: "You're already giving them what they came for: a haircut, a manicure, a clean car. Add a clear bonus for a 30-second post (10% off, free upgrade, BOGO), and most say yes.",
   },
 ];
 
@@ -40,7 +47,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="relative py-20 md:py-28"
+      className="relative py-14 md:py-28"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #FBF9FF 30%, #F5F3FF 50%, #FBF9FF 70%, #FFFFFF 100%)",
@@ -70,8 +77,10 @@ export default function FAQ() {
         </div>
 
         {/* Accordion */}
-        <div className="mt-12 space-y-3">
-          {FAQS.map((faq, i) => {
+        <LazyMotion features={domAnimation} strict>
+          <MotionConfig reducedMotion="user">
+            <div className="mt-12 space-y-3">
+              {FAQS.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
               <div
@@ -95,20 +104,28 @@ export default function FAQ() {
                     }`}
                   />
                 </button>
-                <div
-                  className="grid transition-[grid-template-rows] duration-300 ease-out"
-                  style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
-                >
-                  <div className="overflow-hidden">
-                    <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
-                      {faq.a}
-                    </p>
-                  </div>
-                </div>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <m.div
+                      key="content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                      style={{ overflow: "hidden" }}
+                    >
+                      <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
+                        {faq.a}
+                      </p>
+                    </m.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
-        </div>
+            </div>
+          </MotionConfig>
+        </LazyMotion>
       </div>
     </section>
   );

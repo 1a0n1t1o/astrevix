@@ -25,7 +25,7 @@ export function BusinessTypesMarquee() {
   const items = [...BUSINESSES, ...BUSINESSES];
 
   return (
-    <section className="bg-white py-16 sm:py-20">
+    <section className="bg-white py-12 sm:py-20">
       <div className="mx-auto max-w-6xl px-4">
         {/* Label */}
         <p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.15em] text-gray-500">

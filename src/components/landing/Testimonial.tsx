@@ -1,14 +1,8 @@
 import { Star } from "lucide-react";
 
-const STATS = [
-  { value: "30%+", label: "Customer participation rate" },
-  { value: "Under 2 min", label: "To set up your first page" },
-  { value: "100%", label: "Automated reward delivery" },
-];
-
 export default function Testimonial() {
   return (
-    <section className="bg-gradient-to-b from-white to-gray-50 py-20 md:py-[120px]">
+    <section className="bg-gradient-to-b from-white to-gray-50 py-14 md:py-[120px]">
       <div className="mx-auto max-w-7xl px-6">
         {/* Heading */}
         <div className="mx-auto max-w-2xl text-center">
@@ -59,21 +53,6 @@ export default function Testimonial() {
               </p>
             </div>
           </div>
-        </div>
-
-        {/* 3-stat row */}
-        <div className="mx-auto mt-20 grid max-w-[800px] grid-cols-1 gap-8 sm:grid-cols-3">
-          {STATS.map((stat, i) => (
-            <div
-              key={stat.label}
-              className={`reveal reveal-up-sm reveal-d${i + 4} text-center`}
-            >
-              <p className="bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
-                {stat.value}
-              </p>
-              <p className="mt-2 text-sm text-gray-600">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </div>
     </section>

@@ -5,7 +5,7 @@ const FEATURES = [
     icon: QrCode,
     title: "QR Code + NFC Tap Stand",
     description:
-      "Customers scan from their phone or tap your counter stand. We ship the physical NFC stand to you for free.",
+      "Customers scan or tap. We ship the physical NFC stand free.",
     iconBg: "bg-blue-50",
     iconColor: "text-blue-600",
   },
@@ -13,7 +13,7 @@ const FEATURES = [
     icon: Gift,
     title: "Choose Any Reward",
     description:
-      "Free service, % off, BOGO, store credit — whatever you want. Customers see it before they post, so they're motivated.",
+      "Pick anything: free service, % off, BOGO, or store credit. Customers see it upfront.",
     iconBg: "bg-purple-50",
     iconColor: "text-purple-600",
   },
@@ -21,7 +21,7 @@ const FEATURES = [
     icon: CheckCircle2,
     title: "One-Click Approval",
     description:
-      "We show you every submitted post. You approve the ones you like in one tap. Bad posts never become rewards.",
+      "See every submission in your dashboard. Approve the ones you like in one tap.",
     iconBg: "bg-green-50",
     iconColor: "text-green-600",
   },
@@ -29,7 +29,7 @@ const FEATURES = [
     icon: Palette,
     title: "Your Brand, Your Page",
     description:
-      "Custom colors, your logo, your photos. Looks like part of your business, not a third-party tool.",
+      "Your colors, your logo, your photos. Looks like your business, not a vendor.",
     iconBg: "bg-amber-50",
     iconColor: "text-amber-600",
   },
@@ -39,7 +39,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative py-20 md:py-28"
+      className="relative py-14 md:py-28"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #F8F7FF 30%, #F3F1FE 50%, #F8F7FF 70%, #FFFFFF 100%)",

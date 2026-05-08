@@ -70,7 +70,7 @@ const NAV_ITEMS = [
 export default function PhoneShowcase() {
   return (
     <section
-      className="relative py-20 md:py-28"
+      className="relative py-14 md:py-28"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #FAF5FF 30%, #F3E8FF 50%, #FAF5FF 70%, #FFFFFF 100%)",

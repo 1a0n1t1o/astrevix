@@ -145,13 +145,15 @@ body {
 
 /* ===== Landing Page Animations ===== */
 
-/* Phone floating / bobbing */
+/* Phone floating / bobbing — gated behind prefers-reduced-motion */
 @keyframes phone-float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
+  50% { transform: translateY(-3px); }
 }
-.animate-phone-float {
-  animation: phone-float 4s ease-in-out infinite;
+@media (prefers-reduced-motion: no-preference) {
+  .animate-phone-float {
+    animation: phone-float 4s ease-in-out infinite;
+  }
 }
 
 /* CTA button pulse glow */
@@ -171,6 +173,20 @@ body {
 .marquee-track {
   animation: marquee-scroll 30s linear infinite;
   width: max-content;
+  will-change: transform;
+}
+
+/* HeroPhone: SSR-correct initial tilt without JS detection (no hydration flash).
+   Mobile + reduced-motion: phone stays flat. Desktop scroll-driven via JS. */
+@media (max-width: 767px) {
+  .hero-phone-rotator {
+    --phone-angle: 0deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-phone-rotator {
+    --phone-angle: 0deg;
+  }
 }
 
 /* Step number bounce in (used with IntersectionObserver) */

@@ -6,7 +6,7 @@ const STEPS = [
     icon: Palette,
     title: "Set up in 2 minutes",
     description:
-      "We send you a custom QR code, an NFC tap-card for your counter, and a branded rewards page. You pick the reward. We handle the rest.",
+      "We send a custom QR code, NFC tap-card, and branded rewards page. You pick the reward.",
     color: "#2563EB",
     gradient: "#3B82F6",
     bgColor: "rgba(37, 99, 235, 0.1)",
@@ -16,7 +16,7 @@ const STEPS = [
     icon: QrCode,
     title: "Customers scan, post, win",
     description:
-      "Customers tap or scan from anywhere in your shop. They post about you on Instagram or TikTok and submit the link. Takes them 30 seconds.",
+      "Customers tap or scan, post about you on Instagram or TikTok, and submit the link.",
     color: "#7C3AED",
     gradient: "#A855F7",
     bgColor: "rgba(124, 58, 237, 0.1)",
@@ -26,7 +26,7 @@ const STEPS = [
     icon: Gift,
     title: "Rewards send themselves",
     description:
-      "You approve the post in one click. Their reward — discount, free service, whatever you choose — emails to them automatically. You do nothing else.",
+      "Approve in one click. We email the reward you set. You're done.",
     color: "#059669",
     gradient: "#10B981",
     bgColor: "rgba(5, 150, 105, 0.1)",
@@ -37,7 +37,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative overflow-hidden py-20 md:py-28"
+      className="relative overflow-hidden py-14 md:py-28"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #EEF2FF 25%, #E0E7FF 50%, #EEF2FF 75%, #FFFFFF 100%)",
