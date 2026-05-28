@@ -1,7 +1,9 @@
-/* /meta funnel — screen-to-screen slide+fade. Compositor-driven so the
-   funnel can't ever stick on a stalled JS animation; in-screen polish
-   (entrance staggers, phone float, checkmark draw, confetti) is handled by
-   Framer Motion inside the component files. */
+/* /meta funnel CSS animations.
+   - Screen-to-screen slide+fade lives here (compositor-driven so the funnel
+     can never stick on a stalled JS animation).
+   - In-screen polish (entrance staggers, phone float, checkmark draw,
+     confetti, count-ups, illustrations) is driven by Framer Motion inside
+     the component files. */
 
 @keyframes meta-screen-in {
   from {
@@ -18,8 +20,26 @@
   animation: meta-screen-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Subtle blue glow pulse on the primary CTAs (4s cycle, low peak opacity). */
+@keyframes meta-cta-glow {
+  0%,
+  100% {
+    box-shadow: 0 10px 24px -8px rgba(37, 99, 235, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 10px 24px -8px rgba(37, 99, 235, 0.55),
+      0 0 0 10px rgba(37, 99, 235, 0.08);
+  }
+}
+
+.meta-cta-glow {
+  animation: meta-cta-glow 4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .meta-screen-in {
+  .meta-screen-in,
+  .meta-cta-glow {
     animation: none;
   }
 }

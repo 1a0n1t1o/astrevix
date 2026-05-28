@@ -119,14 +119,11 @@ export default function MetaFunnel() {
   }
 
   return (
-    <main className="relative min-h-[100svh] overflow-hidden bg-[#F8FAFC] text-[#0F172A]">
-      {/* Atmosphere: fixed so it doesn't repaint while the hero scrolls.
-          Light theme — soft blue glows over an off-white base. */}
-      <div aria-hidden className="pointer-events-none fixed inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-[#F8FAFC] to-[#EEF4FE]" />
-        <div className="absolute -top-40 left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-[#2563EB] opacity-[0.07] blur-3xl" />
-        <div className="absolute -bottom-32 -right-24 h-[24rem] w-[24rem] rounded-full bg-[#60A5FA] opacity-[0.06] blur-3xl" />
-      </div>
+    <main className="relative min-h-[100svh] overflow-hidden bg-[#FAFBFC] text-[#0F172A]">
+      {/* Atmosphere is handled locally by Hero (the spec calls for a single
+          soft blue glow behind the hero only). Lower sections sit on the
+          flat #FAFBFC base and get their visual rhythm from card styles
+          and generous vertical spacing. */}
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[520px] flex-col px-5">
         <div

@@ -13,7 +13,7 @@ export default function ProgressBar({ current, total }: ProgressBarProps) {
 
   return (
     <div className="w-full">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+      <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
         Question {current} of {total}
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200/80">

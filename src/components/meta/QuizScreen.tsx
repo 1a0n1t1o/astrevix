@@ -76,7 +76,7 @@ export default function QuizScreen({
       <div className="flex flex-1 flex-col justify-center py-8">
         <motion.h2
           variants={itemVariants}
-          className="mb-8 text-[24px] font-semibold leading-snug tracking-tight text-[#0A0E27] sm:text-[28px]"
+          className="mb-8 text-[clamp(1.75rem,5vw,2.5rem)] font-bold leading-[1.15] tracking-[-0.02em] text-[#0A0E27]"
         >
           {question.question}
         </motion.h2>
@@ -87,7 +87,7 @@ export default function QuizScreen({
 
             const baseClasses = isSelected
               ? "border-[#2563EB] bg-[#2563EB] text-white shadow-[0_10px_24px_-8px_rgba(37,99,235,0.45)]"
-              : "border-blue-200 bg-white text-[#0A0E27] hover:border-blue-300 hover:shadow-md";
+              : "border-blue-200 bg-white text-[#0A0E27] shadow-[0_1px_3px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-[0_4px_8px_rgba(15,23,42,0.06),0_16px_32px_rgba(15,23,42,0.10)]";
 
             return (
               <motion.button
@@ -107,7 +107,7 @@ export default function QuizScreen({
                     <span className="text-3xl leading-none">
                       {option.emoji}
                     </span>
-                    <span className="text-[14px] font-semibold leading-snug">
+                    <span className="text-[14px] font-bold leading-snug">
                       {option.label}
                     </span>
                   </>
