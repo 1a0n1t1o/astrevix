@@ -102,10 +102,10 @@ export default function LeadFormScreen({ onSubmit }: LeadFormScreenProps) {
 
   return (
     <div className="flex flex-1 flex-col justify-center py-8">
-      <h2 className="text-[26px] font-semibold leading-tight tracking-tight text-[#F8FAFC] sm:text-[30px]">
+      <h2 className="text-[26px] font-semibold leading-tight tracking-tight text-[#0A0E27] sm:text-[30px]">
         Let&apos;s lock in your spot.
       </h2>
-      <p className="mt-3 text-[16px] leading-relaxed text-white/65">
+      <p className="mt-3 text-[16px] leading-relaxed text-slate-600">
         We&apos;ll send a confirmation and a reminder.
       </p>
 
@@ -116,7 +116,7 @@ export default function LeadFormScreen({ onSubmit }: LeadFormScreenProps) {
             <div key={field.key}>
               <label
                 htmlFor={`lead-${field.key}`}
-                className="mb-1.5 block text-sm font-medium text-white/70"
+                className="mb-1.5 block text-sm font-medium text-slate-700"
               >
                 {field.label}
               </label>
@@ -132,14 +132,14 @@ export default function LeadFormScreen({ onSubmit }: LeadFormScreenProps) {
                 }}
                 placeholder={field.placeholder}
                 aria-invalid={error ? true : undefined}
-                className={`h-[56px] w-full rounded-2xl border-2 bg-white/[0.04] px-4 text-[16px] text-[#F8FAFC] placeholder:text-white/35 transition-colors focus:outline-none ${
+                className={`h-[56px] w-full rounded-2xl border-2 bg-white px-4 text-[16px] text-[#0A0E27] placeholder:text-slate-400 transition-colors focus:outline-none ${
                   error
-                    ? "border-red-400/70"
-                    : "border-white/15 focus:border-[#2563EB]"
+                    ? "border-red-400"
+                    : "border-slate-200 focus:border-[#2563EB]"
                 }`}
               />
               {error && (
-                <p className="mt-1.5 text-xs text-red-300">{error}</p>
+                <p className="mt-1.5 text-xs text-red-500">{error}</p>
               )}
             </div>
           );
@@ -149,7 +149,7 @@ export default function LeadFormScreen({ onSubmit }: LeadFormScreenProps) {
       <button
         type="button"
         onClick={handleSubmit}
-        className="mt-7 flex h-[60px] w-full items-center justify-center gap-2 rounded-full bg-[#2563EB] text-lg font-semibold text-white shadow-xl shadow-[#2563EB]/30 transition-transform duration-100 active:scale-[0.98]"
+        className="mt-7 flex h-[60px] w-full items-center justify-center gap-2 rounded-full bg-[#2563EB] text-lg font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,99,235,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-10px_rgba(37,99,235,0.65)] active:scale-[0.98]"
       >
         See Available Times
         <ArrowRight className="h-5 w-5" strokeWidth={2.5} />

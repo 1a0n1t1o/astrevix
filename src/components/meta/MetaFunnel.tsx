@@ -119,19 +119,13 @@ export default function MetaFunnel() {
   }
 
   return (
-    <main className="relative min-h-[100svh] overflow-hidden bg-[#0A0E27] text-[#F8FAFC]">
-      {/* Atmosphere: fixed so it doesn't repaint while the hero scrolls. */}
+    <main className="relative min-h-[100svh] overflow-hidden bg-[#F8FAFC] text-[#0F172A]">
+      {/* Atmosphere: fixed so it doesn't repaint while the hero scrolls.
+          Light theme — soft blue glows over an off-white base. */}
       <div aria-hidden className="pointer-events-none fixed inset-0">
-        <div
-          className="absolute inset-0 opacity-60"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)",
-            backgroundSize: "22px 22px",
-          }}
-        />
-        <div className="absolute -top-32 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-[#2563EB] opacity-20 blur-3xl" />
-        <div className="absolute -bottom-24 -right-16 h-[22rem] w-[22rem] rounded-full bg-[#2563EB] opacity-10 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-[#F8FAFC] to-[#EEF4FE]" />
+        <div className="absolute -top-40 left-1/2 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-[#2563EB] opacity-[0.07] blur-3xl" />
+        <div className="absolute -bottom-32 -right-24 h-[24rem] w-[24rem] rounded-full bg-[#60A5FA] opacity-[0.06] blur-3xl" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[520px] flex-col px-5">

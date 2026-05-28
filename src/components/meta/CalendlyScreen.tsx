@@ -69,13 +69,13 @@ export default function CalendlyScreen({ name, email }: CalendlyScreenProps) {
         strategy="afterInteractive"
       />
 
-      <p className="mb-4 text-center text-[16px] leading-relaxed text-white/70">
-        Pick any time that works — we&apos;ll send you the meeting link.
+      <p className="mb-4 text-center text-[16px] leading-relaxed text-slate-600">
+        Pick any time that works. We&apos;ll send you the meeting link.
       </p>
 
       <div
         ref={containerRef}
-        className="min-h-[720px] w-full overflow-hidden rounded-2xl bg-white"
+        className="min-h-[720px] w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_24px_-12px_rgba(15,23,42,0.1)]"
       />
     </div>
   );

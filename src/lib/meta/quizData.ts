@@ -10,16 +10,20 @@ export interface QuizQuestion {
   id: string;
   question: string;
   options: QuizOption[];
+  /** Layout for the option buttons. Defaults to "stack" (one-per-row). Q1 uses "grid". */
+  layout?: "stack" | "grid";
 }
 
 export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "business",
     question: "What kind of business do you run?",
+    layout: "grid",
     options: [
-      { label: "Salon, Barbershop or Lash & Brow", emoji: "💇", value: "salon" },
-      { label: "Auto Detailing or Tint Shop", emoji: "🚗", value: "auto" },
-      { label: "Med Spa, Tattoo or Other Service", emoji: "💆", value: "medspa" },
+      { label: "Salon, Spa, Barber or Studio", emoji: "💈", value: "service" },
+      { label: "Retail Shop or Boutique", emoji: "🛍️", value: "retail" },
+      { label: "Restaurant, Café or Bar", emoji: "🍽️", value: "food" },
+      { label: "Other walk-in business", emoji: "🏪", value: "other" },
     ],
   },
   {
@@ -82,7 +86,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
 /** Maps the Q1 business answer to the phrasing used on the match screen. */
 export const BUSINESS_MATCH_PHRASE: Record<string, string> = {
-  salon: "salon & barbershop owners",
-  auto: "auto detailers & tint shops",
-  medspa: "med spas & service businesses",
+  service: "salons, spas and studios",
+  retail: "retail shops and boutiques",
+  food: "restaurants and cafés",
+  other: "local businesses with walk-in customers",
 };
