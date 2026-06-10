@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { SectionTitle } from "./shared";
+import { SectionTitle, VIEWPORT } from "./shared";
 import {
   Scissors,
   SprayCan,
@@ -58,7 +58,7 @@ const CARD_VARIANTS: Variants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -73,7 +73,7 @@ export default function WhoItsFor() {
         variants={GRID_VARIANTS}
         initial={reduce ? false : "hidden"}
         whileInView="show"
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={VIEWPORT}
         className="grid grid-cols-2 gap-3 sm:grid-cols-3"
       >
         {CARDS.map((card) => {

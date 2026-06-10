@@ -4,6 +4,27 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
+/* Shared whileInView trigger configs.
+   Default: nothing animates until the element clears the bottom 30% of the
+   viewport — properly in the user's eyeline, not just peeking in. */
+export const VIEWPORT = {
+  once: true,
+  margin: "0px 0px -30% 0px",
+} as const;
+
+/* Tall elements (e.g. the how-it-works cards) trigger once a quarter of
+   them is visible — a bottom-% margin would fire too late or feel dead on
+   short phones. */
+export const VIEWPORT_TALL = { once: true, amount: 0.25 } as const;
+
+/* The closing Guarantee/CTA card sits near the document floor and can
+   never clear a 30% bottom margin at max scroll — a softer 15% keeps it
+   from staying permanently invisible. */
+export const VIEWPORT_FINAL = {
+  once: true,
+  margin: "0px 0px -15% 0px",
+} as const;
+
 /**
  * Section h2 preceded by a short accent bar that scales in horizontally
  * (origin left) just before the title fades up. Shared by the landing
@@ -19,7 +40,7 @@ export function SectionTitle({ children }: { children: ReactNode }) {
     <motion.div
       initial={reduce ? false : "hidden"}
       whileInView="show"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={VIEWPORT}
       className="mb-10"
     >
       <motion.span
@@ -29,7 +50,7 @@ export function SectionTitle({ children }: { children: ReactNode }) {
           show: {
             opacity: 1,
             scaleX: 1,
-            transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+            transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
           },
         }}
         className="mb-3 block h-[3px] w-10 origin-left rounded-full bg-[#2563EB]"
@@ -40,7 +61,7 @@ export function SectionTitle({ children }: { children: ReactNode }) {
           show: {
             opacity: 1,
             y: 0,
-            transition: { duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] },
+            transition: { duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] },
           },
         }}
         className="text-[clamp(2rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] text-[#0A0E27]"
@@ -102,7 +123,7 @@ export function CountUp({
   className,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, VIEWPORT);
   const reduce = useReducedMotion() ?? false;
   const [value, setValue] = useState(0);
 

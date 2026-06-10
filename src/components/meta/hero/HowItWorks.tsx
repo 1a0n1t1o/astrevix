@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll } from "framer-motion";
 import { Hand, Nfc, BadgePercent, Camera } from "lucide-react";
-import { SectionTitle } from "./shared";
+import { SectionTitle, VIEWPORT, VIEWPORT_TALL } from "./shared";
 
 type IllustrationKind = "tap" | "post" | "reward";
 
@@ -41,7 +41,7 @@ export default function HowItWorks() {
   // on scroll.
   const { scrollYProgress } = useScroll({
     target: railRef,
-    offset: ["start 0.8", "end 0.6"],
+    offset: ["start 0.75", "end 0.35"],
   });
 
   return (
@@ -72,8 +72,8 @@ export default function HowItWorks() {
                 reduce ? false : { opacity: 0, x: i % 2 === 0 ? -24 : 24 }
               }
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              viewport={VIEWPORT_TALL}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             >
               <Card
                 numeral={card.num}
@@ -108,8 +108,8 @@ function Card({ numeral, title, body, illustration, variant }: CardProps) {
       <motion.div
         initial={reduce ? false : { opacity: 0, scale: 0.6 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        viewport={VIEWPORT}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="w-fit text-[44px] font-bold leading-none tracking-[-0.02em] text-[#2563EB]/15"
       >
         {numeral}
@@ -124,8 +124,8 @@ function Card({ numeral, title, body, illustration, variant }: CardProps) {
         <motion.div
           initial={reduce ? false : { opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+          viewport={VIEWPORT}
+          transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
         >
           <Illustration kind={illustration} />
         </motion.div>

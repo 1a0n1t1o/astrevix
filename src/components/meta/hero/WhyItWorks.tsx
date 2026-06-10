@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { CountUp, SectionTitle } from "./shared";
+import { CountUp, SectionTitle, VIEWPORT } from "./shared";
 
 type Tile =
   | {
@@ -61,8 +61,8 @@ export default function WhyItWorks() {
             key={tile.label}
             initial={reduce ? false : { opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+            viewport={VIEWPORT}
+            transition={{ duration: 0.65, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
           >
             {tile.kind === "static" ? (
               <span className={NUMBER_CLASS}>{tile.display}</span>
@@ -77,8 +77,8 @@ export default function WhyItWorks() {
             <motion.div
               initial={reduce ? false : { opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5, delay: i * 0.12 + 0.2, ease: "easeOut" }}
+              viewport={VIEWPORT}
+              transition={{ duration: 0.6, delay: i * 0.08 + 0.2, ease: "easeOut" }}
             >
               <p className="mt-3 text-[18px] font-bold leading-snug tracking-[-0.01em] text-[#0A0E27]">
                 {tile.label}

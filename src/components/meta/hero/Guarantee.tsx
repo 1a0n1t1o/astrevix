@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
-import { PrimaryCTA } from "./shared";
+import { PrimaryCTA, VIEWPORT_FINAL } from "./shared";
 
 const GUARANTEES = [
   "No contract. Cancel anytime.",
@@ -17,8 +17,8 @@ export default function Guarantee({ onStart }: { onStart: () => void }) {
     <motion.section
       initial={reduce ? false : { opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5 }}
+      viewport={VIEWPORT_FINAL}
+      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="overflow-hidden rounded-3xl border border-slate-200 border-t-[3px] border-t-[#2563EB] bg-white p-6 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] sm:p-8">
         <ul className="space-y-4">
@@ -27,8 +27,8 @@ export default function Guarantee({ onStart }: { onStart: () => void }) {
               key={g}
               initial={reduce ? false : { opacity: 0, x: -12 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              viewport={VIEWPORT_FINAL}
+              transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="flex items-start gap-3"
             >
               <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-50">
@@ -47,8 +47,8 @@ export default function Guarantee({ onStart }: { onStart: () => void }) {
         <motion.div
           initial={reduce ? false : { opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          viewport={VIEWPORT_FINAL}
+          transition={{ duration: 0.65, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8"
         >
           <PrimaryCTA onClick={onStart} />
