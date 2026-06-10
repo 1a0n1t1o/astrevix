@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { getImageProps } from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import {
@@ -7,6 +8,8 @@ import {
   MotionConfig,
   domAnimation,
   m,
+  useReducedMotion,
+  type Transition,
   type Variants,
 } from "framer-motion";
 
@@ -33,7 +36,33 @@ const ITEM_VARIANTS: Variants = {
   },
 };
 
+// Shared by the sign's float loop and the ground shadow's inverse loop so the
+// two can never drift out of phase.
+const FLOAT_TRANSITION: Transition = {
+  duration: 4,
+  ease: "easeInOut",
+  repeat: Infinity,
+  repeatType: "mirror",
+};
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
+
 export default function CounterSignSection() {
+  const reducedMotion = useReducedMotion();
+  const isDesktop = useIsDesktop();
+  // Keep the float proportional to the smaller sign on phones.
+  const floatY = isDesktop ? 10 : 6;
+
   // Pre-generated static WebPs serve nearly all traffic via <picture>; the
   // PNG stays as the fallback and keeps next/image's lazy-loading and
   // layout-shift protection (width/height) on the <img>.
@@ -91,26 +120,47 @@ export default function CounterSignSection() {
                         "radial-gradient(circle, rgba(124,58,237,0.10) 0%, rgba(59,130,246,0.05) 45%, transparent 70%)",
                     }}
                   />
-                  <picture>
-                    <source
-                      type="image/webp"
-                      srcSet="/images/counter-sign-480.webp 480w, /images/counter-sign-900.webp 900w"
-                      sizes={SIGN_SIZES}
-                    />
-                    <img
-                      {...signImgProps}
-                      alt={SIGN_ALT}
-                      className="relative z-10 block h-auto w-auto max-h-[58svh] max-w-[78vw] md:max-h-[620px] md:max-w-[440px]"
-                    />
-                  </picture>
-                  {/* Soft contact shadow under the base */}
-                  <div
+                  {/* Float loop lives on this inner wrapper so its transform
+                      never fights the entrance animation on the outer m.div */}
+                  <m.div
+                    className="relative z-10"
+                    animate={
+                      reducedMotion
+                        ? undefined
+                        : { y: [0, -floatY], rotate: [-0.5, 0.5] }
+                    }
+                    transition={FLOAT_TRANSITION}
+                  >
+                    <picture>
+                      <source
+                        type="image/webp"
+                        srcSet="/images/counter-sign-480.webp 480w, /images/counter-sign-900.webp 900w"
+                        sizes={SIGN_SIZES}
+                      />
+                      <img
+                        {...signImgProps}
+                        alt={SIGN_ALT}
+                        className="block h-auto w-auto max-h-[58svh] max-w-[78vw] md:max-h-[620px] md:max-w-[440px]"
+                      />
+                    </picture>
+                  </m.div>
+                  {/* Ground shadow cast just in front of the base foot;
+                      shrinks and fades inversely as the sign rises. Centered
+                      with auto margins, not translate, so the scale animation
+                      owns the transform. */}
+                  <m.div
                     aria-hidden="true"
-                    className="pointer-events-none absolute bottom-0 left-1/2 z-0 h-6 w-[68%] -translate-x-1/2 translate-y-1/2 rounded-[50%]"
+                    className="pointer-events-none absolute inset-x-0 -bottom-[5%] z-0 mx-auto h-[7%] w-[55%]"
                     style={{
                       background:
-                        "radial-gradient(ellipse at center, rgba(15,23,42,0.20) 0%, rgba(15,23,42,0.08) 45%, transparent 72%)",
+                        "radial-gradient(ellipse, rgba(15,15,35,0.28) 0%, rgba(15,15,35,0) 70%)",
                     }}
+                    animate={
+                      reducedMotion
+                        ? undefined
+                        : { scale: [1, 0.92], opacity: [1, 0.75] }
+                    }
+                    transition={FLOAT_TRANSITION}
                   />
                 </div>
               </m.div>
