@@ -111,17 +111,6 @@ export default function CounterSignSection() {
                 className="md:col-start-1 md:row-start-1 md:row-span-2 md:self-center"
               >
                 <div className="relative mx-auto w-fit">
-                  {/* Stationary halo behind the floating sign — bright white
-                      core fading through the site's lavender to transparent.
-                      The sign drifts over it; the glow itself never moves. */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2"
-                    style={{
-                      background:
-                        "radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(237,233,254,0.6) 35%, rgba(237,233,254,0) 70%)",
-                    }}
-                  />
                   {/* Float loop lives on this inner wrapper so its transform
                       never fights the entrance animation on the outer m.div */}
                   <m.div
@@ -145,26 +134,26 @@ export default function CounterSignSection() {
                         className="block h-auto w-auto max-h-[58svh] max-w-[78vw] md:max-h-[620px] md:max-w-[440px]"
                         style={{
                           ...signImgProps.style,
-                          // Static filter (never animated): the white halo
-                          // traces the alpha contour and dissolves edge
-                          // roughness into the glow; brightness stays ≤1.06
-                          // so the white sign face doesn't clip.
+                          // Static depth shadow traced on the sign's own
+                          // silhouette; never animated.
                           filter:
-                            "drop-shadow(0 0 6px rgba(255,255,255,0.9)) brightness(1.05)",
+                            "drop-shadow(0 18px 28px rgba(30,30,60,0.18))",
                         }}
                       />
                     </picture>
                   </m.div>
-                  {/* Ground shadow cast just in front of the base foot;
-                      shrinks and fades inversely as the sign rises. Centered
-                      with auto margins, not translate, so the scale animation
-                      owns the transform. */}
+                  {/* Ground shadow anchored under the base foot, which sits
+                      at the lower-left of the photo (alpha-scan: foot contact
+                      centered near x=27%). Its top edge overlaps the foot's
+                      bottom pixels so they read connected. Shrinks and fades
+                      inversely as the sign rises. */}
                   <m.div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 -bottom-[5%] z-0 mx-auto h-[7%] w-[55%]"
+                    className="pointer-events-none absolute -bottom-[3.5%] left-[7%] z-0 h-[5%] w-[40%]"
                     style={{
                       background:
-                        "radial-gradient(ellipse, rgba(15,15,35,0.35) 0%, rgba(15,15,35,0) 70%)",
+                        "radial-gradient(ellipse, rgba(20,20,45,0.22) 0%, rgba(20,20,45,0) 65%)",
+                      filter: "blur(6px)",
                     }}
                     animate={
                       reducedMotion
