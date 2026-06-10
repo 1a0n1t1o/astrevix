@@ -41,8 +41,12 @@ const TILES: Tile[] = [
   },
 ];
 
+// Mobile (single column): scale with the viewport. sm+ (3-across): the
+// funnel container is a fixed 520px, so the ~144px columns need a fixed
+// size that always fits — a viewport-relative size here is what caused
+// "<10s" and "100%" to collide.
 const NUMBER_CLASS =
-  "block text-[clamp(3rem,10vw,5rem)] font-bold leading-none tracking-[-0.03em] text-[#2563EB] [font-variant-numeric:tabular-nums]";
+  "block text-[clamp(3rem,11vw,4rem)] sm:text-[2.75rem] font-bold leading-none tracking-[-0.03em] text-[#2563EB] [font-variant-numeric:tabular-nums]";
 
 export default function WhyItWorks() {
   const reduce = useReducedMotion() ?? false;

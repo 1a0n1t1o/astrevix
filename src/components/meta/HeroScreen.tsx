@@ -40,7 +40,7 @@ export function StickyStartBar({ onStart }: { onStart: () => void }) {
         <button
           type="button"
           onClick={onStart}
-          className="meta-cta-glow flex h-[56px] w-full items-center justify-center gap-2 rounded-full bg-[#2563EB] text-base font-bold text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-8px_rgba(37,99,235,0.65)] active:scale-[0.98]"
+          className="flex h-[56px] w-full items-center justify-center gap-2 rounded-full bg-[#2563EB] text-base font-bold text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-8px_rgba(37,99,235,0.65)] active:scale-[0.98]"
         >
           Start in 30 seconds
           <ArrowRight className="h-5 w-5" strokeWidth={2.5} />

@@ -37,7 +37,7 @@ export default function Guarantee({ onStart }: { onStart: () => void }) {
           ))}
         </ul>
         <div className="mt-8">
-          <PrimaryCTA onClick={onStart} glow />
+          <PrimaryCTA onClick={onStart} />
         </div>
       </div>
     </motion.section>

@@ -53,14 +53,13 @@ export default function HowItWorks() {
             initial={reduce ? false : { opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
+            transition={{ duration: 0.5, delay: i * 0.15 }}
           >
             <Card
               numeral={card.num}
               title={card.title}
               body={card.body}
               illustration={card.illustration}
-              reduce={reduce}
               variant={i === 0 ? "highlight" : "plain"}
             />
           </motion.div>
@@ -75,18 +74,10 @@ interface CardProps {
   title: string;
   body: string;
   illustration: IllustrationKind;
-  reduce: boolean;
   variant: "highlight" | "plain";
 }
 
-function Card({
-  numeral,
-  title,
-  body,
-  illustration,
-  reduce,
-  variant,
-}: CardProps) {
+function Card({ numeral, title, body, illustration, variant }: CardProps) {
   // Card 1 uses a light-blue gradient outer with a white card on top.
   // Cards 2 + 3 are plain white cards.
   const inner = (
@@ -101,7 +92,7 @@ function Card({
         {body}
       </p>
       <div className="mt-auto flex items-center justify-center pt-6">
-        <Illustration kind={illustration} reduce={reduce} />
+        <Illustration kind={illustration} />
       </div>
     </div>
   );
@@ -116,20 +107,16 @@ function Card({
   return inner;
 }
 
-function Illustration({
-  kind,
-  reduce,
-}: {
-  kind: IllustrationKind;
-  reduce: boolean;
-}) {
-  if (kind === "tap") return <TapIllustration reduce={reduce} />;
-  if (kind === "post") return <PostIllustration reduce={reduce} />;
-  return <RewardIllustration reduce={reduce} />;
+function Illustration({ kind }: { kind: IllustrationKind }) {
+  if (kind === "tap") return <TapIllustration />;
+  if (kind === "post") return <PostIllustration />;
+  return <RewardIllustration />;
 }
 
-function TapIllustration({ reduce }: { reduce: boolean }) {
-  // Small stand with NFC waves + a hand tapping it on a slow loop.
+// All three illustrations are static — the page's only continuous motion is
+// the hero sign's float.
+
+function TapIllustration() {
   return (
     <div className="relative flex h-28 items-center gap-4">
       <div className="flex h-24 w-16 flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -137,73 +124,38 @@ function TapIllustration({ reduce }: { reduce: boolean }) {
         <div className="h-[3px] w-8 rounded-full bg-slate-200" />
         <div className="h-[3px] w-6 rounded-full bg-slate-200" />
       </div>
-      <motion.div
-        animate={reduce ? undefined : { x: [-6, 4, -6] }}
-        transition={
-          reduce
-            ? undefined
-            : { repeat: Infinity, duration: 2.4, ease: "easeInOut" }
-        }
-      >
-        <Hand
-          className="h-11 w-11 -rotate-12 text-[#2563EB]"
-          strokeWidth={1.5}
-        />
-      </motion.div>
+      <Hand
+        className="h-11 w-11 -rotate-12 text-[#2563EB]"
+        strokeWidth={1.5}
+      />
     </div>
   );
 }
 
-function PostIllustration({ reduce }: { reduce: boolean }) {
-  // A tilted phone with a pulsing IG story ring.
+function PostIllustration() {
   return (
-    <motion.div
-      animate={reduce ? undefined : { rotate: [-3, 3, -3] }}
-      transition={
-        reduce
-          ? undefined
-          : { repeat: Infinity, duration: 3.4, ease: "easeInOut" }
-      }
-      className="relative h-28 w-16 overflow-hidden rounded-xl border-2 border-slate-900 bg-black p-1.5 shadow-md"
-    >
+    <div className="relative h-28 w-16 overflow-hidden rounded-xl border-2 border-slate-900 bg-black p-1.5 shadow-md">
       <div className="absolute inset-0 bg-gradient-to-br from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] opacity-90" />
       <div className="relative flex items-center gap-1">
-        <motion.div
-          animate={reduce ? undefined : { scale: [1, 1.1, 1] }}
-          transition={
-            reduce
-              ? undefined
-              : { repeat: Infinity, duration: 2.2, ease: "easeInOut" }
-          }
-          className="rounded-full bg-white p-[1.5px]"
-        >
+        <div className="rounded-full bg-white p-[1.5px]">
           <div className="h-3 w-3 rounded-full bg-gradient-to-br from-[#ee2a7b] to-[#6228d7]" />
-        </motion.div>
+        </div>
         <span className="text-[7px] font-bold text-white">@yourshop</span>
       </div>
       <div className="absolute bottom-2 left-1.5 right-1.5">
         <Camera className="h-3 w-3 text-white/80" strokeWidth={2} />
       </div>
-    </motion.div>
+    </div>
   );
 }
 
-function RewardIllustration({ reduce }: { reduce: boolean }) {
-  // A discount tag bouncing in on a slow loop.
+function RewardIllustration() {
   return (
-    <motion.div
-      animate={reduce ? undefined : { y: [0, -6, 0] }}
-      transition={
-        reduce
-          ? undefined
-          : { repeat: Infinity, duration: 2.4, ease: "easeInOut" }
-      }
-      className="flex flex-col items-center gap-1 rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#60A5FA] px-5 py-3 text-white shadow-[0_12px_28px_-10px_rgba(37,99,235,0.55)]"
-    >
+    <div className="flex flex-col items-center gap-1 rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#60A5FA] px-5 py-3 text-white shadow-[0_12px_28px_-10px_rgba(37,99,235,0.55)]">
       <BadgePercent className="h-8 w-8" strokeWidth={2} />
       <span className="text-[11px] font-bold uppercase tracking-[0.12em]">
         15% off
       </span>
-    </motion.div>
+    </div>
   );
 }
