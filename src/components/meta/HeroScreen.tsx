@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Hero from "./hero/Hero";
 import HowItWorks from "./hero/HowItWorks";
@@ -32,10 +34,33 @@ export default function HeroScreen({ onStart }: HeroScreenProps) {
 }
 
 // Rendered by MetaFunnel at the <main> level (NOT inside the keyed screen
-// wrapper) so `fixed` stays relative to the viewport. Shown on the hero only.
+// wrapper) so `fixed` stays relative to the viewport. Shown on the hero only,
+// and only while the hero's primary CTA (#meta-hero-cta) is fully scrolled
+// out of view — the page never shows two CTAs at once. Hidden by default so
+// there is no flash before the observer's first report.
 export function StickyStartBar({ onStart }: { onStart: () => void }) {
+  const reduce = useReducedMotion() ?? false;
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const target = document.getElementById("meta-hero-cta");
+    if (!target) return;
+    const io = new IntersectionObserver(([entry]) =>
+      setShow(!entry.isIntersecting),
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, []);
+
+  if (!show) return null;
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 px-5 py-3 shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.12)] backdrop-blur-md">
+    <motion.div
+      initial={reduce ? false : { y: 16, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 px-5 py-3 shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.12)] backdrop-blur-md"
+    >
       <div className="mx-auto w-full max-w-[520px]">
         <button
           type="button"
@@ -46,6 +71,6 @@ export function StickyStartBar({ onStart }: { onStart: () => void }) {
           <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

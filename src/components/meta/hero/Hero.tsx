@@ -119,7 +119,9 @@ export default function Hero({ onStart }: { onStart: () => void }) {
             any walk-in business.
           </motion.p>
 
-          <motion.div variants={item} className="mt-8">
+          {/* StickyStartBar watches this id and only shows itself while
+              this primary CTA is fully out of view. */}
+          <motion.div variants={item} id="meta-hero-cta" className="mt-8">
             <PrimaryCTA onClick={onStart} />
           </motion.div>
         </div>
