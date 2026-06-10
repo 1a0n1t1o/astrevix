@@ -3,6 +3,7 @@ import Hero from "@/components/landing/Hero";
 import { BusinessTypesMarquee } from "@/components/sections/BusinessTypesMarquee";
 import Problem from "@/components/landing/Problem";
 import HowItWorks from "@/components/landing/HowItWorks";
+import CounterSignSection from "@/components/landing/CounterSignSection";
 import PhoneShowcase from "@/components/landing/PhoneShowcase";
 import Features from "@/components/landing/Features";
 import Testimonial from "@/components/landing/Testimonial";
@@ -20,6 +21,7 @@ export default function Home() {
         <BusinessTypesMarquee />
         <Problem />
         <HowItWorks />
+        <CounterSignSection />
         <PhoneShowcase />
         <Features />
         <Testimonial />
