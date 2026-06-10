@@ -1,9 +1,12 @@
 "use client";
 
+import { useRef } from "react";
 import Image, { getImageProps } from "next/image";
 import {
   motion,
   useReducedMotion,
+  useScroll,
+  useTransform,
   type Transition,
   type Variants,
 } from "framer-motion";
@@ -51,6 +54,18 @@ const SIGN_SIZES =
 export default function Hero({ onStart }: { onStart: () => void }) {
   const reduce = useReducedMotion() ?? false;
 
+  // Scroll-LINKED exit drift: as the hero scrolls out, the sign lags the
+  // page by up to 40px and dims slightly — a depth cue, not parallax
+  // theater. Motion values bypass React re-renders; skipped entirely under
+  // reduced motion.
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: heroExit } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const exitY = useTransform(heroExit, [0, 1], [0, 40]);
+  const exitOpacity = useTransform(heroExit, [0, 1], [1, 0.85]);
+
   // Pre-generated static WebPs serve nearly all traffic via <picture>; the
   // PNG stays as the fallback and keeps next/image's eager loading and
   // layout-shift protection (width/height) on the <img>.
@@ -64,7 +79,7 @@ export default function Hero({ onStart }: { onStart: () => void }) {
   });
 
   return (
-    <section className="relative pt-6">
+    <section ref={sectionRef} className="relative pt-6">
       {/* Soft radial blue halo behind the headline. */}
       <div
         aria-hidden
@@ -128,7 +143,12 @@ export default function Hero({ onStart }: { onStart: () => void }) {
 
         {/* Real product photo — floats gently over a grounded foot shadow. */}
         <motion.div variants={signItem} className="mt-12 lg:mt-0">
-          <div className="relative mx-auto w-fit">
+          {/* Exit-drift layer sits between the entrance wrapper and the
+              float wrapper so the three transforms never fight. */}
+          <motion.div
+            style={reduce ? undefined : { y: exitY, opacity: exitOpacity }}
+          >
+            <div className="relative mx-auto w-fit">
             {/* Float loop lives on this inner wrapper so its transform never
                 fights the entrance animation on the parent. */}
             <motion.div
@@ -173,7 +193,8 @@ export default function Hero({ onStart }: { onStart: () => void }) {
               }
               transition={FLOAT_TRANSITION}
             />
-          </div>
+            </div>
+          </motion.div>
         </motion.div>
       </motion.div>
     </section>

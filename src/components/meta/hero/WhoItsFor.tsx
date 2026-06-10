@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { SectionTitle } from "./shared";
 import {
   Scissors,
   SprayCan,
@@ -44,31 +45,43 @@ const CARDS: { icon: LucideIcon; title: string; line: string }[] = [
   },
 ];
 
+// Quick cascade across the grid: the parent staggers, each card is a
+// variant child.
+const GRID_VARIANTS: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+};
+
+const CARD_VARIANTS: Variants = {
+  hidden: { opacity: 0, y: 16, scale: 0.96 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function WhoItsFor() {
   const reduce = useReducedMotion() ?? false;
 
   return (
     <section>
-      <motion.h2
-        initial={reduce ? false : { opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.5 }}
-        className="mb-10 text-[clamp(2rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] text-[#0A0E27]"
-      >
-        Built for any business with walk-in customers.
-      </motion.h2>
+      <SectionTitle>Built for any business with walk-in customers.</SectionTitle>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {CARDS.map((card, i) => {
+      <motion.div
+        variants={GRID_VARIANTS}
+        initial={reduce ? false : "hidden"}
+        whileInView="show"
+        viewport={{ once: true, margin: "-80px" }}
+        className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+      >
+        {CARDS.map((card) => {
           const Icon = card.icon;
           return (
             <motion.div
               key={card.title}
-              initial={reduce ? false : { opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.4, delay: i * 0.06 }}
+              variants={CARD_VARIANTS}
               className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_8px_rgba(15,23,42,0.06),0_16px_32px_rgba(15,23,42,0.10)] active:scale-[0.99]"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[#2563EB]">
@@ -83,7 +96,7 @@ export default function WhoItsFor() {
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 }

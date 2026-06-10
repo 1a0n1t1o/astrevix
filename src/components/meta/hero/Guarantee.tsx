@@ -22,8 +22,15 @@ export default function Guarantee({ onStart }: { onStart: () => void }) {
     >
       <div className="overflow-hidden rounded-3xl border border-slate-200 border-t-[3px] border-t-[#2563EB] bg-white p-6 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] sm:p-8">
         <ul className="space-y-4">
-          {GUARANTEES.map((g) => (
-            <li key={g} className="flex items-start gap-3">
+          {GUARANTEES.map((g, i) => (
+            <motion.li
+              key={g}
+              initial={reduce ? false : { opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="flex items-start gap-3"
+            >
               <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-50">
                 <Check
                   className="h-3.5 w-3.5 text-[#2563EB]"
@@ -33,12 +40,19 @@ export default function Guarantee({ onStart }: { onStart: () => void }) {
               <span className="text-[16px] font-medium leading-snug text-slate-700">
                 {g}
               </span>
-            </li>
+            </motion.li>
           ))}
         </ul>
-        <div className="mt-8">
+        {/* The button lands after the list finishes checking off. */}
+        <motion.div
+          initial={reduce ? false : { opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-8"
+        >
           <PrimaryCTA onClick={onStart} />
-        </div>
+        </motion.div>
       </div>
     </motion.section>
   );

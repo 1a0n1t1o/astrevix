@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { CountUp } from "./shared";
+import { CountUp, SectionTitle } from "./shared";
 
 type Tile =
   | {
@@ -53,24 +53,16 @@ export default function WhyItWorks() {
 
   return (
     <section>
-      <motion.h2
-        initial={reduce ? false : { opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.5 }}
-        className="mb-10 text-[clamp(2rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] text-[#0A0E27]"
-      >
-        Why it works
-      </motion.h2>
+      <SectionTitle>Why it works</SectionTitle>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         {TILES.map((tile, i) => (
           <motion.div
             key={tile.label}
-            initial={reduce ? false : { opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={reduce ? false : { opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
+            transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
           >
             {tile.kind === "static" ? (
               <span className={NUMBER_CLASS}>{tile.display}</span>
@@ -81,12 +73,20 @@ export default function WhyItWorks() {
                 className={NUMBER_CLASS}
               />
             )}
-            <p className="mt-3 text-[18px] font-bold leading-snug tracking-[-0.01em] text-[#0A0E27]">
-              {tile.label}
-            </p>
-            <p className="mt-1.5 text-[15px] font-medium leading-relaxed text-slate-600">
-              {tile.sub}
-            </p>
+            {/* Labels follow their number by 0.2s. */}
+            <motion.div
+              initial={reduce ? false : { opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5, delay: i * 0.12 + 0.2, ease: "easeOut" }}
+            >
+              <p className="mt-3 text-[18px] font-bold leading-snug tracking-[-0.01em] text-[#0A0E27]">
+                {tile.label}
+              </p>
+              <p className="mt-1.5 text-[15px] font-medium leading-relaxed text-slate-600">
+                {tile.sub}
+              </p>
+            </motion.div>
           </motion.div>
         ))}
       </div>

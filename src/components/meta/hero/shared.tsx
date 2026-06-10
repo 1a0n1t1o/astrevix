@@ -1,8 +1,55 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+
+/**
+ * Section h2 preceded by a short accent bar that scales in horizontally
+ * (origin left) just before the title fades up. Shared by the landing
+ * sections so their header rhythm stays identical.
+ *
+ * The in-view trigger lives on the wrapper, not the bar: an element at
+ * scaleX(0) has a zero-area rect, so IntersectionObserver would never
+ * report it visible and the bar would stay hidden forever.
+ */
+export function SectionTitle({ children }: { children: ReactNode }) {
+  const reduce = useReducedMotion() ?? false;
+  return (
+    <motion.div
+      initial={reduce ? false : "hidden"}
+      whileInView="show"
+      viewport={{ once: true, margin: "-80px" }}
+      className="mb-10"
+    >
+      <motion.span
+        aria-hidden="true"
+        variants={{
+          hidden: { opacity: 0, scaleX: 0 },
+          show: {
+            opacity: 1,
+            scaleX: 1,
+            transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+          },
+        }}
+        className="mb-3 block h-[3px] w-10 origin-left rounded-full bg-[#2563EB]"
+      />
+      <motion.h2
+        variants={{
+          hidden: { opacity: 0, y: 16 },
+          show: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] },
+          },
+        }}
+        className="text-[clamp(2rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] text-[#0A0E27]"
+      >
+        {children}
+      </motion.h2>
+    </motion.div>
+  );
+}
 
 interface PrimaryCTAProps {
   onClick: () => void;
