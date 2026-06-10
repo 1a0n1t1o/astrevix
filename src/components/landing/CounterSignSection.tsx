@@ -111,13 +111,15 @@ export default function CounterSignSection() {
                 className="md:col-start-1 md:row-start-1 md:row-span-2 md:self-center"
               >
                 <div className="relative mx-auto w-fit">
-                  {/* Faint lavender glow grounding the sign */}
+                  {/* Stationary halo behind the floating sign — bright white
+                      core fading through the site's lavender to transparent.
+                      The sign drifts over it; the glow itself never moves. */}
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[115%] w-[140%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+                    className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2"
                     style={{
                       background:
-                        "radial-gradient(circle, rgba(124,58,237,0.10) 0%, rgba(59,130,246,0.05) 45%, transparent 70%)",
+                        "radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(237,233,254,0.6) 35%, rgba(237,233,254,0) 70%)",
                     }}
                   />
                   {/* Float loop lives on this inner wrapper so its transform
@@ -141,6 +143,15 @@ export default function CounterSignSection() {
                         {...signImgProps}
                         alt={SIGN_ALT}
                         className="block h-auto w-auto max-h-[58svh] max-w-[78vw] md:max-h-[620px] md:max-w-[440px]"
+                        style={{
+                          ...signImgProps.style,
+                          // Static filter (never animated): the white halo
+                          // traces the alpha contour and dissolves edge
+                          // roughness into the glow; brightness stays ≤1.06
+                          // so the white sign face doesn't clip.
+                          filter:
+                            "drop-shadow(0 0 6px rgba(255,255,255,0.9)) brightness(1.05)",
+                        }}
                       />
                     </picture>
                   </m.div>
@@ -153,7 +164,7 @@ export default function CounterSignSection() {
                     className="pointer-events-none absolute inset-x-0 -bottom-[5%] z-0 mx-auto h-[7%] w-[55%]"
                     style={{
                       background:
-                        "radial-gradient(ellipse, rgba(15,15,35,0.28) 0%, rgba(15,15,35,0) 70%)",
+                        "radial-gradient(ellipse, rgba(15,15,35,0.35) 0%, rgba(15,15,35,0) 70%)",
                     }}
                     animate={
                       reducedMotion
