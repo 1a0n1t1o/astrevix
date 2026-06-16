@@ -113,8 +113,14 @@ interface CountUpProps {
 }
 
 /**
- * Animates a number from 0 → `to` once the element scrolls into view.
- * Static value (renders the formatted target) when prefers-reduced-motion.
+ * Number that rests at its final `to` value and only animates 0 → `to` once it
+ * scrolls into view (and motion is allowed).
+ *
+ * State is seeded with `to`, never 0, so SSR, no-JS, pre-hydration, and
+ * reduced-motion all render the real number — the count-up is purely
+ * progressive enhancement. There is no path that renders `format(0)` (e.g.
+ * "<0s" / "0%") at rest. The 0 → `to` sweep is the intended animation, and it
+ * begins exactly as the tile fades in, so its initial frame is masked.
  */
 export function CountUp({
   to,
@@ -125,11 +131,7 @@ export function CountUp({
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, VIEWPORT);
   const reduce = useReducedMotion() ?? false;
-  const [value, setValue] = useState(0);
-
-  // For reduced motion, render the final value directly — no state, no rAF.
-  // Avoids a synchronous setState in the effect body.
-  const displayed = reduce ? to : value;
+  const [value, setValue] = useState(to);
 
   useEffect(() => {
     if (!inView || reduce) return;
@@ -147,7 +149,7 @@ export function CountUp({
 
   return (
     <span ref={ref} className={className}>
-      {format(displayed)}
+      {format(value)}
     </span>
   );
 }

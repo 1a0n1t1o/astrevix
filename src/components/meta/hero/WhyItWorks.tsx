@@ -27,8 +27,8 @@ const TILES: Tile[] = [
   },
   {
     kind: "count",
-    to: 10,
-    format: (n) => `<${Math.round(n)}s`,
+    to: 30,
+    format: (n) => `${Math.round(n)}s`,
     label: "From tap to posted",
     sub: "The customer is in and out before their coffee cools.",
   },
@@ -36,7 +36,7 @@ const TILES: Tile[] = [
     kind: "count",
     to: 100,
     format: (n) => `${Math.round(n)}%`,
-    label: "Of posts come from real customers",
+    label: "Real customers, every post",
     sub: "Each post comes from a paying customer.",
   },
 ];
@@ -44,7 +44,7 @@ const TILES: Tile[] = [
 // Mobile (single column): scale with the viewport. sm+ (3-across): the
 // funnel container is a fixed 520px, so the ~144px columns need a fixed
 // size that always fits — a viewport-relative size here is what caused
-// "<10s" and "100%" to collide.
+// "30s" and "100%" to collide.
 const NUMBER_CLASS =
   "block text-[clamp(3rem,11vw,4rem)] sm:text-[2.75rem] font-bold leading-none tracking-[-0.03em] text-[#2563EB] [font-variant-numeric:tabular-nums]";
 
