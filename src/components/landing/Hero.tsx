@@ -162,7 +162,7 @@ export default function Hero() {
 
           <div className="hero-fade-up hero-fade-d2 mx-auto mt-10 flex w-full max-w-[480px] flex-col items-center">
             <QualifyButton className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/30 sm:w-auto sm:shrink-0">
-              I&apos;m Ready to Scale
+              See If It&apos;s a Fit
               <svg
                 className="h-4 w-4"
                 fill="none"
