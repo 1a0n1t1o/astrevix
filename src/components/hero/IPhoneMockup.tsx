@@ -6,9 +6,11 @@ type IPhoneMockupProps = Readonly<{
   children: ReactNode;
 }>;
 
-// Frame face — natural titanium, lighter in the middle, darker on the edges.
+// Frame face — black titanium: near-black at the edges with a cool graphite
+// sheen catching light through the middle. The dark band gives the phone the
+// contrast it needs to lift off the light hero background instead of reading flat.
 const FRAME_GRADIENT =
-  "linear-gradient(90deg, #76736c 0%, #a8a59c 12%, #c8c5bc 35%, #d8d5cc 50%, #c8c5bc 65%, #a8a59c 88%, #76736c 100%)";
+  "linear-gradient(90deg, #141416 0%, #2a2a2d 13%, #404044 37%, #4c4c51 50%, #404044 63%, #2a2a2d 87%, #141416 100%)";
 
 // Top-light radial highlight overlay — suggests an off-camera light source.
 const FRAME_LIGHT_OVERLAY =
@@ -18,16 +20,16 @@ const FRAME_LIGHT_OVERLAY =
 const FRAME_BOTTOM_SHADOW =
   "linear-gradient(0deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.05) 12%, transparent 22%)";
 
-// Side faces of the phone (the metal band visible during rotation). Lighter
-// at the edge that meets the front face, darker deeper in.
+// Side faces of the phone (the dark titanium band visible during rotation).
+// Lighter at the edge that meets the front face, near-black deeper in.
 const SIDE_LEFT_GRADIENT =
-  "linear-gradient(90deg, #6a6760 0%, #8a8780 50%, #a8a59c 100%)";
+  "linear-gradient(90deg, #0e0e10 0%, #232326 50%, #34343a 100%)";
 const SIDE_RIGHT_GRADIENT =
-  "linear-gradient(90deg, #a8a59c 0%, #8a8780 50%, #6a6760 100%)";
+  "linear-gradient(90deg, #34343a 0%, #232326 50%, #0e0e10 100%)";
 
-// Side buttons sit on the side face, so they're slightly darker than the band.
+// Side buttons sit on the side face, so they're slightly lighter than the band.
 const SIDE_BUTTON_GRADIENT =
-  "linear-gradient(180deg, #5a5750 0%, #404038 50%, #5a5750 100%)";
+  "linear-gradient(180deg, #3a3a3e 0%, #1c1c20 50%, #3a3a3e 100%)";
 const SIDE_BUTTON_SHADOW =
   "inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.45)";
 
@@ -282,50 +284,45 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                 </div>
               </div>
 
-              {/* Glass — main diagonal reflection from the upper-left
-                  (window/key-light catching the surface). */}
+              {/* Glass reflection — one clean diagonal sheen from the
+                  upper-left key light. Sits above the screen UI (z-40) but
+                  below the floating badges, and is click-through. Static, no
+                  animated sheen. Replaces the old stacked white veils that
+                  hazed the UI, so the content underneath now reads crisp. */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 z-40"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.10) 18%, rgba(255,255,255,0.02) 35%, transparent 50%)",
+                    "linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.08) 16%, rgba(255,255,255,0) 38%)",
                   borderRadius: "52px",
                 }}
               />
 
-              {/* Glass — soft overhead light pooling near the top of the glass. */}
+              {/* Glass catch-light — small bright specular hot-spot in the
+                  top-left corner, where a window edge catches the glass. */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 z-40"
+                className="pointer-events-none absolute left-0 top-0 z-40"
                 style={{
-                  height: "55%",
+                  width: "48%",
+                  height: "30%",
                   background:
-                    "radial-gradient(ellipse 75% 100% at 50% 0%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 35%, transparent 75%)",
+                    "radial-gradient(ellipse at top left, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.16) 34%, transparent 68%)",
                   borderTopLeftRadius: "52px",
-                  borderTopRightRadius: "52px",
                 }}
               />
 
-              {/* Glass — subtle bottom-right counter-reflection. */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 z-40"
-                style={{
-                  background:
-                    "linear-gradient(315deg, rgba(255,255,255,0.06) 0%, transparent 25%)",
-                  borderRadius: "52px",
-                }}
-              />
-
-              {/* Glass — soft inner shadow at the perimeter for curvature. */}
+              {/* Glass — subtle inset shadow at the screen's inner edge for
+                  curvature, plus a 1px top inner light line. Only touches the
+                  perimeter, so the UI stays sharp. */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 z-40"
                 style={{
                   borderRadius: "52px",
                   boxShadow:
-                    "inset 0 0 24px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.4)",
+                    "inset 0 0 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)",
                 }}
               />
             </div>
