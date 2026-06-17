@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import MetaFunnel from "@/components/meta/MetaFunnel";
+import MetaFooter from "@/components/meta/MetaFooter";
 import "./meta.css";
 
 export const metadata: Metadata = {
@@ -10,5 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function MetaPage() {
-  return <MetaFunnel />;
+  return (
+    <>
+      <MetaFunnel />
+      <MetaFooter />
+    </>
+  );
 }
