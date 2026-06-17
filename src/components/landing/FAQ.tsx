@@ -16,6 +16,10 @@ const FAQS = [
     a: "Astrevix helps local businesses collect customer posts. Customers scan a QR code, post on Instagram or TikTok, submit the link, and get a reward.",
   },
   {
+    q: "How much does it cost?",
+    a: "Astrevix is a flat monthly subscription, with an optional add-on if you want us to include the tablet. We set the exact price with you on a short call, based on the size of your business, and you start with a free trial so you see real customer posts before you pay. No contracts, cancel anytime.",
+  },
+  {
     q: "How do customers submit content?",
     a: "Customers tap your NFC stand or scan your QR code, land on your branded page, post on TikTok or Instagram, and submit their link. We send the reward. Takes about 2 minutes.",
   },
