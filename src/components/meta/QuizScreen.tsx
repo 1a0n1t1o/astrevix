@@ -17,15 +17,16 @@ interface QuizScreenProps {
 
 const containerVariants: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.07, delayChildren: 0.12 } },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: 14, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
+    scale: 1,
+    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -99,14 +100,14 @@ export default function QuizScreen({
                 aria-pressed={isSelected}
                 className={
                   isGrid
-                    ? `flex min-h-[120px] flex-col items-center justify-center gap-2 rounded-2xl border-2 px-3 py-4 text-center transition-all duration-150 active:scale-[0.98] ${baseClasses}`
-                    : `flex min-h-[56px] w-full items-center gap-3 rounded-2xl border-2 px-5 py-3.5 text-left transition-all duration-150 active:scale-[0.98] ${baseClasses}`
+                    ? `group flex min-h-[120px] flex-col items-center justify-center gap-2 rounded-2xl border-2 px-3 py-4 text-center transition-all duration-150 active:scale-[0.98] ${baseClasses}`
+                    : `group flex min-h-[56px] w-full items-center gap-3 rounded-2xl border-2 px-5 py-3.5 text-left transition-all duration-150 active:scale-[0.98] ${baseClasses}`
                 }
               >
                 {isGrid ? (
                   <>
                     <span
-                      className={`flex h-11 w-11 items-center justify-center rounded-xl ${isSelected ? "bg-white/20 text-white" : "bg-blue-50 text-[#2563EB]"}`}
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110 ${isSelected ? "bg-white/20 text-white" : "bg-blue-50 text-[#2563EB]"}`}
                     >
                       <Icon className="h-6 w-6" strokeWidth={2} />
                     </span>
@@ -117,7 +118,7 @@ export default function QuizScreen({
                 ) : (
                   <>
                     <span
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${isSelected ? "bg-white/20 text-white" : "bg-blue-50 text-[#2563EB]"}`}
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110 ${isSelected ? "bg-white/20 text-white" : "bg-blue-50 text-[#2563EB]"}`}
                     >
                       <Icon className="h-5 w-5" strokeWidth={2} />
                     </span>

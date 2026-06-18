@@ -7,6 +7,7 @@ import Hero from "./hero/Hero";
 import HowItWorks from "./hero/HowItWorks";
 import WhyItWorks from "./hero/WhyItWorks";
 import WhoItsFor from "./hero/WhoItsFor";
+import Reviews from "./hero/Reviews";
 import Guarantee from "./hero/Guarantee";
 
 interface HeroScreenProps {
@@ -25,6 +26,9 @@ export default function HeroScreen({ onStart }: HeroScreenProps) {
       </div>
       <div className="mt-24 sm:mt-[120px]">
         <WhoItsFor />
+      </div>
+      <div className="mt-24 sm:mt-[120px]">
+        <Reviews />
       </div>
       <div className="mt-24 sm:mt-[120px]">
         <Guarantee onStart={onStart} />

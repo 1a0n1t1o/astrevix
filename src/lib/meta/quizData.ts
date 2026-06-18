@@ -8,10 +8,6 @@ import {
   Instagram,
   Banknote,
   Compass,
-  CalendarX,
-  TrendingUp,
-  Eye,
-  HelpCircle,
   CheckCircle2,
   Clock,
 } from "lucide-react";
@@ -20,7 +16,7 @@ export interface QuizOption {
   label: string;
   icon: LucideIcon;
   value: string;
-  /** Q6's "Maybe later" carries this so the verifying screen can route to the soft outcome. */
+  /** Last question's "Maybe later" carries this so the verifying screen can route to the soft outcome. */
   softOutcome?: boolean;
 }
 
@@ -71,28 +67,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
         icon: Compass,
         value: "no-unsure",
       },
-    ],
-  },
-  {
-    id: "slow-days",
-    question:
-      "How often do you have slow days where you wish more customers came in?",
-    options: [
-      { label: "Almost every week", icon: CalendarX, value: "weekly" },
-      {
-        label: "Sometimes, but I want to grow faster",
-        icon: TrendingUp,
-        value: "sometimes",
-      },
-    ],
-  },
-  {
-    id: "competitors",
-    question:
-      "Do competitors near you seem to get way more attention on Instagram or TikTok?",
-    options: [
-      { label: "Yes, and it bugs me", icon: Eye, value: "yes-bugs-me" },
-      { label: "Not sure / haven't checked", icon: HelpCircle, value: "not-sure" },
     ],
   },
   {
