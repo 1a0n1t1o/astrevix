@@ -19,6 +19,7 @@ export const REVIEWS: Review[] = [
     role: "Nail tech · Orange County, CA",
     quote:
       "I'm a solo nail tech with my own little business, so the sign sits right at my station. Almost every client asked me about it, and a lot of them posted their nails right after I finished. Beats chasing people for reviews.",
+    image: "/images/reviews/kayla-nail-tech.jpg",
   },
   {
     name: "Sergio",
@@ -37,13 +38,11 @@ export const REVIEWS: Review[] = [
     role: "Coffee shop · Los Angeles, CA",
     quote:
       "We don't have a permanent cafe yet, we run pop-ups, so getting people to come back actually matters. This did it, and the page was easy to make our own. More than half our customers ended up posting, and one video pulled over 200k views on Instagram. Pretty insane for a little pop-up.",
-    image: "/images/reviews/mia-coffee-shop.jpg",
   },
   {
     name: "John's Mobile Detailing",
     role: "Orange County, CA",
     quote:
       "We were paying $400/month boosting Instagram posts and getting nothing. First month with Astrevix, we got 38 customer posts and 6 new bookings from people who saw their friends tag us. It just works.",
-    image: "/images/reviews/johns-mobile-detailing.jpg",
   },
 ];
