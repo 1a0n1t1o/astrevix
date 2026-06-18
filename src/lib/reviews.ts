@@ -26,6 +26,7 @@ export const REVIEWS: Review[] = [
     role: "Car wrap shop · Los Angeles, CA",
     quote:
       "Custom car wraps is what we do, out in Orange County. Three customers used the sign in the first couple weeks, which I wasn't expecting at all. Easy on my end, it just sits there and works.",
+    image: "/images/reviews/sergio-car-wrap.jpg",
   },
   {
     name: "Renee",

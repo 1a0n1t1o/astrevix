@@ -8,12 +8,13 @@ import { SectionTitle } from "./shared";
 // photo review, then the rest. (The homepage keeps REVIEWS in its own order.)
 const withPhoto = REVIEWS.filter((r) => r.image);
 const textOnly = REVIEWS.filter((r) => !r.image);
-const META_ORDER: Review[] = [
-  withPhoto[0],
-  textOnly[0],
-  withPhoto[1],
-  ...textOnly.slice(1),
-].filter((r): r is Review => Boolean(r));
+const META_ORDER: Review[] = [];
+for (let i = 0; i < Math.max(withPhoto.length, textOnly.length); i++) {
+  const p = withPhoto[i];
+  const t = textOnly[i];
+  if (p) META_ORDER.push(p);
+  if (t) META_ORDER.push(t);
+}
 
 // Rendered twice so the auto-scroll loops seamlessly.
 const LOOPED = [...META_ORDER, ...META_ORDER];
