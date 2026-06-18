@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { Star } from "lucide-react";
 import { REVIEWS } from "@/lib/reviews";
 import { SectionTitle, VIEWPORT } from "./shared";
 
@@ -41,16 +40,7 @@ export default function Reviews() {
             variants={CARD}
             className="flex w-[80%] shrink-0 snap-start flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] sm:w-[58%]"
           >
-            <div className="flex gap-0.5">
-              {[0, 1, 2, 3, 4].map((s) => (
-                <Star
-                  key={s}
-                  className="h-4 w-4 fill-[#FBBF24] text-[#FBBF24]"
-                  strokeWidth={0}
-                />
-              ))}
-            </div>
-            <blockquote className="mt-3 flex-1 text-[14px] leading-relaxed text-slate-700">
+            <blockquote className="flex-1 text-[14px] leading-relaxed text-slate-700">
               {`“${review.quote}”`}
             </blockquote>
             <figcaption className="mt-4 flex items-center gap-3">

@@ -1,4 +1,3 @@
-import { Star } from "lucide-react";
 import { REVIEWS } from "@/lib/reviews";
 
 export default function Testimonial() {
@@ -14,28 +13,19 @@ export default function Testimonial() {
             Built and tested by local businesses.
           </h2>
           <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
-            Real owners across Orange County, from nail techs to car-wrap shops
-            to café pop-ups. Same system, same results.
+            Real owners across Southern California, from barbershops to car-wrap
+            shops to café pop-ups. Same system, same results.
           </p>
         </div>
 
-        {/* Review wall — masonry so varying-length quotes flow without gaps */}
+        {/* Testimonial wall — masonry so varying-length quotes flow without gaps */}
         <div className="mt-16 gap-6 md:columns-2 lg:columns-3">
           {REVIEWS.map((review, i) => (
             <figure
               key={review.name}
               className={`reveal reveal-up reveal-d${Math.min(i + 1, 5)} mb-6 break-inside-avoid rounded-2xl border border-gray-100 bg-white p-6 shadow-sm shadow-blue-500/5`}
             >
-              <div className="flex items-center gap-0.5">
-                {[0, 1, 2, 3, 4].map((s) => (
-                  <Star
-                    key={s}
-                    className="h-4 w-4 fill-[#FBBF24] text-[#FBBF24]"
-                    strokeWidth={0}
-                  />
-                ))}
-              </div>
-              <blockquote className="mt-4 text-[15px] leading-relaxed text-gray-700">
+              <blockquote className="text-[15px] leading-relaxed text-gray-700">
                 {`“${review.quote}”`}
               </blockquote>
               <figcaption className="mt-5 flex items-center gap-3">
