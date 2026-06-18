@@ -80,8 +80,8 @@ export default function Navbar() {
             >
               Log in
             </Link>
-            <QualifyButton className="rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30">
-              See If It&apos;s a Fit
+            <QualifyButton className="rounded-full bg-[#2563EB] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1D4ED8] hover:shadow-[0_14px_30px_-8px_rgba(37,99,235,0.6)] active:scale-[0.98]">
+              Book a 15-min demo
             </QualifyButton>
           </div>
 
@@ -118,8 +118,8 @@ export default function Navbar() {
             >
               Log in
             </Link>
-            <QualifyButton className="rounded-xl bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-4 py-4 text-center text-sm font-semibold text-white">
-              See If It&apos;s a Fit
+            <QualifyButton className="rounded-xl bg-[#2563EB] px-4 py-4 text-center text-sm font-semibold text-white transition-colors active:bg-[#1D4ED8]">
+              Book a 15-min demo
             </QualifyButton>
           </div>
         </div>

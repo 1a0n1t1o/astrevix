@@ -15,7 +15,7 @@ import {
 
 const PROOF_POINTS = [
   "Ships free with your account",
-  "Works with a tap or a scan — every phone",
+  "Works with a tap or a scan on every phone",
   "Linked to your rewards page automatically",
 ];
 
@@ -80,7 +80,7 @@ export default function CounterSignSection() {
       className="relative overflow-hidden py-14 md:py-28"
       style={{
         background:
-          "linear-gradient(180deg, #FFFFFF 0%, #FBF9FF 30%, #F5F3FF 50%, #FBF9FF 70%, #FFFFFF 100%)",
+          "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%)",
       }}
     >
       <div className="relative mx-auto max-w-5xl px-6">
@@ -89,7 +89,7 @@ export default function CounterSignSection() {
             <div className="grid gap-10 md:grid-cols-[45fr_55fr] md:gap-x-12 md:gap-y-8 lg:gap-x-16">
               {/* Header — desktop: top of right column, hugging the midline */}
               <div className="mx-auto max-w-2xl text-center md:col-start-2 md:row-start-1 md:mx-0 md:max-w-none md:self-end md:text-left">
-                <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
+                <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#2563EB]">
                   The sign on your counter
                 </p>
                 <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -97,7 +97,7 @@ export default function CounterSignSection() {
                 </h2>
                 <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
                   A clean acrylic sign that sits next to your register.
-                  Customers tap it with their phone or scan the QR code — no
+                  Customers tap it with their phone or scan the QR code. No
                   app, no instructions needed.
                 </p>
               </div>

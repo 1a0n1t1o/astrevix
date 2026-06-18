@@ -13,7 +13,7 @@ export default function Footer() {
     <footer
       style={{
         background:
-          "linear-gradient(180deg, #6D28D9 0%, #5B21B6 50%, #4C1D95 100%)",
+          "linear-gradient(180deg, #1E40AF 0%, #1E3A8A 50%, #172554 100%)",
       }}
     >
       <div className="mx-auto max-w-7xl px-6 py-12">
@@ -37,7 +37,7 @@ export default function Footer() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-sm text-purple-200 transition-colors hover:text-white"
+                className="text-sm text-blue-200 transition-colors hover:text-white"
               >
                 {link.label}
               </Link>
@@ -55,19 +55,19 @@ export default function Footer() {
           <div className="flex justify-center gap-4 mb-4">
             <Link
               href="/privacy"
-              className="text-xs text-purple-300 transition-colors hover:text-white"
+              className="text-xs text-blue-300 transition-colors hover:text-white"
             >
               Privacy Policy
             </Link>
-            <span className="text-xs text-purple-300/50">&middot;</span>
+            <span className="text-xs text-blue-300/50">&middot;</span>
             <Link
               href="/terms"
-              className="text-xs text-purple-300 transition-colors hover:text-white"
+              className="text-xs text-blue-300 transition-colors hover:text-white"
             >
               Terms &amp; Conditions
             </Link>
           </div>
-          <p className="text-xs text-purple-300">
+          <p className="text-xs text-blue-300">
             &copy; {new Date().getFullYear()} Astrevix. All rights reserved.
           </p>
         </div>

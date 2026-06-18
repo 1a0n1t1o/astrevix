@@ -74,7 +74,7 @@ export default function PhoneShowcase() {
       className="relative py-14 md:py-28"
       style={{
         background:
-          "linear-gradient(180deg, #FFFFFF 0%, #FAF5FF 30%, #F3E8FF 50%, #FAF5FF 70%, #FFFFFF 100%)",
+          "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%)",
       }}
     >
       {/* Decorative blobs */}
@@ -83,7 +83,7 @@ export default function PhoneShowcase() {
           className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(124,58,237,0.1) 0%, rgba(59,130,246,0.06) 40%, transparent 70%)",
+              "radial-gradient(circle, rgba(37,99,235,0.08) 0%, rgba(37,99,235,0.04) 40%, transparent 70%)",
             filter: "blur(50px)",
           }}
         />
@@ -106,7 +106,7 @@ export default function PhoneShowcase() {
         <ExperienceToggle>
           {/* ─── Owner dashboard block ─── */}
           <div>
-            <p className="hidden text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED] md:block">
+            <p className="hidden text-center text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 md:block">
               What you see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">
@@ -149,7 +149,7 @@ export default function PhoneShowcase() {
                     {/* Sidebar */}
                     <div className="hidden w-[140px] shrink-0 border-r border-gray-100 bg-gray-50/40 p-3 sm:block">
                       <div className="mb-4 flex items-center gap-2 px-1">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#2563EB]">
                           <span className="text-[8px] font-bold text-white">
                             A
                           </span>
@@ -178,7 +178,7 @@ export default function PhoneShowcase() {
                       </div>
                       <div className="mt-auto pt-4">
                         <div className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-2 py-1.5">
-                          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-500 text-[7px] font-bold text-white">
+                          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2563EB] text-[7px] font-bold text-white">
                             J
                           </div>
                           <div>
@@ -284,7 +284,7 @@ export default function PhoneShowcase() {
                                   <div
                                     className={`flex h-4 w-4 items-center justify-center rounded-md text-[6px] font-bold text-white ${
                                       sub.platform === "Instagram"
-                                        ? "bg-gradient-to-br from-purple-500 to-pink-500"
+                                        ? "bg-[#E1306C]"
                                         : "bg-gray-900"
                                     }`}
                                   >
@@ -352,7 +352,7 @@ export default function PhoneShowcase() {
 
           {/* ─── Customer phone block ─── */}
           <div>
-            <p className="hidden text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED] md:block">
+            <p className="hidden text-center text-sm font-semibold uppercase tracking-[0.2em] text-gray-500 md:block">
               What your customers see
             </p>
             <div className="mt-8 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-12">

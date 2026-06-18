@@ -1,6 +1,24 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  Scissors,
+  ShoppingBag,
+  UtensilsCrossed,
+  Store,
+  Users,
+  Instagram,
+  Banknote,
+  Compass,
+  CalendarX,
+  TrendingUp,
+  Eye,
+  HelpCircle,
+  CheckCircle2,
+  Clock,
+} from "lucide-react";
+
 export interface QuizOption {
   label: string;
-  emoji: string;
+  icon: LucideIcon;
   value: string;
   /** Q6's "Maybe later" carries this so the verifying screen can route to the soft outcome. */
   softOutcome?: boolean;
@@ -20,10 +38,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: "What kind of business do you run?",
     layout: "grid",
     options: [
-      { label: "Salon, Spa, Barber or Studio", emoji: "💈", value: "service" },
-      { label: "Retail Shop or Boutique", emoji: "🛍️", value: "retail" },
-      { label: "Restaurant, Café or Bar", emoji: "🍽️", value: "food" },
-      { label: "Other walk-in business", emoji: "🏪", value: "other" },
+      { label: "Salon, Spa, Barber or Studio", icon: Scissors, value: "service" },
+      { label: "Retail Shop or Boutique", icon: ShoppingBag, value: "retail" },
+      { label: "Restaurant, Café or Bar", icon: UtensilsCrossed, value: "food" },
+      { label: "Other walk-in business", icon: Store, value: "other" },
     ],
   },
   {
@@ -32,12 +50,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       {
         label: "Not enough new customers walking in",
-        emoji: "📅",
+        icon: Users,
         value: "foot-traffic",
       },
       {
         label: "Hard to keep my social media active",
-        emoji: "📱",
+        icon: Instagram,
         value: "social",
       },
     ],
@@ -47,10 +65,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question:
       "Are you currently paying for ads or influencers to bring in customers?",
     options: [
-      { label: "Yes — and it's expensive", emoji: "💸", value: "yes-expensive" },
+      { label: "Yes, and it's expensive", icon: Banknote, value: "yes-expensive" },
       {
-        label: "No — and I'm not sure where to start",
-        emoji: "🚫",
+        label: "No, and I'm not sure where to start",
+        icon: Compass,
         value: "no-unsure",
       },
     ],
@@ -60,8 +78,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question:
       "How often do you have slow days where you wish more customers came in?",
     options: [
-      { label: "Almost every week", emoji: "😩", value: "weekly" },
-      { label: "Sometimes — but I want to grow faster", emoji: "📈", value: "sometimes" },
+      { label: "Almost every week", icon: CalendarX, value: "weekly" },
+      {
+        label: "Sometimes, but I want to grow faster",
+        icon: TrendingUp,
+        value: "sometimes",
+      },
     ],
   },
   {
@@ -69,17 +91,17 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question:
       "Do competitors near you seem to get way more attention on Instagram or TikTok?",
     options: [
-      { label: "Yes — and it bugs me", emoji: "👀", value: "yes-bugs-me" },
-      { label: "Not sure / haven't checked", emoji: "🤷", value: "not-sure" },
+      { label: "Yes, and it bugs me", icon: Eye, value: "yes-bugs-me" },
+      { label: "Not sure / haven't checked", icon: HelpCircle, value: "not-sure" },
     ],
   },
   {
     id: "interest",
     question:
-      "If we showed you how to get your customers posting about your business — and you only reward them with a small discount you set — would you want to see how it works?",
+      "If we showed you how to get your customers posting about your business, and you only reward them with a small discount you set, would you want to see how it works?",
     options: [
-      { label: "Yes, show me", emoji: "✅", value: "yes" },
-      { label: "Maybe later", emoji: "🤔", value: "maybe", softOutcome: true },
+      { label: "Yes, show me", icon: CheckCircle2, value: "yes" },
+      { label: "Maybe later", icon: Clock, value: "maybe", softOutcome: true },
     ],
   },
 ];

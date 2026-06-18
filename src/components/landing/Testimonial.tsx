@@ -6,7 +6,7 @@ export default function Testimonial() {
       <div className="mx-auto max-w-7xl px-6">
         {/* Heading */}
         <div className="mx-auto max-w-2xl text-center">
-          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
+          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#2563EB]">
             Real results
           </p>
           <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
@@ -14,12 +14,12 @@ export default function Testimonial() {
           </h2>
           <p className="reveal reveal-up-sm reveal-d2 mt-4 text-lg text-gray-600">
             Used by service businesses across Orange County. From auto
-            detailers to nail salons — same system, same results.
+            detailers to nail salons. Same system, same results.
           </p>
         </div>
 
         {/* Featured testimonial card */}
-        <div className="reveal reveal-up reveal-d3 mx-auto mt-16 max-w-[800px] rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-purple-500/10 md:p-12">
+        <div className="reveal reveal-up reveal-d3 mx-auto mt-16 max-w-[800px] rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-blue-500/10 md:p-12">
           {/* Stars */}
           <div className="flex items-center gap-1">
             {[0, 1, 2, 3, 4].map((i) => (
@@ -41,7 +41,7 @@ export default function Testimonial() {
 
           {/* Attribution — business only, no personal name */}
           <div className="mt-8 flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-500 text-lg font-bold text-white">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#2563EB] text-lg font-bold text-white">
               JM
             </div>
             <div>

@@ -2,34 +2,58 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import {
+  X,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Hand,
+  Scissors,
+  Car,
+  Sparkles,
+  Store,
+  Camera,
+  MessageSquare,
+  Footprints,
+  TrendingDown,
+  type LucideIcon,
+} from "lucide-react";
 import { InlineWidget } from "react-calendly";
 
-const STEPS = [
+interface QualifyOption {
+  label: string;
+  icon: LucideIcon;
+}
+
+interface QualifyStep {
+  id: string;
+  question: string;
+  options: QualifyOption[];
+}
+
+const STEPS: QualifyStep[] = [
   {
     id: "business",
     question: "What best describes your business?",
-    emoji: "✨",
     options: [
-      { label: "Nail Salon", emoji: "💅" },
-      { label: "Barbershop / Hair Salon", emoji: "✂️" },
-      { label: "Auto Detailing / Tint / Wrap", emoji: "🚗" },
-      { label: "Lash Studio / Med Spa / Tattoo", emoji: "💆" },
-      { label: "Other Local Business", emoji: "🏪" },
+      { label: "Nail Salon", icon: Hand },
+      { label: "Barbershop / Hair Salon", icon: Scissors },
+      { label: "Auto Detailing / Tint / Wrap", icon: Car },
+      { label: "Lash Studio / Med Spa / Tattoo", icon: Sparkles },
+      { label: "Other Local Business", icon: Store },
     ],
   },
   {
     id: "challenge",
     question: "What's your biggest challenge right now?",
-    emoji: "🎯",
     options: [
-      { label: "Not enough customer content or reviews", emoji: "📸" },
-      { label: "Customers don't post about us", emoji: "🤐" },
-      { label: "Low foot traffic / need more visibility", emoji: "👀" },
-      { label: "Tried marketing, nothing's working", emoji: "😩" },
+      { label: "Not enough customer content or reviews", icon: Camera },
+      { label: "Customers don't post about us", icon: MessageSquare },
+      { label: "Low foot traffic / need more visibility", icon: Footprints },
+      { label: "Tried marketing, nothing's working", icon: TrendingDown },
     ],
   },
-] as const;
+];
 
 interface QualifyFlowProps {
   open: boolean;
@@ -119,7 +143,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
             {/* Progress bar */}
             <div className="h-1.5 bg-gray-100">
               <motion.div
-                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+                className="h-full bg-[#2563EB]"
                 initial={false}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -149,9 +173,6 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                     transition={{ duration: 0.25 }}
                   >
                     <div className="mb-8">
-                      <div className="mb-3 text-4xl">
-                        {STEPS[currentStep].emoji}
-                      </div>
                       <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                         {STEPS[currentStep].question}
                       </h2>
@@ -160,6 +181,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                       {STEPS[currentStep].options.map((option) => {
                         const isSelected =
                           answers[STEPS[currentStep].id] === option.label;
+                        const Icon = option.icon;
                         return (
                           <motion.button
                             key={option.label}
@@ -173,13 +195,17 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                             whileTap={{ scale: 0.99 }}
                             className={`w-full rounded-xl border-2 px-5 py-4 text-left transition-all ${
                               isSelected
-                                ? "border-transparent bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 shadow-md"
+                                ? "border-[#2563EB] bg-blue-50 shadow-md"
                                 : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50"
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <span className="text-2xl">{option.emoji}</span>
+                                <span
+                                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${isSelected ? "bg-[#2563EB] text-white" : "bg-blue-50 text-[#2563EB]"}`}
+                                >
+                                  <Icon className="h-5 w-5" strokeWidth={2} />
+                                </span>
                                 <span
                                   className={`font-medium ${
                                     isSelected
@@ -198,7 +224,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                                     duration: 0.25,
                                     ease: [0.34, 1.56, 0.64, 1],
                                   }}
-                                  className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600"
+                                  className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2563EB]"
                                 >
                                   <Check
                                     className="h-4 w-4 text-white"
@@ -232,7 +258,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                           ease: [0.34, 1.56, 0.64, 1],
                         }}
                       >
-                        <span className="text-base">✅</span>
+                        <Check className="h-3.5 w-3.5 text-green-600" strokeWidth={3} />
                         <span className="text-xs font-semibold uppercase tracking-wide text-green-700">
                           You qualified
                         </span>
@@ -292,7 +318,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                       </div>
                       <button
                         type="submit"
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-purple-500/25 transition-opacity hover:opacity-90"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-6 py-3.5 font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,99,235,0.5)] transition-all duration-200 hover:bg-[#1D4ED8] hover:-translate-y-0.5 active:scale-[0.98]"
                       >
                         See Available Times
                         <ArrowRight className="h-4 w-4" />
@@ -312,7 +338,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                     transition={{ duration: 0.3 }}
                   >
                     <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
-                      Pick a time that works 📅
+                      Pick a time that works
                     </h2>
                     <p className="mb-4 text-gray-500">
                       Looking forward to chatting, {contact.name.split(" ")[0]}.
@@ -333,7 +359,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
                         }}
                         pageSettings={{
                           backgroundColor: "ffffff",
-                          primaryColor: "6366f1",
+                          primaryColor: "2563eb",
                           textColor: "1f2937",
                           hideEventTypeDetails: false,
                           hideLandingPageDetails: true,

@@ -6,32 +6,32 @@ const FEATURES = [
     title: "QR Code + NFC Tap Stand",
     description:
       "Customers scan or tap. We ship the physical NFC stand free.",
-    iconBg: "bg-blue-50",
-    iconColor: "text-blue-600",
+    iconBg: "bg-[#EFF6FF]",
+    iconColor: "text-[#2563EB]",
   },
   {
     icon: Gift,
     title: "Choose Any Reward",
     description:
       "Pick anything: free service, % off, BOGO, or store credit. Customers see it upfront.",
-    iconBg: "bg-purple-50",
-    iconColor: "text-purple-600",
+    iconBg: "bg-[#EFF6FF]",
+    iconColor: "text-[#2563EB]",
   },
   {
     icon: CheckCircle2,
     title: "One-Click Approval",
     description:
       "See every submission in your dashboard. Approve the ones you like in one tap.",
-    iconBg: "bg-green-50",
-    iconColor: "text-green-600",
+    iconBg: "bg-[#EFF6FF]",
+    iconColor: "text-[#2563EB]",
   },
   {
     icon: Palette,
     title: "Your Brand, Your Page",
     description:
       "Your colors, your logo, your photos. Looks like your business, not a vendor.",
-    iconBg: "bg-amber-50",
-    iconColor: "text-amber-600",
+    iconBg: "bg-[#EFF6FF]",
+    iconColor: "text-[#2563EB]",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function Features() {
       className="relative py-14 md:py-28"
       style={{
         background:
-          "linear-gradient(180deg, #FFFFFF 0%, #F8F7FF 30%, #F3F1FE 50%, #F8F7FF 70%, #FFFFFF 100%)",
+          "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%)",
       }}
     >
       {/* Background accents */}
@@ -51,7 +51,7 @@ export default function Features() {
           className="absolute right-0 top-0 h-[500px] w-[500px] -translate-y-1/4 translate-x-1/4 rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%)",
             filter: "blur(60px)",
           }}
         />
@@ -59,7 +59,7 @@ export default function Features() {
           className="absolute -left-20 bottom-0 h-[400px] w-[400px] rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(37,99,235,0.05) 0%, transparent 70%)",
             filter: "blur(60px)",
           }}
         />
@@ -68,7 +68,7 @@ export default function Features() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
-          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
+          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#2563EB]">
             What&apos;s included
           </p>
           <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">

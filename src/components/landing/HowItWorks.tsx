@@ -17,9 +17,9 @@ const STEPS = [
     title: "Customers scan, post, win",
     description:
       "Customers tap or scan, post about you on Instagram or TikTok, and submit the link.",
-    color: "#7C3AED",
-    gradient: "#A855F7",
-    bgColor: "rgba(124, 58, 237, 0.1)",
+    color: "#2563EB",
+    gradient: "#3B82F6",
+    bgColor: "rgba(37, 99, 235, 0.1)",
   },
   {
     num: "03",
@@ -27,9 +27,9 @@ const STEPS = [
     title: "Rewards send themselves",
     description:
       "Approve in one click. We email the reward you set. You're done.",
-    color: "#059669",
-    gradient: "#10B981",
-    bgColor: "rgba(5, 150, 105, 0.1)",
+    color: "#2563EB",
+    gradient: "#3B82F6",
+    bgColor: "rgba(37, 99, 235, 0.1)",
   },
 ];
 
@@ -40,7 +40,7 @@ export default function HowItWorks() {
       className="relative overflow-hidden py-14 md:py-28"
       style={{
         background:
-          "linear-gradient(180deg, #FFFFFF 0%, #EEF2FF 25%, #E0E7FF 50%, #EEF2FF 75%, #FFFFFF 100%)",
+          "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%)",
       }}
     >
       {/* Decorative blobs */}
@@ -49,7 +49,7 @@ export default function HowItWorks() {
           className="absolute left-1/4 top-10 h-[350px] w-[350px] rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%)",
             filter: "blur(60px)",
           }}
         />
@@ -57,7 +57,7 @@ export default function HowItWorks() {
           className="absolute bottom-10 right-1/4 h-[300px] w-[300px] rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(37,99,235,0.05) 0%, transparent 70%)",
             filter: "blur(60px)",
           }}
         />
@@ -66,15 +66,11 @@ export default function HowItWorks() {
       <div className="relative mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
-          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
+          <p className="reveal reveal-up-sm mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#2563EB]">
             How it works
           </p>
           <h2 className="reveal reveal-up-sm reveal-d1 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            How{" "}
-            <span className="bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">
-              Astrevix
-            </span>{" "}
-            Works
+            How <span className="text-[#2563EB]">Astrevix</span> Works
           </h2>
         </div>
 
@@ -96,7 +92,7 @@ export default function HowItWorks() {
                 >
                   {/* Number badge */}
                   <div
-                    className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white shadow-md transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_24px_rgba(124,58,237,0.45)]"
+                    className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white shadow-md transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_24px_rgba(37,99,235,0.4)]"
                     style={{
                       background: `linear-gradient(135deg, ${step.color}, ${step.gradient})`,
                     }}

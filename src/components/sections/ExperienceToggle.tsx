@@ -45,7 +45,7 @@ export function ExperienceToggle({ children }: ExperienceToggleProps) {
               onClick={() => setTab(t.id)}
               className={`rounded-full px-5 py-2 text-xs font-semibold transition-all active:scale-95 ${
                 active
-                  ? "bg-gradient-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-purple-500/25"
+                  ? "bg-[#2563EB] text-white shadow-md shadow-blue-500/25"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >

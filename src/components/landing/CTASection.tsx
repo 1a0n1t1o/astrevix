@@ -6,7 +6,7 @@ export default function CTASection() {
       className="relative overflow-hidden py-14 md:py-[140px]"
       style={{
         background:
-          "linear-gradient(180deg, #4F46E5 0%, #7C3AED 40%, #6D28D9 100%)",
+          "linear-gradient(160deg, #1E40AF 0%, #2563EB 55%, #1D4ED8 100%)",
       }}
     >
       {/* Faint grid overlay for depth */}
@@ -45,7 +45,7 @@ export default function CTASection() {
           away.
         </p>
 
-        <QualifyButton className="inline-flex w-full max-w-[420px] items-center justify-center gap-2 rounded-full bg-white px-10 py-5 text-lg font-bold text-purple-700 shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl sm:w-auto sm:max-w-none">
+        <QualifyButton className="inline-flex w-full max-w-[420px] items-center justify-center gap-2 rounded-full bg-white px-10 py-5 text-lg font-bold text-[#2563EB] shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] sm:w-auto sm:max-w-none">
           See If It&apos;s a Fit
           <svg
             className="h-5 w-5"
