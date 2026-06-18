@@ -54,7 +54,7 @@ export default function FAQ() {
       className="relative py-14 md:py-28"
       style={{
         background:
-          "linear-gradient(180deg, #FFFFFF 0%, #FBF9FF 30%, #F5F3FF 50%, #FBF9FF 70%, #FFFFFF 100%)",
+          "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%)",
       }}
     >
       {/* Subtle blob */}
@@ -63,7 +63,7 @@ export default function FAQ() {
           className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(37,99,235,0.05) 0%, transparent 70%)",
             filter: "blur(60px)",
           }}
         />
@@ -72,7 +72,7 @@ export default function FAQ() {
       <div className="relative mx-auto max-w-3xl px-6">
         {/* Header */}
         <div className="text-center">
-          <span className="reveal reveal-up-sm mobile-no-blur inline-flex items-center rounded-full border border-purple-300/50 bg-white/60 px-4 py-1.5 text-sm font-medium text-purple-700 shadow-sm backdrop-blur-sm">
+          <span className="reveal reveal-up-sm mobile-no-blur inline-flex items-center rounded-full border border-blue-200 bg-white/60 px-4 py-1.5 text-sm font-medium text-[#2563EB] shadow-sm backdrop-blur-sm">
             FAQ
           </span>
           <h2 className="reveal reveal-up-sm reveal-d1 mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -91,8 +91,8 @@ export default function FAQ() {
                 key={i}
                 className={`reveal reveal-up-sm reveal-d${Math.min(i + 1, 5)} overflow-hidden rounded-2xl border transition-colors ${
                   isOpen
-                    ? "border-purple-200 bg-purple-50/40"
-                    : "border-purple-100/40 bg-white/70 hover:bg-white"
+                    ? "border-blue-200 bg-blue-50/50"
+                    : "border-gray-200/60 bg-white/70 hover:bg-white"
                 }`}
               >
                 <button
@@ -104,7 +104,7 @@ export default function FAQ() {
                   </span>
                   <ChevronDown
                     className={`h-4 w-4 shrink-0 transition-all duration-300 ease-out ${
-                      isOpen ? "rotate-180 text-purple-500" : "text-gray-400"
+                      isOpen ? "rotate-180 text-[#2563EB]" : "text-gray-400"
                     }`}
                   />
                 </button>

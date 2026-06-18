@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { Signal, Wifi, BatteryFull } from "lucide-react";
 
 type IPhoneMockupProps = Readonly<{
   children: ReactNode;
@@ -165,7 +166,7 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
             borderRadius: "60px",
             background: FRAME_GRADIENT,
             boxShadow:
-              "inset 0 0 0 0.5px rgba(255,255,255,0.30), inset 0 1.5px 0 rgba(255,255,255,0.45), inset 0 -1.5px 0 rgba(0,0,0,0.30), inset 1px 0 0 rgba(255,255,255,0.18), inset -1px 0 0 rgba(0,0,0,0.22)",
+              "0 0 0 0.5px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.22), inset 0 0 0 0.5px rgba(255,255,255,0.30), inset 0 1.5px 0 rgba(255,255,255,0.45), inset 0 -1.5px 0 rgba(0,0,0,0.30), inset 1px 0 0 rgba(255,255,255,0.18), inset -1px 0 0 rgba(0,0,0,0.22)",
           }}
         >
           {/* Top radial highlight — main light-source reflection on metal. */}
@@ -176,6 +177,8 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
               borderRadius: "60px",
               background: FRAME_LIGHT_OVERLAY,
               mixBlendMode: "screen",
+              transform: "translateX(calc(var(--phone-tilt, 0) * 14px))",
+              willChange: "transform",
             }}
           />
 
@@ -232,12 +235,31 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
               style={{
                 borderRadius: "52px",
                 background:
-                  "linear-gradient(180deg, #EDE9FE 0%, #F3F0FF 15%, #FEFCFA 40%, #FEFCFA 100%)",
+                  "linear-gradient(180deg, #EEF1F6 0%, #F7F9FB 14%, #FEFCFA 38%, #FEFCFA 100%)",
                 boxShadow:
                   "inset 0 0 0 0.5px rgba(0,0,0,0.10), inset 0 1px 2px rgba(0,0,0,0.06)",
               }}
             >
               {children}
+
+              {/* iOS-style status bar — time + signal/Wi-Fi/battery flanking
+                  the Dynamic Island. The biggest single cue that this is a
+                  live phone screen. Aligned to the same vertical band as the
+                  island so the glyphs sit level with it. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 z-50 flex items-center justify-between px-[9%] text-[#1a1a1a]"
+                style={{ top: "2.5%", height: "3.8%" }}
+              >
+                <span className="text-[11px] font-semibold leading-none tracking-tight">
+                  9:41
+                </span>
+                <div className="flex items-center gap-[4px]">
+                  <Signal className="h-[12px] w-[12px]" strokeWidth={2.5} />
+                  <Wifi className="h-[12px] w-[12px]" strokeWidth={2.5} />
+                  <BatteryFull className="h-[15px] w-[15px]" strokeWidth={2} />
+                </div>
+              </div>
 
               {/* Dynamic Island — sized as a percentage of the phone so it
                   scales correctly at any phone width (was previously fixed at
@@ -289,6 +311,23 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                   below the floating badges, and is click-through. Static, no
                   animated sheen. Replaces the old stacked white veils that
                   hazed the UI, so the content underneath now reads crisp. */}
+              {/* Moving specular streak — a sharp diagonal glance of light
+                  that slides across the glass as the phone turns (driven by
+                  --phone-tilt). The clearest "real glass" cue under rotation. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-40"
+                style={{
+                  background:
+                    "linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.10) 47%, rgba(255,255,255,0.32) 50%, rgba(255,255,255,0.10) 53%, transparent 62%)",
+                  borderRadius: "52px",
+                  transform: "translateX(calc(var(--phone-tilt, 0) * 52px))",
+                  willChange: "transform",
+                  mixBlendMode: "screen",
+                }}
+              />
+
+              {/* Broad diagonal sheen — soft key-light wash, shifts subtly. */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0 z-40"
@@ -296,6 +335,8 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                   background:
                     "linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.08) 16%, rgba(255,255,255,0) 38%)",
                   borderRadius: "52px",
+                  transform: "translateX(calc(var(--phone-tilt, 0) * 20px))",
+                  willChange: "transform",
                 }}
               />
 
@@ -310,6 +351,8 @@ export default function IPhoneMockup({ children }: IPhoneMockupProps) {
                   background:
                     "radial-gradient(ellipse at top left, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.16) 34%, transparent 68%)",
                   borderTopLeftRadius: "52px",
+                  transform: "translateX(calc(var(--phone-tilt, 0) * 10px))",
+                  willChange: "transform",
                 }}
               />
 

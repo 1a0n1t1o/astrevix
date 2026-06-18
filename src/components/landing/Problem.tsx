@@ -3,7 +3,7 @@ export default function Problem() {
     <section className="bg-[#FAFAFA] py-14 md:py-28">
       <div className="mx-auto max-w-3xl px-6">
         <div className="reveal reveal-up">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3AED]">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2563EB]">
             The truth about local marketing
           </p>
           <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-gray-900 sm:text-4xl md:text-5xl">

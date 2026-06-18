@@ -47,7 +47,7 @@ const FLOAT_TRANSITION: Transition = {
 };
 
 const SIGN_ALT =
-  "Astrevix counter sign — tap or scan to post and get rewarded";
+  "Astrevix counter sign: tap or scan to post and get rewarded";
 const SIGN_SIZES =
   "(min-width: 1024px) 420px, (min-width: 640px) 340px, 68vw";
 

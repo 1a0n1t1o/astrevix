@@ -26,7 +26,7 @@ const floatingBadges: FloatingBadge[] = [
   {
     icon: <Gift className="h-3.5 w-3.5" />,
     label: "Reward claimed · 2m ago",
-    accentColor: "#7C3AED",
+    accentColor: "#2563EB",
     className: "left-[-2%] top-[42%] lg:left-[2%]",
     enterDelay: 700,
     floatDelay: 500,
@@ -34,7 +34,7 @@ const floatingBadges: FloatingBadge[] = [
   {
     icon: <Star className="h-3.5 w-3.5" />,
     label: "58 pending submissions",
-    accentColor: "#D97706",
+    accentColor: "#2563EB",
     className: "left-[4%] bottom-[18%] lg:left-[8%]",
     enterDelay: 800,
     floatDelay: 1000,
@@ -42,7 +42,7 @@ const floatingBadges: FloatingBadge[] = [
   {
     icon: <TrendingUp className="h-3.5 w-3.5" />,
     label: "+23 posts this month",
-    accentColor: "#059669",
+    accentColor: "#2563EB",
     className: "right-[2%] top-[12%] lg:right-[6%]",
     fromRight: true,
     enterDelay: 900,
@@ -51,7 +51,7 @@ const floatingBadges: FloatingBadge[] = [
   {
     icon: <Zap className="h-3.5 w-3.5" />,
     label: "Setup in under 2 min",
-    accentColor: "#EA580C",
+    accentColor: "#2563EB",
     className: "right-[-2%] top-[48%] lg:right-[2%]",
     fromRight: true,
     enterDelay: 1000,
@@ -70,7 +70,7 @@ const screenContent = (
       </div>
     </div>
     <div className="mt-4 flex justify-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg md:h-14 md:w-14 md:text-xl">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#2563EB] text-lg font-bold text-white shadow-lg md:h-14 md:w-14 md:text-xl">
         P
       </div>
     </div>
@@ -85,7 +85,7 @@ const screenContent = (
       className="mt-4 rounded-2xl bg-white/80 p-4 text-center shadow-sm"
       style={{ border: "1px solid rgba(255,255,255,0.4)" }}
     >
-      <p className="text-[9px] font-semibold uppercase tracking-widest text-blue-600 md:text-[10px]">
+      <p className="text-[9px] font-semibold uppercase tracking-widest text-[#2563EB] md:text-[10px]">
         Your Reward
       </p>
       <p className="mt-1.5 text-sm font-bold text-gray-900 md:text-base">
@@ -114,7 +114,7 @@ const screenContent = (
       )}
     </div>
 
-    <div className="mt-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 py-2.5 text-center text-xs font-semibold text-white md:py-3 md:text-sm">
+    <div className="mt-4 rounded-xl bg-[#2563EB] py-2.5 text-center text-xs font-semibold text-white md:py-3 md:text-sm">
       Submit Your Post &rarr;
     </div>
   </div>
@@ -127,7 +127,7 @@ export default function Hero() {
       className="relative overflow-hidden pb-14 pt-28 md:pb-40 md:pt-44"
       style={{
         background:
-          "linear-gradient(180deg, #FFFFFF 0%, #FAFAFD 30%, #F4F1FE 65%, #EAE5FB 100%)",
+          "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 55%, #EEF4FF 100%)",
       }}
     >
       {/* Single ambient radial glow behind the phone */}
@@ -136,7 +136,7 @@ export default function Hero() {
           className="absolute left-1/2 top-[55%] h-[700px] w-[900px] -translate-x-1/2 rounded-full"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(124,58,237,0.18) 0%, rgba(99,102,241,0.10) 30%, transparent 65%)",
+              "radial-gradient(ellipse at center, rgba(37,99,235,0.12) 0%, rgba(37,99,235,0.06) 30%, transparent 65%)",
             filter: "blur(80px)",
           }}
         />
@@ -147,12 +147,9 @@ export default function Hero() {
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="hero-fade-up text-[clamp(2.25rem,8vw,3rem)] font-bold leading-[1.05] tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
             Get Customers{" "}
-            <span className="bg-gradient-to-r from-[#2563EB] via-[#7C3AED] to-[#A855F7] bg-clip-text text-transparent">
-              Posting
-            </span>{" "}
-            About Your Business
-            <br className="sm:hidden" />
-            <span className="hidden sm:inline"> — </span>
+            <span className="text-[#2563EB]">Posting</span>{" "}
+            About Your Business.
+            <br className="sm:hidden" />{" "}
             Without Asking Them To
           </h1>
 
@@ -161,10 +158,10 @@ export default function Hero() {
           </p>
 
           <div className="hero-fade-up hero-fade-d2 mx-auto mt-10 flex w-full max-w-[480px] flex-col items-center">
-            <QualifyButton className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#2563EB] to-[#7C3AED] px-8 py-4 text-base font-semibold text-white shadow-xl shadow-purple-500/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/30 sm:w-auto sm:shrink-0">
+            <QualifyButton className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#2563EB] px-8 py-4 text-base font-semibold text-white shadow-[0_12px_28px_-8px_rgba(37,99,235,0.5)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1D4ED8] hover:shadow-[0_18px_40px_-10px_rgba(37,99,235,0.6)] active:scale-[0.98] sm:w-auto sm:shrink-0">
               Book a 15-min demo
               <svg
-                className="h-4 w-4"
+                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -187,7 +184,7 @@ export default function Hero() {
             className="gpu-layer pointer-events-none absolute bottom-[-20%] left-1/2 h-[500px] w-[800px] -translate-x-1/2 md:h-[600px] md:w-[1000px]"
             style={{
               background:
-                "radial-gradient(ellipse at 50% 80%, rgba(99,102,241,0.28) 0%, rgba(124,58,237,0.18) 25%, rgba(59,130,246,0.10) 50%, transparent 70%)",
+                "radial-gradient(ellipse at 50% 80%, rgba(37,99,235,0.20) 0%, rgba(37,99,235,0.12) 25%, rgba(59,130,246,0.06) 50%, transparent 70%)",
               filter: "blur(40px)",
               borderRadius: "50%",
             }}

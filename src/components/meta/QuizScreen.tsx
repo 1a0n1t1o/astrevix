@@ -84,6 +84,7 @@ export default function QuizScreen({
         <div className={isGrid ? "grid grid-cols-2 gap-3" : "space-y-4"}>
           {question.options.map((option) => {
             const isSelected = picked === option.value;
+            const Icon = option.icon;
 
             const baseClasses = isSelected
               ? "border-[#2563EB] bg-[#2563EB] text-white shadow-[0_10px_24px_-8px_rgba(37,99,235,0.45)]"
@@ -104,8 +105,10 @@ export default function QuizScreen({
               >
                 {isGrid ? (
                   <>
-                    <span className="text-3xl leading-none">
-                      {option.emoji}
+                    <span
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl ${isSelected ? "bg-white/20 text-white" : "bg-blue-50 text-[#2563EB]"}`}
+                    >
+                      <Icon className="h-6 w-6" strokeWidth={2} />
                     </span>
                     <span className="text-[14px] font-bold leading-snug">
                       {option.label}
@@ -113,8 +116,10 @@ export default function QuizScreen({
                   </>
                 ) : (
                   <>
-                    <span className="text-2xl leading-none">
-                      {option.emoji}
+                    <span
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${isSelected ? "bg-white/20 text-white" : "bg-blue-50 text-[#2563EB]"}`}
+                    >
+                      <Icon className="h-5 w-5" strokeWidth={2} />
                     </span>
                     <span className="text-[18px] font-medium leading-snug">
                       {option.label}

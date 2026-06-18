@@ -65,6 +65,10 @@ export default function HeroPhone({
         // Desktop: scroll-driven Y rotation.
         const angle = desktopAngle * (1 - p);
         r.style.setProperty("--phone-angle", `${angle}deg`);
+        // Unitless tilt (~-1..1) so the glass reflections + frame highlight
+        // can slide as the phone turns, simulating light tracking across
+        // real glass. 18 ≈ the default desktop tilt magnitude.
+        r.style.setProperty("--phone-tilt", (angle / 18).toFixed(3));
       }
     }
 
