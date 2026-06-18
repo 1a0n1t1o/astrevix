@@ -1,11 +1,22 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { REVIEWS } from "@/lib/reviews";
+import { REVIEWS, type Review } from "@/lib/reviews";
 import { SectionTitle } from "./shared";
 
-// Reviews rendered twice so the auto-scroll loops seamlessly.
-const LOOPED = [...REVIEWS, ...REVIEWS];
+// /meta order: lead with a photo review, then a text review, then the second
+// photo review, then the rest. (The homepage keeps REVIEWS in its own order.)
+const withPhoto = REVIEWS.filter((r) => r.image);
+const textOnly = REVIEWS.filter((r) => !r.image);
+const META_ORDER: Review[] = [
+  withPhoto[0],
+  textOnly[0],
+  withPhoto[1],
+  ...textOnly.slice(1),
+].filter((r): r is Review => Boolean(r));
+
+// Rendered twice so the auto-scroll loops seamlessly.
+const LOOPED = [...META_ORDER, ...META_ORDER];
 
 // Auto-scroll speed in pixels per SECOND. Time-based (below) so it's identical
 // on 60Hz and 120Hz+ displays.
@@ -34,7 +45,7 @@ export default function Reviews() {
 
     const measure = () => {
       const first = el.children[0] as HTMLElement | undefined;
-      const dupe = el.children[REVIEWS.length] as HTMLElement | undefined;
+      const dupe = el.children[META_ORDER.length] as HTMLElement | undefined;
       if (first && dupe) loopWidth = dupe.offsetLeft - first.offsetLeft;
     };
 
@@ -134,7 +145,7 @@ export default function Reviews() {
         {LOOPED.map((review, i) => (
           <figure
             key={i}
-            aria-hidden={i >= REVIEWS.length || undefined}
+            aria-hidden={i >= META_ORDER.length || undefined}
             className="flex w-[80%] shrink-0 flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] sm:w-[58%]"
           >
             <blockquote className="flex-1 text-[14px] leading-relaxed text-slate-700">
