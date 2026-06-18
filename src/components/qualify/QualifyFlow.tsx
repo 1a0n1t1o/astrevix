@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -65,6 +66,12 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Render the modal into <body> via a portal so it escapes the hero's
+  // stacking context — the hero phone and its floating badges were painting
+  // on top of the modal otherwise.
+  useEffect(() => setMounted(true), []);
 
   const isContactStep = currentStep === STEPS.length;
 
@@ -119,7 +126,9 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
     ? 100
     : ((currentStep + 1) / (totalSteps + 1)) * 100;
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -386,6 +395,7 @@ export function QualifyFlow({ open, onClose }: QualifyFlowProps) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
