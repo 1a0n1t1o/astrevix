@@ -4,10 +4,12 @@ import { useEffect, useRef } from "react";
 import { REVIEWS } from "@/lib/reviews";
 import { SectionTitle } from "./shared";
 
-// Reviews rendered twice so the auto-scroll loops seamlessly: once we pass
-// the width of the first set we subtract it, and the identical second set
-// makes the reset invisible.
+// Reviews rendered twice so the auto-scroll loops seamlessly.
 const LOOPED = [...REVIEWS, ...REVIEWS];
+
+// Auto-scroll speed in pixels per SECOND. Time-based (below) so it's identical
+// on 60Hz and 120Hz+ displays.
+const SPEED = 18;
 
 export default function Reviews() {
   const ref = useRef<HTMLDivElement>(null);
@@ -24,17 +26,30 @@ export default function Reviews() {
     let resumeT = 0;
     let raf = 0;
     let loopWidth = 0;
+    // Sub-pixel position kept in JS: iOS Safari rounds scrollLeft to whole
+    // integers, so adding a fraction each frame to scrollLeft itself would
+    // never move. We accumulate here and assign it instead.
+    let pos = 0;
+    let last = 0;
 
     const measure = () => {
       const first = el.children[0] as HTMLElement | undefined;
       const dupe = el.children[REVIEWS.length] as HTMLElement | undefined;
-      loopWidth = first && dupe ? dupe.offsetLeft - first.offsetLeft : 0;
+      if (first && dupe) loopWidth = dupe.offsetLeft - first.offsetLeft;
     };
 
-    const tick = () => {
+    // Re-measure whenever the rail gains/changes width (first layout, font
+    // load, viewport resize).
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+
+    const tick = (now: number) => {
+      const dt = last ? Math.min(now - last, 50) : 0; // cap after tab wakes
+      last = now;
       if (!paused && loopWidth > 0) {
-        el.scrollLeft += 0.5;
-        if (el.scrollLeft >= loopWidth) el.scrollLeft -= loopWidth;
+        pos += (SPEED * dt) / 1000;
+        if (pos >= loopWidth) pos -= loopWidth;
+        el.scrollLeft = pos;
       }
       raf = requestAnimationFrame(tick);
     };
@@ -46,12 +61,13 @@ export default function Reviews() {
     const resumeSoon = () => {
       window.clearTimeout(resumeT);
       resumeT = window.setTimeout(() => {
+        pos = el.scrollLeft; // resume from wherever the user left it
         paused = false;
       }, 1500);
     };
 
-    // Native overflow scrolling already handles touch swipe + trackpad; this
-    // adds click-drag for desktop mice. Either way we pause, then resume.
+    // Native overflow scrolling covers touch swipe + trackpad; this adds
+    // click-drag for desktop mice. Either way: pause, then resume.
     let dragging = false;
     let startX = 0;
     let startScroll = 0;
@@ -68,7 +84,7 @@ export default function Reviews() {
       if (!dragging) return;
       el.scrollLeft = startScroll - (e.clientX - startX);
     };
-    const up = () => {
+    const upDrag = () => {
       if (!dragging) return;
       dragging = false;
       el.style.cursor = "";
@@ -79,9 +95,6 @@ export default function Reviews() {
       resumeSoon();
     };
 
-    measure();
-    if (document.fonts?.ready) document.fonts.ready.then(measure);
-
     el.addEventListener("mouseenter", pause);
     el.addEventListener("mouseleave", resumeSoon);
     el.addEventListener("touchstart", pause, { passive: true });
@@ -89,16 +102,15 @@ export default function Reviews() {
     el.addEventListener("wheel", wheel, { passive: true });
     el.addEventListener("pointerdown", down);
     el.addEventListener("pointermove", move);
-    el.addEventListener("pointerup", up);
-    el.addEventListener("pointercancel", up);
-    window.addEventListener("resize", measure);
+    el.addEventListener("pointerup", upDrag);
+    el.addEventListener("pointercancel", upDrag);
 
     if (!reduce) raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
       window.clearTimeout(resumeT);
-      window.removeEventListener("resize", measure);
+      ro.disconnect();
       el.removeEventListener("mouseenter", pause);
       el.removeEventListener("mouseleave", resumeSoon);
       el.removeEventListener("touchstart", pause);
@@ -106,8 +118,8 @@ export default function Reviews() {
       el.removeEventListener("wheel", wheel);
       el.removeEventListener("pointerdown", down);
       el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerup", up);
-      el.removeEventListener("pointercancel", up);
+      el.removeEventListener("pointerup", upDrag);
+      el.removeEventListener("pointercancel", upDrag);
     };
   }, []);
 
