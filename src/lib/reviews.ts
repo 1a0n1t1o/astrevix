@@ -32,7 +32,7 @@ export const REVIEWS: Review[] = [
   },
   {
     name: "Mia",
-    role: "Coffee shop",
+    role: "Coffee shop · Los Angeles, CA",
     quote:
       "We don't have a permanent cafe yet, we run pop-ups, so getting people to come back actually matters. This did it, and the page was easy to make our own. More than half our customers ended up posting, and one video pulled over 200k views on Instagram. Pretty insane for a little pop-up.",
   },
