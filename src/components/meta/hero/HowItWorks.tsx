@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll } from "framer-motion";
-import { Hand, Nfc, BadgePercent, Camera } from "lucide-react";
+import { Hand, Nfc, BadgePercent, Image as ImageIcon, Heart, Send, AtSign } from "lucide-react";
 import { SectionTitle, VIEWPORT, VIEWPORT_TALL } from "./shared";
 
 type IllustrationKind = "tap" | "post" | "reward";
@@ -168,18 +168,38 @@ function TapIllustration() {
   );
 }
 
+// A small phone showing a social post with the business clearly tagged —
+// reads at a glance as "a customer posted about you", which the old
+// gradient-filled rectangle did not.
 function PostIllustration() {
   return (
-    <div className="relative h-28 w-16 overflow-hidden rounded-xl border-2 border-slate-900 bg-black p-1.5 shadow-md">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] opacity-90" />
-      <div className="relative flex items-center gap-1">
-        <div className="rounded-full bg-white p-[1.5px]">
-          <div className="h-3 w-3 rounded-full bg-gradient-to-br from-[#ee2a7b] to-[#6228d7]" />
+    <div className="relative h-[144px] w-[72px] rounded-[18px] bg-slate-900 p-1 shadow-[0_12px_26px_-10px_rgba(15,23,42,0.5)]">
+      <div className="flex h-full w-full flex-col overflow-hidden rounded-[14px] bg-white">
+        {/* Story header — customer avatar with the Instagram story ring. */}
+        <div className="flex items-center gap-1 px-1.5 py-1.5">
+          <span className="rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] p-[1.5px]">
+            <span className="block h-3.5 w-3.5 rounded-full border-[1.5px] border-white bg-slate-300" />
+          </span>
+          <span className="h-1.5 w-7 rounded-full bg-slate-200" />
         </div>
-        <span className="text-[7px] font-bold text-white">@yourshop</span>
-      </div>
-      <div className="absolute bottom-2 left-1.5 right-1.5">
-        <Camera className="h-3 w-3 text-white/80" strokeWidth={2} />
+
+        {/* The photo they posted, with your shop tagged. */}
+        <div className="relative flex-1 bg-gradient-to-br from-[#2563EB] to-[#7C3AED]">
+          <ImageIcon
+            className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 text-white/75"
+            strokeWidth={1.5}
+          />
+          <span className="absolute bottom-1.5 left-1/2 flex -translate-x-1/2 items-center gap-[1px] whitespace-nowrap rounded-full bg-white px-1.5 py-[2px] text-[8px] font-bold leading-none text-slate-900 shadow-sm">
+            <AtSign className="h-2 w-2 text-[#2563EB]" strokeWidth={3} />
+            yourshop
+          </span>
+        </div>
+
+        {/* Posted — liked and shared. */}
+        <div className="flex items-center gap-1.5 px-1.5 py-1.5">
+          <Heart className="h-3 w-3 text-rose-500" fill="currentColor" strokeWidth={0} />
+          <Send className="h-3 w-3 -rotate-12 text-slate-400" strokeWidth={2} />
+        </div>
       </div>
     </div>
   );
