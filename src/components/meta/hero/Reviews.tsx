@@ -129,7 +129,7 @@ export default function Reviews() {
 
       <div
         ref={ref}
-        className="-mx-5 flex cursor-grab select-none gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="-mx-5 flex items-start cursor-grab select-none gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {LOOPED.map((review, i) => (
           <figure
@@ -151,6 +151,15 @@ export default function Reviews() {
                 <div className="text-[12px] text-slate-500">{review.role}</div>
               </div>
             </figcaption>
+            {review.image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={review.image}
+                alt={`Astrevix counter sign at ${review.name}`}
+                loading="lazy"
+                className="mt-4 aspect-[4/5] w-full rounded-xl border border-slate-200 object-cover"
+              />
+            )}
           </figure>
         ))}
       </div>

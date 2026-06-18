@@ -39,6 +39,15 @@ export default function Testimonial() {
                   <div className="text-xs text-gray-500">{review.role}</div>
                 </div>
               </figcaption>
+              {review.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={review.image}
+                  alt={`Astrevix counter sign at ${review.name}`}
+                  loading="lazy"
+                  className="mt-5 aspect-[4/5] w-full rounded-xl border border-gray-100 object-cover"
+                />
+              )}
             </figure>
           ))}
         </div>
