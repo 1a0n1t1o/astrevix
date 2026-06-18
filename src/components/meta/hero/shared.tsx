@@ -83,7 +83,7 @@ interface PrimaryCTAProps {
 export function PrimaryCTA({
   onClick,
   label = "See If We're A Match",
-  subText = "Takes 30 seconds. No credit card.",
+  subText = "Takes 30 seconds.",
   glow = false,
 }: PrimaryCTAProps) {
   return (
