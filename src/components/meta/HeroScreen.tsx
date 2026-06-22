@@ -22,13 +22,13 @@ export default function HeroScreen({ onStart }: HeroScreenProps) {
         <HowItWorks />
       </div>
       <div className="mt-24 sm:mt-[120px]">
+        <Reviews />
+      </div>
+      <div className="mt-24 sm:mt-[120px]">
         <WhyItWorks />
       </div>
       <div className="mt-24 sm:mt-[120px]">
         <WhoItsFor />
-      </div>
-      <div className="mt-24 sm:mt-[120px]">
-        <Reviews />
       </div>
       <div className="mt-24 sm:mt-[120px]">
         <Guarantee onStart={onStart} />
