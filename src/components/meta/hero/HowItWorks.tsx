@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll } from "framer-motion";
-import { Hand, Nfc, BadgePercent, Camera } from "lucide-react";
+import { Hand, Nfc, BadgePercent, Smartphone, Send } from "lucide-react";
 import { SectionTitle, VIEWPORT, VIEWPORT_TALL } from "./shared";
 
 type IllustrationKind = "tap" | "post" | "reward";
@@ -168,19 +168,14 @@ function TapIllustration() {
   );
 }
 
+// A phone with a paper-plane "post" cue beside it — clean monochrome line art
+// in the same style as step 01's NFC + hand pairing, so the two cards read as a
+// set instead of the old gradient-filled mockup.
 function PostIllustration() {
   return (
-    <div className="relative h-28 w-16 overflow-hidden rounded-xl border-2 border-slate-900 bg-black p-1.5 shadow-md">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] opacity-90" />
-      <div className="relative flex items-center gap-1">
-        <div className="rounded-full bg-white p-[1.5px]">
-          <div className="h-3 w-3 rounded-full bg-gradient-to-br from-[#ee2a7b] to-[#6228d7]" />
-        </div>
-        <span className="text-[7px] font-bold text-white">@yourshop</span>
-      </div>
-      <div className="absolute bottom-2 left-1.5 right-1.5">
-        <Camera className="h-3 w-3 text-white/80" strokeWidth={2} />
-      </div>
+    <div className="relative flex h-28 items-center gap-4">
+      <Smartphone className="h-20 w-20 text-[#2563EB]" strokeWidth={1.75} />
+      <Send className="h-11 w-11 -rotate-12 text-[#2563EB]" strokeWidth={1.5} />
     </div>
   );
 }
