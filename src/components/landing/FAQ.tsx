@@ -89,41 +89,45 @@ export default function FAQ() {
             return (
               <div
                 key={i}
-                className={`reveal reveal-up-sm reveal-d${Math.min(i + 1, 5)} overflow-hidden rounded-2xl border transition-colors ${
-                  isOpen
-                    ? "border-blue-200 bg-blue-50/50"
-                    : "border-gray-200/60 bg-white/70 hover:bg-white"
-                }`}
+                className={`reveal reveal-up-sm reveal-d${Math.min(i + 1, 5)}`}
               >
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between px-6 py-5 text-left"
+                <div
+                  className={`overflow-hidden rounded-2xl border transition-colors ${
+                    isOpen
+                      ? "border-blue-200 bg-blue-50/50"
+                      : "border-gray-200/60 bg-white/70 hover:bg-white"
+                  }`}
                 >
-                  <span className="text-sm font-semibold text-gray-900 pr-4">
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`h-4 w-4 shrink-0 transition-all duration-300 ease-out ${
-                      isOpen ? "rotate-180 text-[#2563EB]" : "text-gray-400"
-                    }`}
-                  />
-                </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <m.div
-                      key="content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-                      style={{ overflow: "hidden" }}
-                    >
-                      <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
-                        {faq.a}
-                      </p>
-                    </m.div>
-                  )}
-                </AnimatePresence>
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    className="flex w-full items-center justify-between px-6 py-5 text-left"
+                  >
+                    <span className="text-sm font-semibold text-gray-900 pr-4">
+                      {faq.q}
+                    </span>
+                    <ChevronDown
+                      className={`h-4 w-4 shrink-0 transition-all duration-300 ease-out ${
+                        isOpen ? "rotate-180 text-[#2563EB]" : "text-gray-400"
+                      }`}
+                    />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <m.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        <p className="px-6 pb-5 text-sm leading-relaxed text-gray-600">
+                          {faq.a}
+                        </p>
+                      </m.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             );
           })}
