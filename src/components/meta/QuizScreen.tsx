@@ -39,11 +39,15 @@ export default function QuizScreen({
   onBack,
 }: QuizScreenProps) {
   const [picked, setPicked] = useState<string | null>(answeredValue ?? null);
+  // Locks taps only during the advance flash. Kept separate from `picked` so a
+  // pre-filled answer (when navigating back) doesn't block re-selecting.
+  const [locked, setLocked] = useState(false);
   const reduce = useReducedMotion() ?? false;
   const isGrid = question.layout === "grid";
 
   function handlePick(value: string) {
-    if (picked) return; // ignore double-taps during the flash
+    if (locked) return; // ignore double-taps during the flash
+    setLocked(true);
     setPicked(value);
     // Brief tap feedback (color flash) before auto-advancing.
     window.setTimeout(() => onAnswer(value), 160);

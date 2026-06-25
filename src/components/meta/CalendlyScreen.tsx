@@ -73,9 +73,14 @@ export default function CalendlyScreen({ name, email }: CalendlyScreenProps) {
         Pick any time that works. We&apos;ll send you the meeting link.
       </p>
 
+      {/* Calendly's inline widget injects an iframe with height:100%, which only
+          resolves against a DEFINITE height — a min-height-only parent leaves the
+          iframe collapsed and the box half-white. Give it an explicit, viewport-
+          responsive height so it fills the space on mobile and desktop alike. */}
       <div
         ref={containerRef}
-        className="min-h-[720px] w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_24px_-12px_rgba(15,23,42,0.1)]"
+        style={{ height: "clamp(640px, calc(100svh - 7rem), 860px)" }}
+        className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_24px_-12px_rgba(15,23,42,0.1)]"
       />
     </div>
   );

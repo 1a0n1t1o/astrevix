@@ -16,8 +16,6 @@ export interface QuizOption {
   label: string;
   icon: LucideIcon;
   value: string;
-  /** Last question's "Maybe later" carries this so the verifying screen can route to the soft outcome. */
-  softOutcome?: boolean;
 }
 
 export interface QuizQuestion {
@@ -37,7 +35,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       { label: "Salon, Spa, Barber or Studio", icon: Scissors, value: "service" },
       { label: "Retail Shop or Boutique", icon: ShoppingBag, value: "retail" },
       { label: "Restaurant, Café or Bar", icon: UtensilsCrossed, value: "food" },
-      { label: "Other walk-in business", icon: Store, value: "other" },
+      { label: "Other business", icon: Store, value: "other" },
     ],
   },
   {
@@ -72,10 +70,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: "interest",
     question:
-      "If we showed you how to get your customers posting about your business, and you only reward them with a small discount you set, would you want to see how it works?",
+      "Want to see how to get your customers posting about you — for just a small discount you set?",
     options: [
       { label: "Yes, show me", icon: CheckCircle2, value: "yes" },
-      { label: "Maybe later", icon: Clock, value: "maybe", softOutcome: true },
+      { label: "Maybe later", icon: Clock, value: "maybe" },
     ],
   },
 ];

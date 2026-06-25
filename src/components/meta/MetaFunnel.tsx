@@ -7,7 +7,6 @@ import HeroScreen, { StickyStartBar } from "./HeroScreen";
 import QuizScreen from "./QuizScreen";
 import VerifyingScreen from "./VerifyingScreen";
 import MatchScreen from "./MatchScreen";
-import SoftOutcomeScreen from "./SoftOutcomeScreen";
 import LeadFormScreen, { type LeadData } from "./LeadFormScreen";
 import CalendlyScreen from "./CalendlyScreen";
 
@@ -16,15 +15,10 @@ type Screen =
   | "quiz"
   | "verifying"
   | "match"
-  | "softOutcome"
   | "leadForm"
   | "calendly";
 
 const FIRST_QUESTION_ID = QUIZ_QUESTIONS[0].id;
-const LAST_QUESTION = QUIZ_QUESTIONS[QUIZ_QUESTIONS.length - 1];
-const SOFT_OUTCOME_VALUE = LAST_QUESTION.options.find(
-  (o) => o.softOutcome,
-)?.value;
 
 export default function MetaFunnel() {
   const [screen, setScreen] = useState<Screen>("hero");
@@ -68,8 +62,8 @@ export default function MetaFunnel() {
   }
 
   function handleVerifyDone() {
-    const isSoftOutcome = answers[LAST_QUESTION.id] === SOFT_OUTCOME_VALUE;
-    setScreen(isSoftOutcome ? "softOutcome" : "match");
+    // Every quiz path ends on the match screen — always "we're a match".
+    setScreen("match");
   }
 
   function handleLeadSubmit(submitted: LeadData) {
@@ -104,8 +98,6 @@ export default function MetaFunnel() {
             onContinue={() => setScreen("leadForm")}
           />
         );
-      case "softOutcome":
-        return <SoftOutcomeScreen onContinue={() => setScreen("leadForm")} />;
       case "leadForm":
         return <LeadFormScreen onSubmit={handleLeadSubmit} />;
       case "calendly":
