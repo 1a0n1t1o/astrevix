@@ -26,6 +26,7 @@ export async function POST(request: Request) {
   }
 
   const business = String(data.business ?? "");
+  const businessName = String(data.businessName ?? "");
   const challenge = String(data.challenge ?? "");
   const ads = String(data.ads ?? "");
   const name = String(data.name ?? "");
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
         <hr/>
+        ${businessName ? `<p><strong>Business name:</strong> ${escapeHtml(businessName)}</p>` : ""}
         <p><strong>Business type:</strong> ${escapeHtml(business)}</p>
         <p><strong>Biggest challenge:</strong> ${escapeHtml(challenge)}</p>
         <p><strong>Tried paid ads:</strong> ${escapeHtml(ads)}</p>

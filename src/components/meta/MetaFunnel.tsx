@@ -20,6 +20,13 @@ type Screen =
 
 const FIRST_QUESTION_ID = QUIZ_QUESTIONS[0].id;
 
+/** Resolve a stored quiz answer value back to its human-readable label. */
+function answerLabel(questionId: string, value: string | undefined): string {
+  if (!value) return "";
+  const question = QUIZ_QUESTIONS.find((q) => q.id === questionId);
+  return question?.options.find((o) => o.value === value)?.label ?? value;
+}
+
 export default function MetaFunnel() {
   const [screen, setScreen] = useState<Screen>("hero");
   const [quizIndex, setQuizIndex] = useState(0);
@@ -69,6 +76,23 @@ export default function MetaFunnel() {
   function handleLeadSubmit(submitted: LeadData) {
     setLead(submitted);
     metaPixel.lead();
+
+    // Notify the team by email — same endpoint the main qualify flow uses.
+    // Fire-and-forget so booking isn't blocked on the request.
+    void fetch("/api/qualify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: submitted.firstName,
+        businessName: submitted.businessName,
+        email: submitted.email,
+        phone: submitted.phone,
+        business: answerLabel("business", answers.business),
+        challenge: answerLabel("headache", answers.headache),
+        ads: answerLabel("ads", answers.ads),
+      }),
+    }).catch((err) => console.error("Meta lead notify error:", err));
+
     setScreen("calendly");
   }
 
