@@ -13,10 +13,27 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+const SITE_URL = "https://astrevix.com";
+const SITE_TITLE = "Astrevix";
+const SITE_DESCRIPTION = "Turn your customers into content creators";
+
 export const metadata: Metadata = {
-  title: "Astrevix",
-  description: "Turn your customers into content creators",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   manifest: "/site.webmanifest",
+  openGraph: {
+    type: "website",
+    siteName: SITE_TITLE,
+    url: SITE_URL,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {
