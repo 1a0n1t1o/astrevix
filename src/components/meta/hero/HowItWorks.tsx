@@ -55,12 +55,14 @@ export default function HowItWorks() {
           aria-hidden="true"
           className="absolute bottom-0 left-[3px] top-0 w-[2px] rounded-full bg-[#2563EB]/15"
         />
-        {/* ...and the line that draws itself as you scroll through. When
-            reduced motion is on, no scaleY is bound and it renders fully
-            drawn. */}
+        {/* ...and the line that draws itself as you scroll through. This is
+            scroll-LINKED (it only moves in response to the user's own
+            scrolling, never autonomously), so it stays bound even under
+            reduced motion — same reasoning browsers use to keep scroll
+            position indicators active. */}
         <motion.div
           aria-hidden="true"
-          style={reduce ? undefined : { scaleY: scrollYProgress }}
+          style={{ scaleY: scrollYProgress }}
           className="absolute bottom-0 left-[3px] top-0 w-[2px] origin-top rounded-full bg-[#2563EB]"
         />
 

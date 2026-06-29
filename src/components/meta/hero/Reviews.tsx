@@ -30,10 +30,6 @@ export default function Reviews() {
     const el = ref.current;
     if (!el) return;
 
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
     let paused = false;
     let resumeT = 0;
     let raf = 0;
@@ -117,7 +113,7 @@ export default function Reviews() {
     el.addEventListener("pointerup", upDrag);
     el.addEventListener("pointercancel", upDrag);
 
-    if (!reduce) raf = requestAnimationFrame(tick);
+    raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
