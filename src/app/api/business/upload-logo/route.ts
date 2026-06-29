@@ -3,13 +3,14 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { NextResponse } from "next/server";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg"];
+// SVG intentionally excluded: it can carry inline <script>, which would
+// execute when the file is opened directly from the public storage URL.
+const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp"];
 const ALLOWED_MIME_TYPES = [
   "image/jpeg",
   "image/png",
   "image/gif",
   "image/webp",
-  "image/svg+xml",
 ];
 
 export async function POST(request: Request) {

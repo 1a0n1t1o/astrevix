@@ -27,7 +27,22 @@ export async function POST(request: Request) {
     );
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+  // Validate type server-side and derive the extension from the (trusted) MIME
+  // type rather than the client-supplied filename. SVG is excluded — it can
+  // carry inline <script> that executes from the public storage URL.
+  const AVATAR_TYPES: Record<string, string> = {
+    "image/png": "png",
+    "image/jpeg": "jpg",
+    "image/webp": "webp",
+    "image/gif": "gif",
+  };
+  const ext = AVATAR_TYPES[file.type];
+  if (!ext) {
+    return NextResponse.json(
+      { error: "Invalid file type. Only PNG, JPG, WEBP, or GIF images are allowed." },
+      { status: 400 }
+    );
+  }
   const filePath = `avatars/${user.id}/avatar.${ext}`;
 
   const { error: uploadError } = await supabase.storage
