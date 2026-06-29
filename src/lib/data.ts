@@ -127,6 +127,7 @@ export async function createSubmission(params: {
   customerName: string;
   customerEmail: string;
   rewardTierId?: string | null;
+  turnstileToken?: string;
 }): Promise<{ error: string | null; code: string | null }> {
   try {
     const res = await fetch("/api/submissions/create", {
@@ -139,6 +140,7 @@ export async function createSubmission(params: {
         customer_name: params.customerName,
         customer_email: params.customerEmail,
         reward_tier_id: params.rewardTierId || null,
+        turnstile_token: params.turnstileToken || null,
       }),
     });
 

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { Resend } from "resend";
+import { durableRateLimit } from "@/lib/rate-limit";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
@@ -18,6 +20,18 @@ function escapeHtml(value: string): string {
 }
 
 export async function POST(request: Request) {
+  // Rate limiting: 5 lead submissions per IP per minute
+  const headersList = await headers();
+  const ip =
+    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const { success: allowed } = await durableRateLimit(`qualify:${ip}`, 5, 60);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   let data: Record<string, unknown>;
   try {
     data = await request.json();

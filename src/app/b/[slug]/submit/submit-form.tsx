@@ -23,6 +23,9 @@ import {
   Camera,
   Video,
 } from "lucide-react";
+import TurnstileWidget from "@/components/TurnstileWidget";
+
+const CAPTCHA_REQUIRED = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 const PLATFORM_ICON_MAP: Record<string, React.ReactNode> = {
   instagram: <Instagram className="h-3.5 w-3.5" />,
@@ -81,6 +84,7 @@ export default function SubmitForm({
   const [touched, setTouched] = useState({ postLink: false, email: false });
   const [selectedTier, setSelectedTier] = useState<RewardTierPublic | null>(initialTier);
   const [showTierPicker, setShowTierPicker] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const detectedPlatform = detectPlatform(postLink);
 
@@ -101,7 +105,8 @@ export default function SubmitForm({
     email.trim() !== "" &&
     emailRegex.test(email.trim()) &&
     emailConsent &&
-    (!hasTiers || selectedTier !== null);
+    (!hasTiers || selectedTier !== null) &&
+    (!CAPTCHA_REQUIRED || captchaToken !== "");
 
   async function handleSubmit() {
     if (!isValid || submitting) return;
@@ -116,6 +121,7 @@ export default function SubmitForm({
       customerName: name,
       customerEmail: email.trim().toLowerCase(),
       rewardTierId: selectedTier?.id || null,
+      turnstileToken: captchaToken,
     });
 
     setSubmitting(false);
@@ -617,6 +623,9 @@ export default function SubmitForm({
           <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Privacy Policy</a>.
         </span>
       </label>
+
+      {/* Bot protection (renders only when Turnstile is configured) */}
+      <TurnstileWidget onToken={setCaptchaToken} />
 
       {/* Submit button */}
       <button

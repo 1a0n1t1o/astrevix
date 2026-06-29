@@ -35,3 +35,50 @@ export function rateLimit(
   entry.count += 1;
   return { success: true, remaining: maxRequests - entry.count };
 }
+
+/**
+ * Durable, cross-instance rate limiter backed by Upstash Redis (REST API, no SDK).
+ * Falls back to the in-memory limiter above when Upstash isn't configured or on
+ * any store error, so the app never hard-fails on the rate-limit path.
+ *
+ * Fixed-window counter: INCR the key, set the TTL only on the first hit (EXPIRE NX).
+ */
+export async function durableRateLimit(
+  key: string,
+  maxRequests: number,
+  windowSec: number
+): Promise<{ success: boolean }> {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    return rateLimit(key, maxRequests, windowSec * 1000);
+  }
+
+  try {
+    const redisKey = `rl:${key}`;
+    const res = await fetch(`${url}/pipeline`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([
+        ["INCR", redisKey],
+        ["EXPIRE", redisKey, String(windowSec), "NX"],
+      ]),
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      return rateLimit(key, maxRequests, windowSec * 1000);
+    }
+
+    const data = (await res.json()) as Array<{ result?: number }>;
+    const count = data?.[0]?.result ?? 0;
+    return { success: count <= maxRequests };
+  } catch {
+    // Store unreachable → fall back rather than blocking real users.
+    return rateLimit(key, maxRequests, windowSec * 1000);
+  }
+}

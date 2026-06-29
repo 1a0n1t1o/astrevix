@@ -10,7 +10,8 @@ import {
   renderEmailSubject,
 } from "@/lib/email";
 import { renderConfirmationEmail } from "@/emails/render";
-import { rateLimit } from "@/lib/rate-limit";
+import { durableRateLimit } from "@/lib/rate-limit";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
   const headersList = await headers();
   const ip =
     headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const { success: allowed } = rateLimit(`submission:${ip}`, 5, 60_000);
+  const { success: allowed } = await durableRateLimit(`submission:${ip}`, 5, 60);
   if (!allowed) {
     return NextResponse.json(
       { error: "Too many submissions. Please try again later.", code: "RATE_LIMITED" },
@@ -36,7 +37,17 @@ export async function POST(request: Request) {
     customer_name,
     customer_email,
     reward_tier_id,
+    turnstile_token,
   } = body;
+
+  // Bot protection (inert until Turnstile is configured).
+  const captchaOk = await verifyTurnstile(turnstile_token, ip);
+  if (!captchaOk) {
+    return NextResponse.json(
+      { error: "Captcha verification failed. Please try again.", code: "CAPTCHA_FAILED" },
+      { status: 400 }
+    );
+  }
 
   if (!business_id || !post_url || !customer_name || !customer_email) {
     return NextResponse.json(
