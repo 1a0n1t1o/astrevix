@@ -14,7 +14,7 @@ export async function PATCH(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user || user.user_metadata?.is_admin !== true) {
+  if (!user || user.app_metadata?.is_admin !== true) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

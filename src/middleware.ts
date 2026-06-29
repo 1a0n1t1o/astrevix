@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Not admin → redirect to dashboard
-  if (user.user_metadata?.is_admin !== true) {
+  if (user.app_metadata?.is_admin !== true) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

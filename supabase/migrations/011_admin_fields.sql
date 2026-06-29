@@ -2,15 +2,14 @@
 -- 011: Admin Dashboard Fields
 -- ============================================
 -- Adds plan, status, and soft-delete columns to businesses table.
--- Admin users are identified by is_admin: true in auth.users.raw_user_meta_data.
+-- Admin users are identified by is_admin: true in auth.users.raw_app_meta_data.
+-- NOTE: must be app_metadata, NOT user_metadata — user_metadata is writable by
+-- the user themselves (supabase.auth.updateUser), which would allow self-escalation.
 --
--- IMPORTANT: After running this migration, set is_admin on your account:
---   Go to Supabase Dashboard → Authentication → Users → Click your user
---   → Edit user metadata → Add: { "is_admin": true }
---
--- Or via SQL:
+-- IMPORTANT: After running this migration, set is_admin on your account via SQL
+-- (app_metadata is not editable from the Supabase dashboard user-metadata UI):
 --   UPDATE auth.users
---   SET raw_user_meta_data = raw_user_meta_data || '{"is_admin": true}'::jsonb
+--   SET raw_app_meta_data = raw_app_meta_data || '{"is_admin": true}'::jsonb
 --   WHERE email = 'YOUR_ADMIN_EMAIL';
 -- ============================================
 

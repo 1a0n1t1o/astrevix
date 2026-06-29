@@ -68,7 +68,7 @@ export const TIER_PLATFORM_EMOJIS: Record<string, string> = {
 
 export async function getBusinessBySlug(slug: string): Promise<BusinessData | null> {
   const { data, error } = await supabase
-    .from("businesses")
+    .from("public_businesses")
     .select("*, reward_tiers(*)")
     .eq("slug", slug)
     .single();

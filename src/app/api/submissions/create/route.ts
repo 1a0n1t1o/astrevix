@@ -53,8 +53,27 @@ export async function POST(request: Request) {
     );
   }
 
+  // Reject non-http(s) post links (e.g. javascript:) — post_url is rendered
+  // as a clickable <a href> in the owner dashboard, so a javascript: URL would
+  // execute in the authenticated owner session (stored XSS).
+  let parsedPostUrl: URL;
+  try {
+    parsedPostUrl = new URL(String(post_url).trim());
+  } catch {
+    return NextResponse.json(
+      { error: "Please enter a valid post link.", code: "VALIDATION_ERROR" },
+      { status: 400 }
+    );
+  }
+  if (parsedPostUrl.protocol !== "http:" && parsedPostUrl.protocol !== "https:") {
+    return NextResponse.json(
+      { error: "Post link must start with http:// or https://.", code: "VALIDATION_ERROR" },
+      { status: 400 }
+    );
+  }
+
   const { data: business } = await supabase
-    .from("businesses")
+    .from("public_businesses")
     .select("id, status, name")
     .eq("id", business_id)
     .single();

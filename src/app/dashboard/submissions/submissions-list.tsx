@@ -581,9 +581,13 @@ export default function SubmissionsList({
                                 Post URL
                               </p>
                               <a
-                                href={sub.post_url}
+                                href={
+                                  /^https?:\/\//i.test(sub.post_url)
+                                    ? sub.post_url
+                                    : "#"
+                                }
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noopener noreferrer nofollow"
                                 className="mt-1 block truncate text-sm text-[#2563EB] hover:underline"
                                 onClick={(e) => e.stopPropagation()}
                               >
