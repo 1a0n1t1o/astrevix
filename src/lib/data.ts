@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { getSupabaseAdmin } from "./supabase-admin";
 
 export type Platform = "instagram" | "tiktok" | "youtube" | "x" | "facebook";
 
@@ -67,16 +68,29 @@ export const TIER_PLATFORM_EMOJIS: Record<string, string> = {
 };
 
 export async function getBusinessBySlug(slug: string): Promise<BusinessData | null> {
+  // Business comes from the M2-hardened public view (anon may read it).
   const { data, error } = await supabase
     .from("public_businesses")
-    .select("*, reward_tiers(*)")
+    .select("*")
     .eq("slug", slug)
     .single();
 
   if (error || !data) return null;
 
+  // Reward tiers are read separately with the service-role client. The anon
+  // role can no longer read `reward_tiers`: migration 020 (M2) revoked anon's
+  // SELECT on `businesses`, and the reward_tiers "Owners can read own tiers"
+  // RLS policy subqueries `businesses`, so anon reads now fail with
+  // "permission denied for table businesses". This is a server-only data path,
+  // and only active tiers (already public on the landing page) are returned.
+  const { data: tierRows } = await getSupabaseAdmin()
+    .from("reward_tiers")
+    .select("*")
+    .eq("business_id", data.id)
+    .eq("is_active", true);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const activeTiers = ((data as any).reward_tiers || [])
+  const activeTiers = ((tierRows as any[]) || [])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .filter((t: any) => t.is_active)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
